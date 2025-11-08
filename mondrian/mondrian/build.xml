@@ -33,8 +33,10 @@
         debug="${project.build.debug}"
         classpath="${classpath}"
         includeantruntime="false"
-        source="${source.jdk.version}"
-        target="${target.jdk.version}">
+        source="25"
+        target="25">
+      <compilerarg value="--enable-preview"/>
+      <compilerarg value="-Xlint:preview"/>
       <include name="mondrian/olap/MondrianException.java" />
       <include name="mondrian/olap/ResultLimitExceededException.java" />
       <include name="mondrian/olap/InvalidHierarchyException.java" />
@@ -64,8 +66,10 @@
         debug="${project.build.debug}"
         classpath="${classpath}"
         includeantruntime="false"
-        source="${source.jdk.version}"
-        target="${target.jdk.version}">
+        source="25"
+        target="25">
+      <compilerarg value="--enable-preview"/>
+      <compilerarg value="-Xlint:preview"/>
       <include name="mondrian/util/PropertyUtil.java" />
     </javac>
 

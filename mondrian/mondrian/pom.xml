@@ -20,9 +20,13 @@
     <driver.name>Mondrian olap4j driver</driver.name>
     <driver.version.minor>${project.version.minor}</driver.version.minor>
     <vendor>Pentaho</vendor>
-    <guava.version>17.0</guava.version>
+    <guava.version>33.0.0-jre</guava.version>
     <driver.version.major>${project.version.major}</driver.version.major>
-    <maven-failsafe-plugin.argLine>-Duser.language=en -Duser.country=US</maven-failsafe-plugin.argLine>
+    <maven-failsafe-plugin.argLine>-Duser.language=en -Duser.country=US --enable-preview</maven-failsafe-plugin.argLine>
+    
+    <!-- Java 25 specific properties -->
+    <source.jdk.version>25</source.jdk.version>
+    <target.jdk.version>25</target.jdk.version>
   </properties>
   <dependencies>
     <dependency>
@@ -132,8 +136,14 @@
       <version>${jsp-api.version}</version>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
@@ -152,7 +162,7 @@
     <dependency>
       <groupId>javacup</groupId>
       <artifactId>javacup</artifactId>
-      <version>10k</version>
+      <version>11a</version>
     </dependency>
     <dependency>
       <groupId>net.java.dev.javacc</groupId>
@@ -178,6 +188,8 @@
           </filesets>
         </configuration>
       </plugin>
+      <!-- TEMPORARILY DISABLED FOR JAVA 25 COMPATIBILITY TESTING -->
+      <!--
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
@@ -212,6 +224,7 @@
           </execution>
         </executions>
       </plugin>
+      -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
@@ -286,6 +299,18 @@
         </configuration>
       </plugin>
       <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <release>25</release>
+          <compilerArgs>
+            <arg>--enable-preview</arg>
+            <arg>-Xlint:preview</arg>
+          </compilerArgs>
+          <fork>true</fork>
+          <executable>C:\Program Files\Java\jdk-25\bin\javac.exe</executable>
+        </configuration>
+      </plugin>
+      <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
         <executions>
           <execution>
@@ -297,6 +322,7 @@
         </executions>
 
         <configuration>
+          <argLine>--enable-preview</argLine>
           <includes>
             <include>Main.java</include>
           </includes>
@@ -588,6 +614,7 @@
             <version>${maven-surefire-plugin.version}</version>
             <configuration>
               <skipTests>true</skipTests>
+              <argLine>--enable-preview</argLine>
             </configuration>
           </plugin>
           <plugin>

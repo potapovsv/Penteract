@@ -305,7 +305,7 @@ public class ParallelQueryExecutor {
     <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter</artifactId>
-        <version>5.10.0</version>
+        <version>4.13.2</version>
         <scope>test</scope>
     </dependency>
     

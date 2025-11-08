@@ -29,26 +29,32 @@
   <properties>
     <license.licenseName>epl_only_v1</license.licenseName>
 
+<!-- Java 25 Configuration -->
+    <maven.compiler.source>25</maven.compiler.source>
+    <maven.compiler.target>25</maven.compiler.target>
+    <maven.compiler.parameters>true</maven.compiler.parameters>
+   
+    <!-- Updated dependency versions for Java 25 -->
     <olap4j.version>1.2.0</olap4j.version>
-    <eigenbase-properties.version>1.1.2</eigenbase-properties.version>
-    <commons-io.version>1.4</commons-io.version>
-    <mysql-connector-java.version>8.0.27</mysql-connector-java.version>
+    <eigenbase-properties.version>1.1.4</eigenbase-properties.version>
+    <commons-io.version>2.16.1</commons-io.version>
+    <mysql-connector-java.version>8.0.33</mysql-connector-java.version>
     <olap4j-tck.version>1.0.1.539</olap4j-tck.version>
-    <eigenbase-resgen.version>1.3.1</eigenbase-resgen.version>
-    <junit.version>3.8.1</junit.version>
+    <eigenbase-resgen.version>1.3.6</eigenbase-resgen.version>
+    <junit.version>5.10.0</junit.version>
     <commons-pool.version>1.2</commons-pool.version>
     <validation-api.version>1.0.0.GA</validation-api.version>
     <commons-collections.version>3.2.2</commons-collections.version>
     <commons-math.version>1.1</commons-math.version>
     <olap4j-xmla.version>1.2.0</olap4j-xmla.version>
-    <jsp-api.version>2.0</jsp-api.version>
-    <mockito-all.version>1.9.5</mockito-all.version>
+    <jsp-api.version>3.1.0</jsp-api.version>
+    <mockito-all.version>5.8.0</mockito-all.version>
     <commons-dbcp.version>1.2.1</commons-dbcp.version>
     <olap4j-xmlaserver.version>1.2.0</olap4j-xmlaserver.version>
-    <eigenbase-xom.version>1.3.5</eigenbase-xom.version>
-    <servlet-api.version>2.4</servlet-api.version>
-    <commons-lang.version>2.4</commons-lang.version>
-    <xmlunit.version>1.1</xmlunit.version>
+    <eigenbase-xom.version>1.3.4</eigenbase-xom.version>
+    <servlet-api.version>6.0.0</servlet-api.version>
+    <commons-lang.version>2.6</commons-lang.version>
+    <xmlunit.version>2.9.1</xmlunit.version>
   </properties>
   <profiles>
     <profile>
@@ -78,6 +84,19 @@
         <module>assemblies</module>
       </modules>
     </profile> -->
+    <profile>
+      <id>java25-preview</id>
+      <activation>
+        <jdk>25</jdk>
+      </activation>
+      <properties>
+        <maven.compiler.args>
+          --enable-preview
+          -Xlint:preview
+          -XDsuppressNotes
+        </maven.compiler.args>
+      </properties>
+    </profile>
   </profiles>
 
   <repositories>
@@ -113,7 +132,7 @@
     <dependency>
       <groupId>it.unimi.dsi</groupId>
       <artifactId>fastutil</artifactId>
-      <version>8.5.15</version>
+      <version>8.3.0</version>
     </dependency>
   </dependencies>
 </project>
