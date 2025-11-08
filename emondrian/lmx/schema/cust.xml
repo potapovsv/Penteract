@@ -1,0 +1,124 @@
+<?xml version="1.0"?><Schema name="cust">
+<!-- Shared dimensions -->
+
+  <Dimension name="Time" type="TimeDimension">
+    <Hierarchy hasAll="true" primaryKey="full_date">
+      <Table name="dim_dict_dates"/>
+      <Level name="Year" column="year_no" type="Integer" uniqueMembers="true" approxRowCount="14" levelType="TimeYears" captionColumn="year_no"/>
+      <Level name="Quarter" column="quarter_no" uniqueMembers="true" type="Integer" levelType="TimeQuarters" ordinalColumn="quarter_no" nameColumn="quarter_name"/>
+      <Level name="Month" column="month_no" type="Integer" uniqueMembers="true" approxRowCount="40" levelType="TimeMonths" ordinalColumn="month_no" nameColumn="month_name"/>
+      <Level name="Date" column="full_date" uniqueMembers="true" type="Date" levelType="TimeDays"/>
+    </Hierarchy>
+    <Hierarchy hasAll="true" name="Year" primaryKey="full_date" displayFolder="Other attributes">
+      <Table name="dim_dict_dates"/>
+       <Level name="Year" column="year_no" type="Integer" uniqueMembers="true" approxRowCount="14" levelType="TimeYears" captionColumn="year_no"/>
+    </Hierarchy>
+    <Hierarchy hasAll="true" name="Quarter" primaryKey="full_date" displayFolder="Other attributes">
+      <Table name="dim_dict_dates"/>
+       <Level name="Quarter" column="quarter_no" uniqueMembers="true" type="Integer" levelType="TimeQuarters" ordinalColumn="quarter_no" nameColumn="quarter_name"/>
+    </Hierarchy>     
+    <Hierarchy hasAll="true" name="Month" primaryKey="full_date" displayFolder="Other attributes">
+      <Table name="dim_dict_dates"/>
+       <Level name="Month" column="month_no" type="Integer" uniqueMembers="true" approxRowCount="40" levelType="TimeMonths" ordinalColumn="month_no" nameColumn="month_name"/>
+    </Hierarchy>          
+    <Hierarchy hasAll="true" name="Date" primaryKey="full_date" displayFolder="Other attributes">
+      <Table name="dim_dict_dates"/>
+       <Level name="Date" column="full_date" type="Date" uniqueMembers="true" approxRowCount="400" levelType="TimeDays"/>
+    </Hierarchy>          
+  </Dimension>
+
+  <Dimension name="Customers" type="StandardDimension">
+    <Hierarchy hasAll="true" name="Age" primaryKey="card_sk" displayFolder="Information">
+      <Table name="dim_dict_card"/>
+       <Level name="Age" column="age" type="String" uniqueMembers="true" approxRowCount="10"/>
+    </Hierarchy>
+    <Hierarchy hasAll="true" name="Card state block" primaryKey="card_sk" displayFolder="Cards">
+          <Table name="dim_dict_card"/>
+       <Level name="Card state block" column="blocknamelast" type="String" uniqueMembers="true" approxRowCount="3"/>
+    </Hierarchy>
+    <Hierarchy hasAll="true" name="Card number" primaryKey="card_sk" displayFolder="Cards">
+          <Table name="dim_dict_card"/>
+       <Level name="Card number" column="number" type="String" uniqueMembers="true" displayFolder="Cards" approxRowCount="100"/>
+    </Hierarchy>
+    <Hierarchy hasAll="true" name="Card type" primaryKey="card_sk" displayFolder="Cards">
+          <Table name="dim_dict_card"/>
+       <Level name="Card type" column="cardtype" type="String" uniqueMembers="true" approxRowCount="20" displayFolder="Cards"/>
+    </Hierarchy>
+    <Hierarchy hasAll="true" name="Card ID" primaryKey="card_sk">
+          <Table name="dim_dict_card"/>
+       <Level name="Card ID" column="cardkey" type="Integer" uniqueMembers="true" approxRowCount="1000000" displayFolder="Cards"/>
+    </Hierarchy> 
+    <Hierarchy hasAll="true" name="Customers Code" primaryKey="card_sk">
+          <Table name="dim_dict_card"/>
+        <Level name="Customers Code" column="personid" type="Integer" uniqueMembers="true" approxRowCount="100"/>
+    </Hierarchy> 
+    <Hierarchy hasAll="true" name="First name" primaryKey="card_sk" displayFolder="Information">
+          <Table name="dim_dict_card"/>
+       <Level name="First name" column="firstname" type="String" uniqueMembers="true" approxRowCount="100"/>
+    </Hierarchy> 
+    <Hierarchy hasAll="true" name="Last name" primaryKey="card_sk" displayFolder="Information">
+          <Table name="dim_dict_card"/>
+       <Level name="Last name" column="lastname" type="String" uniqueMembers="true" approxRowCount="100"/>
+    </Hierarchy> 
+    <Hierarchy hasAll="true" name="Patronym name" primaryKey="card_sk" displayFolder="Information">
+          <Table name="dim_dict_card"/>
+       <Level name="Patronym name" column="patronymicname" type="String" uniqueMembers="true" approxRowCount="100"/>
+    </Hierarchy> 
+    <Hierarchy hasAll="true" name="Date of birth" primaryKey="card_sk" displayFolder="Information">
+          <Table name="dim_dict_card"/>
+       <Level name="Date of birth" column="birthday" type="Date" uniqueMembers="true" approxRowCount="1000"/>
+    </Hierarchy> 
+    <Hierarchy hasAll="true" name="Phone number" primaryKey="card_sk" displayFolder="Information">
+          <Table name="dim_dict_card"/>
+       <Level name="Phone number" column="phone" type="String" uniqueMembers="true" approxRowCount="100"/>
+    </Hierarchy>    
+    <Hierarchy hasAll="true" name="Gender" primaryKey="card_sk" displayFolder="Information">
+          <Table name="dim_dict_card"/>
+       <Level name="Gender" column="sex" type="String" uniqueMembers="true" approxRowCount="5"/>
+    </Hierarchy> 
+    <Hierarchy hasAll="true" name="Email" primaryKey="card_sk" displayFolder="Information">
+          <Table name="dim_dict_card"/>
+       <Level name="Email" column="email" type="String" uniqueMembers="true" approxRowCount="3"/>
+    </Hierarchy>  
+    <Hierarchy hasAll="true" name="Customer Group" primaryKey="card_sk" displayFolder="Information">
+          <Table name="dim_dict_card"/>
+       <Level name="Customer Group" column="usergroupid" type="Integer" uniqueMembers="true" approxRowCount="3"/>
+    </Hierarchy>          
+    
+    <!-- <Hierarchy hasAll="true" name="Attribute1" primaryKey="card_sk" displayFolder="Information">
+          <Table name="dim_dict_card"/>
+       <Level name="Attribute1" column="attributes.2[1]" type="String" uniqueMembers="true" approxRowCount="3"/>
+    </Hierarchy>      -->
+  </Dimension>
+
+ 
+<Cube name="Customers" defaultMeasure="Customer.Count (Total)" cache="true">
+  <!-- Use annotations to provide translations of this cube's caption and
+       description into German and French. Use of annotations in this manner is
+       experimental and unsupported; just for testing right now. -->
+  <Annotations>
+    <Annotation name="caption.de_DE">Verkaufen</Annotation>
+    <Annotation name="caption.fr_FR">Ventes</Annotation>
+    <Annotation name="description.fr_FR">Cube des ventes</Annotation>
+    <Annotation name="description.de">Cube Verkaufen</Annotation>
+    <Annotation name="description.de_AT">Cube den Verkaufen</Annotation>
+  </Annotations>
+  <Table name="dim_dict_card"/>
+  <!-- <AggName name="events_agg2">
+     <AggMeasure name="[Measures].[Count Events]" column="client_id"/>
+     <AggLevel name="[Time].[Date]" column="full_date"/>
+     <AggLevel name="[Client.Sex].[All Client.Sexs]" column="client_id"/>
+     <AggLevel name="[Types].[All Typess]" column="event_type"/>
+  </AggName> -->
+  <DimensionUsage name="Card.Purchase.First date" source="Time" foreignKey="card_first_purchasedate"/>
+  <DimensionUsage name="Card.Purchase.Last date" source="Time" foreignKey="card_last_purchasedate"/>
+  <DimensionUsage name="Customers.Purchase.First date" source="Time" foreignKey="card_first_purchasedate"/>
+  <DimensionUsage name="Customers.Purchase.Last date" source="Time" foreignKey="card_last_purchasedate"/>
+  <DimensionUsage name="Customers" source="Customers" foreignKey="card_sk"/>
+
+  <Measure name="Customer group.Count (Tota)" column="usergroupid" aggregator="distinct-count" formatString="Standard" displayFolder="Customers"/>
+  <Measure name="Customer.Count (Total)" column="personid" aggregator="count" formatString="Standard" displayFolder="Customers"/>
+  <Measure name="Cards.Count (Total)" column="number" aggregator="distinct-count" formatString="Standard" displayFolder="Customers"/>
+  </Cube>
+
+</Schema>
