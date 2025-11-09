@@ -58,6 +58,10 @@
             <updatePolicy>always</updatePolicy>
           </snapshots>
         </repository>
+        <repository>
+          <id>pentaho-omni</id>
+          <url>https://nexus.pentaho.org/content/groups/omni</url>
+        </repository>        
       </repositories>
       <pluginRepositories>
         <pluginRepository>

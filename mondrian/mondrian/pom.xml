@@ -67,6 +67,7 @@
       <artifactId>log4j-core</artifactId>
       <scope>compile</scope>
     </dependency>
+    
     <dependency>
       <groupId>commons-math</groupId>
       <artifactId>commons-math</artifactId>
@@ -162,7 +163,7 @@
     <dependency>
       <groupId>javacup</groupId>
       <artifactId>javacup</artifactId>
-      <version>11a</version>
+      <version>10k</version>
     </dependency>
     <dependency>
       <groupId>net.java.dev.javacc</groupId>
@@ -174,6 +175,18 @@
       <artifactId>mysql-connector-java</artifactId>
       <version>${mysql-connector-java.version}</version>
       <scope>test</scope>
+    </dependency>
+    <!-- Добавить log4j-api -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+    <!-- log4j-core уже есть -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
   <build>
