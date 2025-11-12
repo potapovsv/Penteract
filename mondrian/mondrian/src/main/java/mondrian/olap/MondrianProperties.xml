@@ -937,7 +937,7 @@ determines the list of tables and columns of a specific datasource.</p>
         <Description>
 <p>Property that defines
 the name of the plugin class that resolves data source names to
-{@link javax.sql.DataSource} objects. The class must implement the
+{@link jakarta.sql.DataSource} objects. The class must implement the
 {@link mondrian.spi.DataSourceResolver} interface. If not specified,
 the default implementation uses JNDI to perform resolution.</p>
 

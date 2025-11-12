@@ -20,7 +20,7 @@ import org.w3c.dom.*;
 
 import java.util.HashSet;
 import java.util.List;
-import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.*;
 
 /**
  * Compares the {@link Result} produced by a query with the expected result

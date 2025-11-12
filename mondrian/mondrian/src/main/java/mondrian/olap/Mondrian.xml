@@ -2450,7 +2450,7 @@ Revision is $Id$
             <Doc>
                 The language of the script. Must be a supported scripting
                 language in the current JVM. See
-                {@link javax.script.ScriptEngineManager}.
+                {@link jakarta.script.ScriptEngineManager}.
                 Default value is 'JavaScript'.
             </Doc>
         </Attribute>

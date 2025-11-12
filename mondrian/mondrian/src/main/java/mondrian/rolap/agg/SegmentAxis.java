@@ -50,6 +50,22 @@ public class SegmentAxis {
      */
     private final Comparable[] keys;
 
+    // Кэш для часто используемых значений Integer (от -128 до 127)
+    private static final Integer[] INTEGER_CACHE = new Integer[256];
+    
+    static {
+        for (int i = 0; i < INTEGER_CACHE.length; i++) {
+            INTEGER_CACHE[i + 128] = Integer.valueOf(i);
+        }
+    }
+    
+    private static Integer cachedInteger(int value) {
+        if (value >= -128 && value <= 127) {
+            return INTEGER_CACHE[value + 128];
+        }
+        return Integer.valueOf(value);
+    }
+
     private static final Integer ZERO = Integer.valueOf(0);
     private static final Integer ONE = Integer.valueOf(1);
     private static final Comparable[] NO_COMPARABLES = new Comparable[0];
@@ -78,7 +94,7 @@ public class SegmentAxis {
             mapKeyToOffset =
                 new HashMap<Comparable, Integer>(keys.length * 3 / 2);
             for (int i = 0; i < keys.length; i++) {
-                mapKeyToOffset.put(keys[i], i);
+                mapKeyToOffset.put(keys[i], cachedInteger(i));
             }
         }
         assert predicate != null;
@@ -211,8 +227,7 @@ public class SegmentAxis {
         return matchCount;
     }
 
-    @SuppressWarnings({"unchecked"})
-    public Pair<SortedSet<Comparable>, Boolean> getValuesAndIndicator() {
+    @SuppressWarnings({"unchecked"})    public Pair<SortedSet<Comparable>, Boolean> getValuesAndIndicator() {
         if (keys.length > 0
             && keys[keys.length - 1] == RolapUtil.sqlNullValue)
         {

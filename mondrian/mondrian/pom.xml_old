@@ -13,25 +13,20 @@
   <description>Mondrian OLAP Engine</description>
   <url>http://mondrian.pentaho.com</url>
   <properties>
-    <schema.version>3</schema.version>
-    <!--
-    In order to support connections from PowerBI the version must match a SQL Server version.
-    Check the version list here https://sqlserverbuilds.blogspot.com/ for more information about the different versions.
-    The minimal compatible version is the SQL Server 2008 R2 (10.50.1600.1).
-    The version bellow is the SQL Server 2022 (16.0.1000.6). Only the major and the minor are represented here.
-    -->
-    <project.version.major>16</project.version.major>
-    <project.version.minor>0</project.version.minor>
-    <driver.name>Mondrian olap4j driver</driver.name>
+    <project.version.minor>000</project.version.minor>
     <driver.version>${project.version}</driver.version>
-    <driver.version.major>${project.version.major}</driver.version.major>
+    <project.version.major>16</project.version.major>
+    <schema.version>3</schema.version>
+    <driver.name>Mondrian olap4j driver</driver.name>
     <driver.version.minor>${project.version.minor}</driver.version.minor>
     <vendor>Pentaho</vendor>
-    <maven-failsafe-plugin.argLine>-Duser.language=en -Djava.locale.providers=COMPAT,SPI -Duser.country=US --enable-preview</maven-failsafe-plugin.argLine>
-        <!-- Java 25 specific properties -->
+    <guava.version>33.0.0-jre</guava.version>
+    <driver.version.major>${project.version.major}</driver.version.major>
+    <maven-failsafe-plugin.argLine>-Duser.language=en -Duser.country=US --enable-preview</maven-failsafe-plugin.argLine>
+    
+    <!-- Java 25 specific properties -->
     <source.jdk.version>25</source.jdk.version>
     <target.jdk.version>25</target.jdk.version>
-
   </properties>
   <dependencies>
     <dependency>
@@ -44,9 +39,9 @@
       <version>${commons-collections.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-dbcp2</artifactId>
-      <version>${commons-dbcp2.version}</version>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <version>${commons-dbcp.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
@@ -72,15 +67,16 @@
       <artifactId>log4j-core</artifactId>
       <scope>compile</scope>
     </dependency>
+    
     <dependency>
       <groupId>commons-math</groupId>
       <artifactId>commons-math</artifactId>
       <version>${commons-math.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-pool2</artifactId>
-      <version>${commons-pool2.version}</version>
+      <groupId>commons-pool</groupId>
+      <artifactId>commons-pool</artifactId>
+      <version>${commons-pool.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -133,16 +129,22 @@
     <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
-      <version>${jakarta.servlet.version}</version>
+      <version>${servlet-api.version}</version>
     </dependency>
     <dependency>
-      <groupId>jakarta.servlet.jsp</groupId>
-      <artifactId>jakarta.servlet.jsp-api</artifactId>
-      <version>${jakarta.servlet.jsp.version}</version>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.jsp-api</artifactId>
+      <version>${jsp-api.version}</version>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
@@ -154,7 +156,7 @@
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
+      <artifactId>mockito-all</artifactId>
       <version>${mockito-all.version}</version>
       <scope>test</scope>
     </dependency>
@@ -169,16 +171,22 @@
       <version>5.0</version>
     </dependency>
     <dependency>
-      <groupId>com.mysql</groupId>
-      <artifactId>mysql-connector-j</artifactId>
-      <version>8.3.0</version>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>${mysql-connector-java.version}</version>
       <scope>test</scope>
     </dependency>
+    <!-- Добавить log4j-api -->
     <dependency>
-      <groupId>org.openjdk.nashorn</groupId>
-      <artifactId>nashorn-core</artifactId>
-      <version>15.4</version>
-      <scope>test</scope>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+    <!-- log4j-core уже есть -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
   <build>
@@ -193,9 +201,10 @@
           </filesets>
         </configuration>
       </plugin>
+      <!-- TEMPORARILY DISABLED FOR JAVA 25 COMPATIBILITY TESTING -->
+      <!--
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>3.2.0</version>
         <executions>
           <execution>
             <phase>generate-sources</phase>
@@ -228,6 +237,7 @@
           </execution>
         </executions>
       </plugin>
+      -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
@@ -301,7 +311,7 @@
           </transformationSets>
         </configuration>
       </plugin>
-     <plugin>
+      <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <release>25</release>
@@ -312,10 +322,9 @@
           <fork>true</fork>
           <executable>C:\Program Files\Java\jdk-25\bin\javac.exe</executable>
         </configuration>
-      </plugin>      
+      </plugin>
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>${maven-failsafe-plugin.version}</version>
         <executions>
           <execution>
             <id>integration-test</id>
@@ -327,7 +336,6 @@
 
         <configuration>
           <argLine>--enable-preview</argLine>
-
           <includes>
             <include>Main.java</include>
           </includes>
@@ -386,7 +394,7 @@
           <plugin>
             <groupId>io.fabric8</groupId>
             <artifactId>docker-maven-plugin</artifactId>
-            <version>0.44.0</version>
+            <version>0.26.0</version>
             <executions>
               <execution>
                 <id>start</id>
@@ -408,7 +416,7 @@
             <configuration>
               <images>
                 <image>
-                  <name>mysql:8.3.0</name>
+                  <name>mysql:8.0.27</name>
                   <alias>mondrian-mysql8027-db</alias>
                   <run>
                     <!-- prevents spam of mbind: Operation not permitted log messages -->
@@ -498,9 +506,9 @@
             </executions>
             <dependencies>
               <dependency>
-                <groupId>com.mysql</groupId>
-                <artifactId>mysql-connector-j</artifactId>
-                <version>${mysql-connector-j.version}</version>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-java.version}</version>
               </dependency>
             </dependencies>
             <configuration>
@@ -518,10 +526,9 @@
         <mondrian.foodmart.jdbcUser>mondrian</mondrian.foodmart.jdbcUser>
         <mondrian.jdbcDrivers>${mysql.driver}</mondrian.jdbcDrivers>
         <mysql.driver>com.mysql.cj.jdbc.Driver</mysql.driver>
+        <mondrian.foodmart.jdbcURL>jdbc:mysql://${docker.container.mondrian-mysql8027-db.ip}:3306/foodmart</mondrian.foodmart.jdbcURL>
         <dependency.sql-maven-plugin.version>1.5</dependency.sql-maven-plugin.version>
-        <mysql.url.base>jdbc:mysql://${docker.container.mondrian-mysql8027-db.ip}:3306</mysql.url.base>
-        <mysql.url.default>${mysql.url.base}/mysql</mysql.url.default>
-        <mondrian.foodmart.jdbcURL>${mysql.url.base}/foodmart</mondrian.foodmart.jdbcURL>
+        <mysql.url.default>jdbc:mysql://${docker.container.mondrian-mysql8027-db.ip}:3306/mysql</mysql.url.default>
       </properties>
     </profile>
     <profile>
@@ -620,6 +627,7 @@
             <version>${maven-surefire-plugin.version}</version>
             <configuration>
               <skipTests>true</skipTests>
+              <argLine>--enable-preview</argLine>
             </configuration>
           </plugin>
           <plugin>

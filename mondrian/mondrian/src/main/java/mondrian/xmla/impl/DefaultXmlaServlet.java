@@ -27,10 +27,10 @@ import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import javax.xml.parsers.*;
 
 /**
@@ -511,7 +511,7 @@ public abstract class DefaultXmlaServlet extends XmlaServlet {
             Element xmlaReqElem = (dreqs.length == 0 ? ereqs[0] : dreqs[0]);
 
             // ByteArrayOutputStream osBuf = new ByteArrayOutputStream();
-            BigByteArrayOutputStream osBuf = new BigByteArrayOutputStream(2_300_000_000L);
+            BigByteArrayOutputStream osBuf = new BigByteArrayOutputStream(1_512_000_000L);
             // use context variable 'role_name' as this request's XML/A role
             String roleName = (String) context.get(CONTEXT_ROLE_NAME);
 
@@ -601,7 +601,7 @@ public abstract class DefaultXmlaServlet extends XmlaServlet {
              // must be called BEFORE getWriter or getOutputStream and before
              // committing the response for the character encoding to be used.
              //
-             // @see javax.servlet.ServletResponse
+             // @see jakarta.servlet.ServletResponse
             OutputStream outputStream = response.getOutputStream();
 
 
@@ -679,7 +679,7 @@ public abstract class DefaultXmlaServlet extends XmlaServlet {
                 buf.append("XML/A response content").append(nl);
             }
             try {
-                int bufferSize = 4096;
+                int bufferSize = 4096*16;
                 ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
                 WritableByteChannel wch = Channels.newChannel(outputStream);
                 ReadableByteChannel rch;

@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.regex.Pattern;
-import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.*;
 
 /**
  * Unit test based upon an XML file.

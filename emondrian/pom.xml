@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.loymax.app</groupId>
@@ -15,28 +13,84 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>21</maven.compiler.source>
-    <maven.compiler.target>21</maven.compiler.target>
+    <maven.compiler.source>25</maven.compiler.source>
+    <maven.compiler.target>25</maven.compiler.target>
+    <jakarta.servlet-osgi.version>5.0.0</jakarta.servlet-osgi.version>
+    <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
+    <jakarta.ws.rs-api.version>3.1.0</jakarta.ws.rs-api.version>
+    <jakarta.servlet.jsp.version>3.1.1</jakarta.servlet.jsp.version>
+    <jakarta.transaction.version>2.0.1</jakarta.transaction.version>
+    <jakarta.validation.version>3.1.1</jakarta.validation.version>
+    <jakarta.mail.version>2.1.3</jakarta.mail.version>
+    <jakarta.persistence-api.version>3.2.0</jakarta.persistence-api.version>
+    <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
+    <jakarta.websocket-api.version>2.1.0</jakarta.websocket-api.version>
+    <jakarta.inject.version>2.0.1</jakarta.inject.version> 
+    <jakarta.xml.soap-api.version>3.0.2</jakarta.xml.soap-api.version>
+    <jakarta.jws-api.version>3.0.0</jakarta.jws-api.version>
+    <jakarta.servlet.jsp.jstl-api.version>3.0.2</jakarta.servlet.jsp.jstl-api.version>
+    <jakarta.servlet.jsp.jstl.version>3.0.1</jakarta.servlet.jsp.jstl.version>    
+    <jakarta.activation.version>2.1.3</jakarta.activation.version>
+    <jakarta.xml.bind-api.version>4.0.4</jakarta.xml.bind-api.version>
+    <jakarta.xml.bind-osgi.version>2.3.3</jakarta.xml.bind-osgi.version>
+    <jaxb-api-osgi.version>2.3.3</jaxb-api-osgi.version>
+    <jakarta.activation-osgi.version>1.2.1</jakarta.activation-osgi.version>
+    <jakarta.transaction-api-osgi.version>1.3.3</jakarta.transaction-api-osgi.version>
+    <istack-osgi.version>3.0.2</istack-osgi.version>
+    <xmlsec-osgi.version>4.0.3</xmlsec-osgi.version>
+    <jaxb-impl.version>4.0.6</jaxb-impl.version>
+    <jakarta.xml.ws-api.version>4.0.2</jakarta.xml.ws-api.version>
+    <jakarta.xml.ws-osgi.version>2.3.3</jakarta.xml.ws-osgi.version>
+    <jakarta.jms-api.version>3.1.0</jakarta.jms-api.version>   
+    <gwt.version>2.12.2</gwt.version> 
+    <jakarta.xml.soap-api.version>3.0.2</jakarta.xml.soap-api.version>
+    <jakarta.jws-api.version>3.0.0</jakarta.jws-api.version>
+    <jakarta.servlet.jsp.jstl-api.version>3.0.2</jakarta.servlet.jsp.jstl-api.version>
+    <jakarta.servlet.jsp.jstl.version>3.0.1</jakarta.servlet.jsp.jstl.version>    
+    <fasterxml-jackson.version>2.17.2</fasterxml-jackson.version>    
   </properties>
 
   <dependencies>
-  
+      <!-- ОСНОВНОЕ ИСПРАВЛЕНИЕ: Явно указать актуальную версию -->
+    <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.16.1</version>
+    </dependency>
+
     <dependency>
       <groupId>pentaho</groupId>
       <artifactId>mondrian</artifactId>
       <version>9.3.0.1-LMX</version>
+        <exclusions>
+            <exclusion>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+            </exclusion>
+        </exclusions>      
     </dependency>
-
+    <!-- VFS2 (если есть отдельно) -->
+    <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-vfs2</artifactId>
+        <version>2.10.0</version>
+    </dependency>    
+    <dependency>
+        <groupId>jakarta.servlet</groupId>
+        <artifactId>jakarta.servlet-api</artifactId>
+        <version>6.1.0</version>
+        <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>com.clickhouse</groupId>
       <artifactId>clickhouse-jdbc</artifactId>
-      <version>0.7.1</version>
+      <version>0.9.4</version>
     </dependency>
     
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.7.5</version>
+      <version>42.7.8</version>
     </dependency>
 
     <dependency>
@@ -48,7 +102,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-catalina</artifactId>
-      <version>9.0.100</version>
+      <version>11.0.13</version>
     </dependency>
     <dependency>
       <groupId>org.w3c</groupId>
@@ -60,6 +114,43 @@
       <artifactId>lz4-java</artifactId>
       <version>1.8.0</version>
     </dependency>
+
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
+        <artifactId>jackson-jakarta-rs-json-provider</artifactId>
+        <version>${fasterxml-jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
+        <artifactId>jackson-jakarta-rs-base</artifactId>
+        <version>${fasterxml-jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.module</groupId>
+        <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
+        <version>${fasterxml-jackson.version}</version>
+      </dependency>    
+      <dependency>
+        <groupId>jakarta.activation</groupId>
+        <artifactId>jakarta.activation-api</artifactId>
+        <version>${jakarta.activation.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+        <version>${jakarta.xml.bind-api.version}</version>
+      </dependency>  
+      <dependency>
+        <groupId>jakarta.xml.ws</groupId>
+        <artifactId>jakarta.xml.ws-api</artifactId>
+        <version>${jakarta.xml.ws-api.version}</version>
+      </dependency>    
+      <dependency>
+        <groupId>org.gwtproject</groupId>
+        <artifactId>gwt-servlet-jakarta</artifactId>
+        <version>${gwt.version}</version>
+      </dependency>            
   </dependencies>
   
   <build>
@@ -78,6 +169,15 @@
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.14.0</version>
+          <configuration>
+          <release>25</release>
+          <compilerArgs>
+            <arg>--enable-preview</arg>
+            <arg>-Xlint:preview</arg>
+          </compilerArgs>
+          <fork>true</fork>
+          <executable>C:\Program Files\Java\jdk-25\bin\javac.exe</executable>
+        </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>

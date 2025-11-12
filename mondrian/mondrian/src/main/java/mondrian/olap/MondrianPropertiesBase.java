@@ -62,7 +62,7 @@ public abstract class MondrianPropertiesBase extends TriggerableProperties {
 
     protected static final String mondrianDotProperties = "mondrian.properties";
 
-    public static final String buildNums = "v:5.0.5 ";
+    public static final String buildNums = "v:5.java25.1001 ";
 
     protected MondrianPropertiesBase(PropertySource propertySource) {
         this.propertySource = propertySource;
@@ -238,7 +238,7 @@ public abstract class MondrianPropertiesBase extends TriggerableProperties {
         //         // LOGGER.debug(buildNums +"populate1: key=" + key + ", value=" + value);
         //         super.setProperty(key, value);
         //         count++;
-        //     }
+        //     }-Xlog:jfr*=info:file=C:\logs\jfr.log::filecount=5,filesize=100M"
         //     // LOGGER.debug(buildNums +"Try populate1: key=" + key + ", value=" + value);
         // }
         for (Enumeration<?> keys_m = monrianpros.keys();

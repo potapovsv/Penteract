@@ -38,9 +38,9 @@ import mondrian.olap.MondrianDef;
 
 import mondrian.server.Session;
 
-import org.eigenbase.xom.Parser;
-import org.eigenbase.xom.XOMException;
-import org.eigenbase.xom.XOMUtil;
+// import org.eigenbase.xom.Parser;
+// import org.eigenbase.xom.XOMException;
+// import org.eigenbase.xom.XOMUtil;
 import org.olap4j.*;
 import org.olap4j.impl.Olap4jUtil;
 import org.olap4j.metadata.*;
@@ -63,7 +63,7 @@ import java.util.*;
 import java.util.Date;
 
 import static mondrian.xmla.XmlaConstants.*;
-import static org.olap4j.metadata.XmlaConstants.*;
+// import static org.olap4j.metadata.XmlaConstants.*;
 
 import mondrian.rolap.RolapDrillThroughAction;
 import mondrian.rolap.RolapDrillThroughColumn;
