@@ -5,8 +5,8 @@
     <DataSourceDescription>LoymaxBI_2</DataSourceDescription>
     <URL>http://localhost:8080/emondrian/xmla</URL>
     <DataSourceInfo>Provider=mondrian;JdbcDrivers=com.clickhouse.jdbc.ClickHouseDriver;Jdbc=jdbc:clickhouse://bi-ch01.loymax.local:8123/amwine_loymaxdw_dm?user=default;socket_timeout=300000;JdbcTimeout= 300000;
-      jdbc.maxIdle=200;
-      jdbc.maxTotal=200</DataSourceInfo>
+      dataSource.maximumPoolSize=200;
+      dataSource.minimumIdle=200</DataSourceInfo>
     <ProviderName>Mondrian</ProviderName>
     <ProviderType>MDP</ProviderType>
     <AuthenticationMode>Unauthenticated</AuthenticationMode>

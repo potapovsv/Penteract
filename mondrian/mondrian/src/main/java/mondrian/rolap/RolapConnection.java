@@ -307,9 +307,6 @@ public class RolapConnection extends ConnectionBase {
    * Creates a JDBC data source from the JDBC credentials contained within a
    * set of mondrian connection properties.
    *
-   * <p>This method is package-level so that it can be called from the
-   * RolapConnectionTest unit test.
-   *
    * @param dataSource  Anonymous data source from user, or null
    * @param connectInfo Mondrian connection properties
    * @param buf         Into which method writes a description of the JDBC credentials
@@ -824,8 +821,7 @@ public class RolapConnection extends ConnectionBase {
     @Override
     public boolean equals( Object obj ) {
       if ( obj instanceof DriverManagerDataSource ) {
-        DriverManagerDataSource
-          that = (DriverManagerDataSource) obj;
+        DriverManagerDataSource that = (DriverManagerDataSource) obj;
         return this.loginTimeout == that.loginTimeout
           && this.jdbcConnectString.equals( that.jdbcConnectString )
           && this.jdbcProperties.equals( that.jdbcProperties );
@@ -834,12 +830,13 @@ public class RolapConnection extends ConnectionBase {
     }
 
     public Connection getConnection() throws SQLException {
-      return new org.apache.commons.dbcp2.DelegatingConnection(
-        java.sql.DriverManager.getConnection(
-          jdbcConnectString, jdbcProperties ) );
+      return java.sql.DriverManager.getConnection(
+        jdbcConnectString, jdbcProperties );
     }
 
-    public Connection getConnection( String username, String password )
+    public Connection getConnection(
+      String username,
+      String password )
       throws SQLException {
       if ( jdbcProperties == null ) {
         return java.sql.DriverManager.getConnection(

@@ -12,8 +12,8 @@ package mondrian.xmla.impl;
 import mondrian.olap.Util;
 import mondrian.xmla.XmlaHandler;
 
-import org.apache.commons.dbcp2.BasicDataSource;
-import org.apache.commons.dbcp2.DelegatingConnection;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -26,6 +26,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.time.Duration;
 
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -176,8 +177,7 @@ public class Olap4jXmlaServlet extends DefaultXmlaServlet {
         }
     }
 
-    private static Map<String, Object>
-    getDiscoverDatasourcesPreConfiguredResponse(
+    private static Map<String, Object> getDiscoverDatasourcesPreConfiguredResponse(
         ServletConfig servletConfig)
     {
         final Map<String, Object> map = new LinkedHashMap<String, Object>();
@@ -213,8 +213,8 @@ public class Olap4jXmlaServlet extends DefaultXmlaServlet {
         private final Properties connProperties;
         private final Map<String, Object> discoverDatasourcesResponse;
         private final String olap4jDriverClassName;
-        private final Map<String, BasicDataSource> datasourcesPool =
-            new HashMap<String, BasicDataSource>();
+        private final Map<String, HikariDataSource> datasourcesPool =
+            new HashMap<String, HikariDataSource>();
         private final int idleConnectionsCleanupTimeoutMs;
         private final int maxPerUserConnectionCount;
 
@@ -263,45 +263,54 @@ public class Olap4jXmlaServlet extends DefaultXmlaServlet {
             final String pwd = props.getProperty(JDBC_PASSWORD);
 
             // note: this works also for un-authenticated connections; they will
-            // simply all be created by the same BasicDataSource object
+            // simply all be created by the same HikariDataSource object
             final String dataSourceKey = user + "_" + pwd;
 
-            BasicDataSource bds;
+            HikariDataSource hikariDS;
             synchronized (datasourcesPool) {
-                bds = datasourcesPool.get(dataSourceKey);
-                if (bds == null) {
-                    bds = new BasicDataSource();
-                    bds.setConnectionProperties( convertPropertiesToString( connProperties ) );
-                    bds.setDefaultReadOnly(true);
-                    bds.setDriverClassName(olap4jDriverClassName);
-                    bds.setPassword(pwd);
-                    bds.setUsername(user);
-                    bds.setUrl(olap4jDriverConnectionString);
-                    bds.setPoolPreparedStatements(false);
-                    bds.setMaxIdle(maxPerUserConnectionCount);
-                    bds.setMaxTotal(maxPerUserConnectionCount);
-                    bds.setMinEvictableIdleTimeMillis(
-                        idleConnectionsCleanupTimeoutMs);
-                    bds.setAccessToUnderlyingConnectionAllowed(true);
-                    bds.setInitialSize(1);
-                    bds.setTimeBetweenEvictionRunsMillis(60000);
-                    if (catalog != null) {
-                        bds.setDefaultCatalog(catalog);
+                hikariDS = datasourcesPool.get(dataSourceKey);
+                if (hikariDS == null) {
+                    HikariConfig config = new HikariConfig();
+                    config.setJdbcUrl(olap4jDriverConnectionString);
+                    config.setUsername(user);
+                    config.setPassword(pwd);
+                    config.setDriverClassName(olap4jDriverClassName);
+                    
+                    // Configure connection properties
+                    if (connProperties != null && !connProperties.isEmpty()) {
+                        config.setDataSourceProperties(connProperties);
                     }
-                    datasourcesPool.put(dataSourceKey, bds);
+                    
+                    // Configure pool settings (equivalent to DBCP2 settings)
+                    config.setMaximumPoolSize(maxPerUserConnectionCount);
+                    config.setMinimumIdle(maxPerUserConnectionCount);
+                    config.setIdleTimeout(idleConnectionsCleanupTimeoutMs);
+                    config.setMaxLifetime(idleConnectionsCleanupTimeoutMs * 2);
+                    config.setConnectionTimeout(30000); // 30 seconds in milliseconds
+                    config.setLeakDetectionThreshold(60000); // 60 seconds in milliseconds
+                    
+                    // Connection validation
+                    config.setConnectionTestQuery("SELECT 1");
+                    config.setValidationTimeout(5000); // 5 seconds in milliseconds
+                    
+                    // Set catalog if provided
+                    if (catalog != null) {
+                        config.setConnectionInitSql("SET CATALOG " + catalog);
+                    }
+                    
+                    hikariDS = new HikariDataSource(config);
+                    datasourcesPool.put(dataSourceKey, hikariDS);
                 }
             }
 
-            Connection connection = bds.getConnection();
-            DelegatingConnection dc = (DelegatingConnection) connection;
-            Connection underlyingOlapConnection = dc.getInnermostDelegate();
+            Connection connection = hikariDS.getConnection();
             OlapConnection olapConnection =
-                unwrap(underlyingOlapConnection, OlapConnection.class);
+                unwrap(connection, OlapConnection.class);
 
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug(
                     "Obtained connection object [" + olapConnection
-                    + "] (ext pool wrapper " + connection + ") for key "
+                    + "] (HikariCP pool wrapper " + connection + ") for key "
                     + dataSourceKey);
             }
             if (catalog != null) {
@@ -316,7 +325,8 @@ public class Olap4jXmlaServlet extends DefaultXmlaServlet {
 
             return createDelegatingOlapConnection(connection, olapConnection);
         }
-         private String convertPropertiesToString( Properties props ) {
+
+        private String convertPropertiesToString( Properties props ) {
             String propertiesString = props.entrySet()
               .stream()
               .map(e -> e.getKey() + "=" + e.getValue() )
