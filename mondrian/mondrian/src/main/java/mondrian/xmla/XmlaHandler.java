@@ -713,9 +713,11 @@ public class XmlaHandler {
     }
 
     private static interface QueryResult {
+       
         void unparse(SaxWriter res) throws SAXException, OlapException, SQLException;
         void close() throws SQLException;
         void metadata(SaxWriter writer);
+
     }
 
     /**
@@ -2380,9 +2382,21 @@ public class XmlaHandler {
         public void unparse(SaxWriter writer)
             throws SAXException, OlapException, SQLException
         {
+            if (LOGGER.isDebugEnabled()) {
+              LOGGER.debug("Start unparse:= "  );
+            }        
             olapInfo(writer);
+            if (LOGGER.isDebugEnabled()) {
+              LOGGER.debug("end unparse OlapInfo:= "  );
+            }                
             axes(writer);
+            if (LOGGER.isDebugEnabled()) {
+              LOGGER.debug("end unparse axes:= "  );
+            }                
             cellData(writer);
+            if (LOGGER.isDebugEnabled()) {
+              LOGGER.debug("end unparse cellData:= "  );
+            }              
         }
 
         public void metadata(SaxWriter writer) {
@@ -2758,7 +2772,9 @@ public class XmlaHandler {
             writer.startSequence("Tuples", "Tuple");
 
             HashMap<Level, HashSet<mondrian.olap.Member>> levelMembers = new HashMap<>();
-
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Start Axis1 ");
+            }  
             for (Position p : axis.getPositions()) {
                 for (Member member : p.getMembers()) {
                     Level level = member.getLevel();
@@ -2769,7 +2785,9 @@ public class XmlaHandler {
                             .add(((mondrian.olap4j.MondrianOlap4jMember)member).getOlapMember());
                 }
             }
-
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Start Axis2 ");
+            }  
             mondrian.rolap.RolapConnection rolapConnection =
                     ((mondrian.olap4j.MondrianOlap4jConnection)this.connection).getMondrianConnection();
             final mondrian.server.Statement statement =
@@ -2793,7 +2811,9 @@ public class XmlaHandler {
                             });
                 }
             }
-
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Start Axis3 ");
+            }  
             List<Position> positions = axis.getPositions();
             Iterator<Position> pit = positions.iterator();
             Position prevPosition = null;
@@ -2813,6 +2833,9 @@ public class XmlaHandler {
             }
             writer.endSequence(); // Tuples
             writer.endElement(); // Axis
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Start Axis4 ");
+            }              
         }
 
         private void writeMember(
@@ -3072,9 +3095,9 @@ public class XmlaHandler {
                     } else {
                         valueString = vi.value.toString();
                     }
-                    // if (LOGGER.isDebugEnabled()) {
-                    //     LOGGER.debug("emitCell:= " + valueString + " ordinal: " + ordinal );
-                    // }
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("emitCell:= " + valueString + " ordinal: " + ordinal );
+                    }
                     writer.startElement(
                             this.cellPropertyMap.get(propertyName).getAlias(),
                             "xsi:type", valueType);

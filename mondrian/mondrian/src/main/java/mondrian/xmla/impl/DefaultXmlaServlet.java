@@ -511,7 +511,11 @@ public abstract class DefaultXmlaServlet extends XmlaServlet {
             Element xmlaReqElem = (dreqs.length == 0 ? ereqs[0] : dreqs[0]);
 
             // ByteArrayOutputStream osBuf = new ByteArrayOutputStream();
-            BigByteArrayOutputStream osBuf = new BigByteArrayOutputStream(1_512_000_000L);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Refrash new ver version Begin  BigByteArrayOutputStream");
+            }   
+            BigByteArrayOutputStream osBuf = new BigByteArrayOutputStream(5_500_000_000L );
+            //AdaptiveBigByteArrayOutputStream osBuf = new AdaptiveBigByteArrayOutputStream();
             // use context variable 'role_name' as this request's XML/A role
             String roleName = (String) context.get(CONTEXT_ROLE_NAME);
 
@@ -541,12 +545,22 @@ public abstract class DefaultXmlaServlet extends XmlaServlet {
                     context.put(CONTEXT_MIME_TYPE, responseMimeType);
                 }
             }
-
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Begin  XmlaResponse xmlaRes  =new DefaultXmlaResponse(osBuf, encoding, responseMimeType)");
+            }   
             XmlaResponse xmlaRes =
                 new DefaultXmlaResponse(osBuf, encoding, responseMimeType);
-                
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("End  XmlaResponse xmlaRes  =new DefaultXmlaResponse(osBuf, encoding, responseMimeType)");
+            }                  
             try {
-                getXmlaHandler().process(xmlaReq, xmlaRes);
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Begin   getXmlaHandler().process(xmlaReq, xmlaRes))");
+                }                  
+                    getXmlaHandler().process(xmlaReq, xmlaRes);
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("End   getXmlaHandler().process(xmlaReq, xmlaRes))");
+                }                   
             } catch (XmlaException ex) {
                 throw ex;
             } catch (Exception ex) {
@@ -556,8 +570,14 @@ public abstract class DefaultXmlaServlet extends XmlaServlet {
                     HSB_PROCESS_FAULT_FS,
                     ex);
             }
-
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Begin  responseSoapParts[1] = osBuf.toByteArray()");
+            }   
             responseSoapParts[1] = osBuf.toByteArray();
+            osBuf.close();
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("End  responseSoapParts[1] = osBuf.toByteArray() responseSoapParts[1].length: "+ responseSoapParts[1].length);
+            }              
         } catch (XmlaException xex) {
             throw xex;
         } catch (Exception ex) {

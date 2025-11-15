@@ -1,5 +1,6 @@
 package mondrian.xmla.impl;
 
+import it.unimi.dsi.fastutil.BigArrays;
 import it.unimi.dsi.fastutil.bytes.ByteBigArrayBigList;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -48,14 +49,24 @@ public class BigByteArrayOutputStream extends OutputStream {
         return size;
     }
 
+    // public byte[] toByteArray() {
+    //     byte[] result = new byte[(int) size];
+    //     for (int i = 0; i < size; i++) {
+    //         result[i] = buffer.getByte(i);
+    //     }
+    //     return result;
+    // }
     public byte[] toByteArray() {
-        byte[] result = new byte[(int) size];
-        for (int i = 0; i < size; i++) {
-            result[i] = buffer.getByte(i);
-        }
+        byte[] result = new byte[(int) buffer.size64()];
+        BigArrays.copyFromBig(buffer.elements(), 0, result, 0,(int) buffer.size64());
+        
+        // byte[] result = new byte[(int) size];
+        // for (int i = 0; i < size; i++) {
+        //     result[i] = buffer.getByte(i);
+        // }
+        // result = buffer.toArray();
         return result;
     }
-
     @Override
     public void close() throws IOException {
         buffer.clear();

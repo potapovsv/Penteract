@@ -11,7 +11,7 @@
 
 package mondrian.xmla.impl;
 
-import mondrian.olap.Util;
+// import mondrian.olap.Util;
 import mondrian.util.ArrayStack;
 import mondrian.xmla.SaxWriter;
 

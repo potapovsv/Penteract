@@ -54,5 +54,8 @@ public class ClickHouseDialect extends JdbcDialectImpl {
     public String getDefaultUnion() {
         return "union distinct";
     }
+    public boolean supportsGroupingSets() {
+        return true;
+    }    
 }
 
