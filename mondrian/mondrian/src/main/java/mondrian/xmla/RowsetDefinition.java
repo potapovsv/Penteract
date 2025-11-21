@@ -326,6 +326,7 @@ public enum RowsetDefinition {
                 // Restrictions
                 DiscoverXmlMetadataRowset.ObjectType,
                 DiscoverXmlMetadataRowset.DatabaseID,
+                DiscoverXmlMetadataRowset.ObjectExpansion,
         },
         null /* not sorted */)
         {
@@ -2418,6 +2419,13 @@ public enum RowsetDefinition {
                 Column.RESTRICTION,
                 Column.OPTIONAL,
                 null);
+        private static final Column ObjectExpansion = new Column(
+                "ObjectExpansion",
+                Type.String,
+                null,
+                Column.RESTRICTION,
+                Column.OPTIONAL,
+                null );                
 
         public void populateImpl(
                 XmlaResponse response, OlapConnection connection, List<Row> rows)
