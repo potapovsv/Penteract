@@ -345,15 +345,14 @@ public class RolapSchema implements Schema {
                     }
                 }
 
-                if (getLogger().isDebugEnabled()) {
-                    getLogger().debug(
-                        "RolapSchema.load: content: \n" + catalogStr);
-                }
+                // if (getLogger().isDebugEnabled()) {
+                //     getLogger().debug("RolapSchema.load: content: \n" + catalogStr);
+                // }
             } else {
-                if (getLogger().isDebugEnabled()) {
-                    getLogger().debug(
-                        "RolapSchema.load: catalogStr: \n" + catalogStr);
-                }
+                // if (getLogger().isDebugEnabled()) {
+                //     getLogger().debug(
+                //         // "RolapSchema.load: catalogStr: \n" + catalogStr);
+                // }
 
                 def = xmlParser.parse(catalogStr);
             }
@@ -370,14 +369,14 @@ public class RolapSchema implements Schema {
 
             xmlSchema = new MondrianDef.Schema(def);
 
-            if (getLogger().isDebugEnabled()) {
-                StringWriter sw = new StringWriter(4096);
-                PrintWriter pw = new PrintWriter(sw);
-                pw.println("RolapSchema.load: dump xmlschema");
-                xmlSchema.display(pw, 2);
-                pw.flush();
-                getLogger().debug(sw.toString());
-            }
+            // if (getLogger().isDebugEnabled()) {
+            //     StringWriter sw = new StringWriter(4096);
+            //     PrintWriter pw = new PrintWriter(sw);
+            //     pw.println("RolapSchema.load: dump xmlschema");
+            //     xmlSchema.display(pw, 2);
+            //     pw.flush();
+            //     getLogger().debug(sw.toString());
+            // }
 
             load(xmlSchema);
         } catch (XOMException e) {

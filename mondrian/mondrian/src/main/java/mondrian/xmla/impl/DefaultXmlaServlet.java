@@ -512,9 +512,10 @@ public abstract class DefaultXmlaServlet extends XmlaServlet {
 
             // ByteArrayOutputStream osBuf = new ByteArrayOutputStream();
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Refrash new ver version Begin  BigByteArrayOutputStream");
+                LOGGER.debug("Refrash new ver version Begin  ChunkedByteBufferOutputStream");
             }   
-            BigByteArrayOutputStream osBuf = new BigByteArrayOutputStream(5_500_000_000L );
+            ChunkedByteBufferOutputStream osBuf = new ChunkedByteBufferOutputStream();
+            // BigByteArrayOutputStream osBuf = new BigByteArrayOutputStream(5_500_000_000L );
             //AdaptiveBigByteArrayOutputStream osBuf = new AdaptiveBigByteArrayOutputStream();
             // use context variable 'role_name' as this request's XML/A role
             String roleName = (String) context.get(CONTEXT_ROLE_NAME);
@@ -669,60 +670,75 @@ public abstract class DefaultXmlaServlet extends XmlaServlet {
                     uee);
             }
 
+            // if (LOGGER.isDebugEnabled()) {
+            //     StringBuilder buf = new StringBuilder(100);
+            //     int ii = 0;
+            //     // buf.append("XML/A response content").append(nl);
+            //     LOGGER.debug(("XML/A response content"));
+            //     try {
+            //         for (Object byteChunk : byteChunks) {
+            //             byte[] chunk = (byte[]) byteChunk;
+            //             if (chunk != null && chunk.length > 0) {
+            //                 // buf.append(new String(chunk, encoding));
+            //                 // buf.append(new String(chunk, "UTF-8"));
+            //                 LOGGER.debug(chunk.toString());
+            //                     ii = ii + chunk.length;
+            //             }
+            //         }
+            //     } catch (Exception uee) {
+            //         LOGGER.warn(
+            //             "This should be handled at begin of processing request",
+            //             uee);
+            //     }
+            //     LOGGER.debug("byteChunks length:" +ii);
+            //     // LOGGER.debug("buf length:" +buf.length());
+            //     LOGGER.debug(buf.toString());
+            // }
+            long start = System.currentTimeMillis();
             if (LOGGER.isDebugEnabled()) {
-                StringBuilder buf = new StringBuilder(100);
-                int ii = 0;
-                // buf.append("XML/A response content").append(nl);
-                LOGGER.debug(("XML/A response content"));
-                try {
-                    for (Object byteChunk : byteChunks) {
-                        byte[] chunk = (byte[]) byteChunk;
-                        if (chunk != null && chunk.length > 0) {
-                            // buf.append(new String(chunk, encoding));
-                            // buf.append(new String(chunk, "UTF-8"));
-                            LOGGER.debug(chunk.toString());
-                                ii = ii + chunk.length;
-                        }
-                    }
-                } catch (Exception uee) {
-                    LOGGER.warn(
-                        "This should be handled at begin of processing request",
-                        uee);
-                }
-                LOGGER.debug("byteChunks length:" +ii);
-                // LOGGER.debug("buf length:" +buf.length());
-                LOGGER.debug(buf.toString());
+                LOGGER.debug("XML/A response content to channel start V4:");
             }
+            // try {
+            //     int bufferSize = 4096*16;
+            //     ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
+            //     WritableByteChannel wch = Channels.newChannel(outputStream);
+            //     ReadableByteChannel rch;
+            //     for (Object byteChunk : byteChunks) {
+            //         if (byteChunk == null || ((byte[]) byteChunk).length == 0) {
+            //             continue;
+            //         }
+            //         rch = Channels.newChannel(
+            //             new ByteArrayInputStream((byte[]) byteChunk));
 
-            if (LOGGER.isDebugEnabled()) {
-                StringBuilder buf = new StringBuilder();
-                buf.append("XML/A response content").append(nl);
-            }
-            try {
-                int bufferSize = 4096*16;
-                ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
-                WritableByteChannel wch = Channels.newChannel(outputStream);
-                ReadableByteChannel rch;
-                for (Object byteChunk : byteChunks) {
-                    if (byteChunk == null || ((byte[]) byteChunk).length == 0) {
-                        continue;
+            //         int readSize;
+            //         do {
+            //             buffer.clear();
+            //             readSize = rch.read(buffer);
+            //             buffer.flip();
+
+            //             int writeSize = 0;
+            //             while ((writeSize += wch.write(buffer)) < readSize) {
+            //             }
+            //         } while (readSize == bufferSize);
+            //         rch.close();
+            //     }
+                // Оборачиваем в BufferedOutputStream один раз
+            try {    
+                int k=0;
+                // OutputStream bufferedOut = new BufferedOutputStream(outputStream, 65536*16);
+                for (Object chunk : byteChunks) {
+                    if (chunk instanceof byte[] b && b.length > 0) {
+                        // bufferedOut.write(b);
+                        outputStream.write(b);
                     }
-                    rch = Channels.newChannel(
-                        new ByteArrayInputStream((byte[]) byteChunk));
-
-                    int readSize;
-                    do {
-                        buffer.clear();
-                        readSize = rch.read(buffer);
-                        buffer.flip();
-
-                        int writeSize = 0;
-                        while ((writeSize += wch.write(buffer)) < readSize) {
-                        }
-                    } while (readSize == bufferSize);
-                    rch.close();
+                    k++;
                 }
-                outputStream.flush();
+                // bufferedOut.flush();
+                long end = System.currentTimeMillis();
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("XML/A response content to channel end V4.1: time: " + (end - start)  );
+                }     
+                 outputStream.flush();
             } catch (IOException ioe) {
                 LOGGER.warn(
                     "Exception when transferring bytes over sockets",

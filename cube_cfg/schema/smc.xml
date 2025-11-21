@@ -1,0 +1,425 @@
+<?xml version="1.0"?><Schema name="vismuth_v0_m1">
+<!-- Shared dimensions -->
+
+  <Dimension name="Time" type="TimeDimension">
+    <Hierarchy hasAll="true" primaryKey="full_date">
+      <Table name="fct_operationdetail_olap_rvcsd"/>
+      <Level name="Year" column="year_no" type="Integer" uniqueMembers="true" approxRowCount="14" levelType="TimeYears" captionColumn="year_no"/>
+      <Level name="Quarter" column="quarter_no" uniqueMembers="true" type="Integer" levelType="TimeQuarters" ordinalColumn="quarter_no" />
+      <Level name="Month" column="month_code" type="Integer" uniqueMembers="true" approxRowCount="40" levelType="TimeMonths" ordinalColumn="month_no" nameColumn="month_name"/>
+      <Level name="Date" column="date" uniqueMembers="true" type="Date" levelType="TimeDays"/>
+    </Hierarchy>
+    <Hierarchy hasAll="true" name="Year" primaryKey="date" displayFolder="Other attributes">
+      <Table name="fct_operationdetail_olap_rvcsd"/>
+       <Level name="Year" column="year_no" type="Integer" uniqueMembers="true" approxRowCount="14" levelType="TimeYears" captionColumn="year_no"/>
+    </Hierarchy>
+    <Hierarchy hasAll="true" name="Quarter" primaryKey="date" displayFolder="Other attributes">
+      <Table name="fct_operationdetail_olap_rvcsd"/>
+       <Level name="Quarter" column="quarter_no" uniqueMembers="true" type="Integer" levelType="TimeQuarters" ordinalColumn="quarter_no" nameColumn="quarter_no"/>
+    </Hierarchy>     
+    <Hierarchy hasAll="true" name="Month" primaryKey="date" displayFolder="Other attributes">
+      <Table name="fct_operationdetail_olap_rvcsd"/>
+       <Level name="Month" column="month_no" type="Integer" uniqueMembers="true" approxRowCount="40" levelType="TimeMonths" ordinalColumn="month_no" nameColumn="month_name"/>
+    </Hierarchy>          
+    <Hierarchy hasAll="true" name="Date" primaryKey="date" displayFolder="Other attributes">
+      <Table name="fct_operationdetail_olap_rvcsd"/>
+       <Level name="Date" column="date" type="Date" uniqueMembers="true" approxRowCount="400" levelType="TimeDays"/>
+    </Hierarchy>          
+  </Dimension>
+
+  <Dimension name="Customers" type="StandardDimension">
+    <Hierarchy hasAll="true" name="Age" primaryKey="personid" displayFolder="Information">
+      <Table name="fct_operationdetail_olap_rvcsd"/>
+       <Level name="Age" column="c_age" type="String" uniqueMembers="false" approxRowCount="10"/>
+    </Hierarchy>
+    <Hierarchy hasAll="true" name="Customers Code" primaryKey="c_personid">
+          <Table name="fct_operationdetail_olap_rvcsd"/>
+        <Level name="Customers Code" column="c_personid" type="Integer" uniqueMembers="true" approxRowCount="100"/>
+    </Hierarchy> 
+    <Hierarchy hasAll="true" name="First name" primaryKey="c_personid" displayFolder="Information">
+          <Table name="fct_operationdetail_olap_rvcsd"/>
+       <Level name="First name" column="c_firstname" type="String" uniqueMembers="false" approxRowCount="100"/>
+    </Hierarchy> 
+    <Hierarchy hasAll="true" name="Last name" primaryKey="c_personid" displayFolder="Information">
+          <Table name="fct_operationdetail_olap_rvcsd"/>
+       <Level name="Last name" column="c_lastname" type="String" uniqueMembers="false" approxRowCount="100"/>
+    </Hierarchy> 
+    <Hierarchy hasAll="true" name="Patronym name" primaryKey="c_personid" displayFolder="Information">
+          <Table name="fct_operationdetail_olap_rvcsd"/>
+       <Level name="Patronym name" column="patronymicname" type="String" uniqueMembers="true" approxRowCount="100"/>
+    </Hierarchy> 
+    <Hierarchy hasAll="true" name="Phone number" primaryKey="c_personid" displayFolder="Information">
+          <Table name="fct_operationdetail_olap_rvcsd"/>
+       <Level name="Phone number" column="c_phone" type="String" uniqueMembers="true" approxRowCount="100"/>
+    </Hierarchy>    
+    <Hierarchy hasAll="true" name="Gender" primaryKey="c_personid" displayFolder="Information">
+          <Table name="fct_operationdetail_olap_rvcsd"/>
+       <Level name="Gender" column="c_sex" type="String" uniqueMembers="true" approxRowCount="5"/>
+    </Hierarchy> 
+    <Hierarchy hasAll="true" name="Email" primaryKey="c_personid" displayFolder="Information">
+          <Table name="fct_operationdetail_olap_rvcsd"/>
+       <Level name="Email" column="c_email" type="String" uniqueMembers="true" approxRowCount="3"/>
+    </Hierarchy>  
+        
+    
+    <!-- <Hierarchy hasAll="true" name="Attribute1" primaryKey="personid" displayFolder="Information">
+          <Table name="dim_person_rr"/>
+       <Level name="Attribute1" column="attributes.2[1]" type="String" uniqueMembers="true" approxRowCount="3"/>
+    </Hierarchy>      -->
+  </Dimension>
+
+
+ <Dimension name="Stores" type="StandardDimension">
+    <!-- <Hierarchy hasAll="true" name="Stores.POST" primaryKey="k__merchantpos_sk">
+      <Table name="fct_operationdetail_olap_rvcsd"/>
+       <Level name="Stores.POST" column="posname" type="String" uniqueMembers="true" approxRowCount="10000"/>
+    </Hierarchy> -->
+    <Hierarchy hasAll="true" name="Stores.address" primaryKey="k__merchantpos_sk">
+      <Table name="fct_operationdetail_olap_rvcsd"/>
+       <Level name="Stores.address" column="m_addressline" type="String" uniqueMembers="true" approxRowCount="100"/>
+    </Hierarchy> 
+    <Hierarchy hasAll="true" name="Stores.Brands" primaryKey="k__merchantpos_sk">
+      <Table name="fct_operationdetail_olap_rvcsd"/>
+       <Level name="Stores.Brands" column="m_brandname" type="String" uniqueMembers="true" approxRowCount="100"/>
+    </Hierarchy>         
+    <Hierarchy hasAll="true" name="Stores.City" primaryKey="k__merchantpos_sk">
+      <Table name="fct_operationdetail_olap_rvcsd"/>
+       <Level name="Stores.City" column="m_cityname" type="String" uniqueMembers="true" approxRowCount="100"/>
+    </Hierarchy>   
+    <Hierarchy hasAll="true" name="Stores.format code" primaryKey="k__merchantpos_sk">
+      <Table name="fct_operationdetail_olap_rvcsd"/>
+       <Level name="Stores.format code" column="m_merchantcustomname" type="String" uniqueMembers="true" approxRowCount="100"/>
+    </Hierarchy>    
+    <Hierarchy hasAll="true" name="Stores.Code full name" primaryKey="k__merchantpos_sk">
+      <Table name="fct_operationdetail_olap_rvcsd"/>
+       <Level name="Stores.Code full name" column="m_merchantcustomfullname" type="String" uniqueMembers="true" approxRowCount="100"/>
+    </Hierarchy>      
+ </Dimension>
+
+<Dimension name="TimePeriod" type="StandardDimension">
+    <Hierarchy hasAll="true" name="Periods" primaryKey="timeperiod_sk">
+      <Table name="dim_dict_timeperiod_rr"/>
+       <Level name="Time periods" column="rangename" type="String" uniqueMembers="true" approxRowCount="10"/>
+       <Level name="Hours" column="hours" type="String" uniqueMembers="true" approxRowCount="10"/>
+    </Hierarchy>   
+    <Hierarchy hasAll="true" name="Hours" primaryKey="timeperiod_sk">
+      <Table name="dim_dict_timeperiod_rr"/>
+       <Level name="Hours" column="hours" type="String" uniqueMembers="true" approxRowCount="10"/>
+    </Hierarchy> 
+</Dimension>
+<!-- Sales -->
+<Cube name="Sales" defaultMeasure="purch_count" cache="true">
+  <!-- Use annotations to provide translations of this cube's caption and
+       description into German and French. Use of annotations in this manner is
+       experimental and unsupported; just for testing right now. -->
+  <Annotations>
+    <Annotation name="caption.de_DE">Verkaufen</Annotation>
+    <Annotation name="caption.fr_FR">Ventes</Annotation>
+    <Annotation name="description.fr_FR">Cube des ventes</Annotation>
+    <Annotation name="description.de">Cube Verkaufen</Annotation>
+    <Annotation name="description.de_AT">Cube den Verkaufen</Annotation>
+  </Annotations>
+  <Table name="fct_operationdetail_olap_rvcsd"/>
+  <!-- <AggName name="events_agg2">
+     <AggMeasure name="[Measures].[Count Events]" column="client_id"/>
+     <AggLevel name="[Time].[Date]" column="full_date"/>
+     <AggLevel name="[Client.Sex].[All Client.Sexs]" column="client_id"/>
+     <AggLevel name="[Types].[All Typess]" column="event_type"/>
+  </AggName> -->
+  <DimensionUsage name="Calendar" source="Time" foreignKey="date"/>
+  <DimensionUsage name="Customers" source="Customers" foreignKey="c_personid"/>
+  <DimensionUsage name="Stores" source="Stores" foreignKey="k__merchantpos_sk"/>
+  <DimensionUsage name="Time Period" source="TimePeriod" foreignKey="k__timeperiod_sk"/>
+ <!-- Purchase  -->
+   <Measure name="Purchase.Count (Total)" column="k__purchaseid" aggregator="distinct-count" formatString="Standard" displayFolder="Purchase"/>
+   <Measure name="Position.Count (Total)" column="k__lineid" aggregator="distinct-count" formatString="Standard" displayFolder="Purchase"/>
+   <Measure name="Product.Quantity (Total)" column="m__qntcheque" aggregator="sum" formatString="Standard" displayFolder="Purchase"/> 
+   <Measure name="SKU.Count (Total)" column="k__goods_sk" aggregator="distinct-count" formatString="Standard" displayFolder="Purchase"/> 
+   <Measure name="purch_count" column="" aggregator="count" formatString="Standard" displayFolder="Purchase"/> 
+
+
+
+<!-- Purchase.Customers    -->
+   <Measure name="Purchase.Customers.Count (Total)" column="c_personid" aggregator="distinct-count" formatString="Standard" displayFolder="Purchase.Customers"/>
+   <Measure name="Purchase.Customers.Group.Count (Total)" column="c_usergroupid" aggregator="distinct-count" formatString="Standard" displayFolder="Purchase.Customers"/>
+   <Measure name="Purchase.Customers.Card.Count (Total)" column="c_number" aggregator="distinct-count" formatString="Standard" displayFolder="Purchase.Customers"/>
+   <Measure name="Points.Deposit (Total)" column="m__tocardamount" aggregator="sum" formatString="Standard" datatype="Numeric" displayFolder="Discount Points\Points.Deposit"/>
+   <Measure name="Points.Withdraw (Total)" column="m__fromcardamount" aggregator="sum" formatString="Standard" datatype="Numeric" displayFolder="Discount Points\Points.Withdraw"/>
+   <Measure name="Discount (Total)" column="m__discount" aggregator="sum" formatString="Standard" displayFolder="Discount Points\Discount"/>
+<!-- Purchase.Finance -->
+   <Measure name="Revenue (Total)" column="m__amtcheque" aggregator="sum" formatString="Standard" displayFolder="Purchase.Finance"/>
+   <Measure name="Cost price" column="m__amountcost" aggregator="sum" formatString="Standard" displayFolder="Purchase.Finance"/>
+  <CalculatedMember name="_measure_null" dimension="Measures" displayFolder="Purchase.Finance">
+         <Formula>NULL</Formula>
+  <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>   
+   <CalculatedMember name="MSRP (Total)" dimension="Measures" displayFolder="Purchase.Finance">
+         <Formula>[Measures].[Revenue (Total)] + [Measures].[Discount (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>   
+  <CalculatedMember name="Amount (Total)" dimension="Measures" displayFolder="Purchase.Finance">
+         <Formula>[Measures].[Revenue (Total)] + [Measures].[Discount (Total)] + [Measures].[Points.Withdraw (Total)]</Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>   
+  <CalculatedMember name="Margin" dimension="Measures" displayFolder="Purchase.Finance">
+         <Formula>[Measures].[Amount (Total)] - [Measures].[Cost price] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>   
+  <CalculatedMember name="Margin %" dimension="Measures" displayFolder="Purchase.Finance">
+         <Formula>([Measures].[Amount (Total)] - [Measures].[Cost price])/[Measures].[Amount (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="Percent"/>
+  </CalculatedMember>   
+    <CalculatedMember name="Purchase price" dimension="Measures" displayFolder="Purchase.Finance">
+         <Formula>Null</Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="Percent"/>
+  </CalculatedMember>   
+<!-- Purchase.Finance	Average.Purchase -->
+  <CalculatedMember name="Purchase.MSRP (Avg)" dimension="Measures" displayFolder="Purchase.Finance\Average.Purchase">
+         <Formula>[Measures].[MSRP (Total)] / [Measures].[Purchase.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>   
+    <CalculatedMember name="Purchase.Amount (Avg)" dimension="Measures" displayFolder="Purchase.Finance\Average.Purchase">
+         <Formula>[Measures].[Amount (Total)] / [Measures].[Purchase.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>  
+    <CalculatedMember name="Purchase.Revenue (Avg)" dimension="Measures" displayFolder="Purchase.Finance\Average.Purchase">
+         <Formula>[Measures].[Revenue (Total)] / [Measures].[Purchase.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>    
+     <CalculatedMember name="Purchase.Margin (Avg)" dimension="Measures" displayFolder="Purchase.Finance\Average.Purchase">
+         <Formula>[Measures].[Margin] / [Measures].[Purchase.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>    
+     <CalculatedMember name="Purchase.Cost price (Avg)" dimension="Measures" displayFolder="Purchase.Finance\Average.Purchase">
+         <Formula>[Measures].[Cost price] / [Measures].[Purchase.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>   
+<!-- Purchase.Finance	Average.Customer -->
+   <CalculatedMember name="Customer.MSRP (Avg)" dimension="Measures" displayFolder="Purchase.Finance\Average.Customer">
+         <Formula>[Measures].[MSRP (Total)] / [Measures].[Purchase.Customers.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>   
+    <CalculatedMember name="Customer.Amount (Avg)" dimension="Measures" displayFolder="Purchase.Finance\Average.Customer">
+         <Formula>[Measures].[Amount (Total)] / [Measures].[Purchase.Customers.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>  
+    <CalculatedMember name="Customer.Revenue (Avg)" dimension="Measures" displayFolder="Purchase.Finance\Average.Customer">
+         <Formula>[Measures].[Revenue (Total)] / [Measures].[Purchase.Customers.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>    
+     <CalculatedMember name="Customer.Margin (Avg)" dimension="Measures" displayFolder="Purchase.Finance\Average.Customer">
+         <Formula>[Measures].[Margin] / [Measures].[Purchase.Customers.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>    
+     <CalculatedMember name="Customer.Cost price (Avg)" dimension="Measures" displayFolder="Purchase.Finance\Average.Customer">
+         <Formula>[Measures].[Cost price] / [Measures].[Purchase.Customers.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>  
+<!-- Purchase.Finance	Average.Unit -->
+   <CalculatedMember name="Unit.MSRP (Avg)" dimension="Measures" displayFolder="Purchase.Finance\Average.Unit">
+         <Formula>[Measures].[MSRP (Total)] / [Measures].[SKU.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>   
+    <CalculatedMember name="Unit.Amount (Avg)" dimension="Measures" displayFolder="Purchase.Finance\Average.Unit">
+         <Formula>[Measures].[Amount (Total)] / [Measures].[SKU.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>  
+    <CalculatedMember name="Unit.Revenue (Avg)" dimension="Measures" displayFolder="Purchase.Finance\Average.Unit">
+         <Formula>[Measures].[Revenue (Total)] / [Measures].[SKU.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>    
+     <CalculatedMember name="Unit.Margin (Avg)" dimension="Measures" displayFolder="Purchase.Finance\Average.Unit">
+         <Formula>[Measures].[Margin] / [Measures].[SKU.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>    
+     <CalculatedMember name="Unit.Cost price (Avg)" dimension="Measures" displayFolder="Purchase.Finance\Average.Unit">
+         <Formula>[Measures].[Cost price] / [Measures].[SKU.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>  
+
+
+<!--Purchase Average.Purchase -->
+   <CalculatedMember name="Purchase.SKU.Сount (Avg)" dimension="Measures" displayFolder="Purchase\Average.Purchase">
+    <Formula>[Measures].[SKU.Count (Total)]/[Measures].[Purchase.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>   
+   <CalculatedMember name="Purchase.Product.Quantity (Avg)" dimension="Measures" displayFolder="Purchase\Average.Purchase">
+    <Formula>[Measures].[Product.Quantity (Total)]/[Measures].[Purchase.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>  
+   <CalculatedMember name="Purchase.Position.Count (Avg)" dimension="Measures" displayFolder="Purchase\Average.Purchase">
+    <Formula>[Measures].[Position.Count (Total)]/[Measures].[Purchase.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>  
+  <!--Purchase Average.Customer -->
+   <CalculatedMember name="Сustomer.SKU.Сount (Avg)" dimension="Measures" displayFolder="Purchase\Average.Customer">
+    <Formula>[Measures].[SKU.Count (Total)]/[Measures].[Purchase.Customers.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember> 
+   <CalculatedMember name="Customer.Product.Quantity (Avg)" dimension="Measures" displayFolder="Purchase\Average.Customer">
+    <Formula>[Measures].[Product.Quantity (Total)]/[Measures].[Purchase.Customers.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>    
+   <CalculatedMember name="Customer.Position.Count (Avg)" dimension="Measures" displayFolder="Purchase\Average.Customer">
+    <Formula>[Measures].[Position.Count (Total)]/[Measures].[Purchase.Customers.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>      
+   <CalculatedMember name="Customer.Purchases.Count (Avg)" dimension="Measures" displayFolder="Purchase\Average.Customer">
+    <Formula> [Measures].[Purchase.Count (Total)]/[Measures].[Purchase.Customers.Count (Total)] </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.00"/>
+  </CalculatedMember>      
+<!-- Discount Points -->
+
+    <CalculatedMember name="Points.Deposit, % of MSRP" dimension="Measures" displayFolder="Discount Points\Points.Deposit">
+    <Formula>[Measures].[Points.Deposit (Total)]/([Measures].[Revenue (Total)] + [Measures].[Discount (Total)]) </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="Percent"/>
+  </CalculatedMember>      
+
+
+    <CalculatedMember name="Points.Withdraw, % of MSRP" dimension="Measures" displayFolder="Discount Points\Points.Withdraw">
+    <Formula>[Measures].[Points.Withdraw (Total)]/([Measures].[Revenue (Total)] + [Measures].[Discount (Total)]) </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="Percent"/>
+  </CalculatedMember>    
+    <CalculatedMember name="Points.Withdraw, % from deposit" dimension="Measures" displayFolder="Discount Points\Points.Withdraw">
+    <Formula>[Measures].[Points.Withdraw (Total)]/([Measures].[Points.Deposit (Total)] ) </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="Percent"/>
+  </CalculatedMember>    
+
+   <CalculatedMember name="Discount, % of MSRP" dimension="Measures" displayFolder="Discount Points\Discount">
+    <Formula>[Measures].[Discount (Total)]/([Measures].[Revenue (Total)] + [Measures].[Discount (Total)]) </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="Percent"/>
+  </CalculatedMember>
+  <!-- Discount Points	Average.Purchase -->
+    <CalculatedMember name="Purchase.Discount.Money (Total) (Avg)" dimension="Measures" displayFolder="Discount Points\Average.Purchase">
+    <Formula>[Measures].[Discount (Total)]/([Measures].[Purchase.Count (Total)]) </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="Percent"/>
+  </CalculatedMember>
+  
+
+ 
+    <!-- <CalculatedMember
+      name="TrendMDXTest"
+      dimension="Measures" displayFolder="Purchase">
+    <Formula>sum([Calendar].CurrentMember,[Measures].[Amount]) - sum([Calendar].PrevMember,[Measures].[Amount])  </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="$#,##0.00"/>
+  </CalculatedMember>    -->
+
+
+    <!-- <CalculatedMember
+      name="Customer Age.Count"
+      dimension="Measures" displayFolder="Customers" >
+      <Formula>count(Existing [Customers].[Age].Members,EXCLUDEEMPTY)  </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0"/>
+  </CalculatedMember>   
+    <CalculatedMember
+      name="Customer group.Count (Total)"
+      dimension="Measures" displayFolder="Customers" >
+      <Formula>count(Existing [Customers].[Customers Code].Members,EXCLUDEEMPTY)   </Formula>
+    <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0"/>
+  </CalculatedMember>       -->
+  
+       
+  <!-- <NamedSet name="Top 10 Customers"> distinct-count Client Code
+    <Formula>Head(Order([Customers].[Customers].[Name].AllMembers, [Measures].[Profit], DESC), 10)</Formula>
+  </NamedSet>         -->
+</Cube>
+<Cube name="Customers" defaultMeasure="Count" cache="true">
+  <!-- Use annotations to provide translations of this cube's caption and
+       description into German and French. Use of annotations in this manner is
+       experimental and unsupported; just for testing right now. -->
+  <Annotations>
+    <Annotation name="caption.de_DE">Verkaufen</Annotation>
+    <Annotation name="caption.fr_FR">Ventes</Annotation>
+    <Annotation name="description.fr_FR">Cube des ventes</Annotation>
+    <Annotation name="description.de">Cube Verkaufen</Annotation>
+    <Annotation name="description.de_AT">Cube den Verkaufen</Annotation>
+  </Annotations>
+  <Table name="dim_person_rr"/>
+  <!-- <AggName name="events_agg2">
+     <AggMeasure name="[Measures].[Count Events]" column="client_id"/>
+     <AggLevel name="[Time].[Date]" column="full_date"/>
+     <AggLevel name="[Client.Sex].[All Client.Sexs]" column="client_id"/>
+     <AggLevel name="[Types].[All Typess]" column="event_type"/>
+  </AggName> -->
+  <DimensionUsage name="Card.Purchase.First date" source="Time" foreignKey="card_first_purchasedate"/>
+  <DimensionUsage name="Card.Purchase.Last date" source="Time" foreignKey="card_last_purchasedate"/>
+  <DimensionUsage name="Customers.Purchase.First date" source="Time" foreignKey="card_first_purchasedate"/>
+  <DimensionUsage name="Customers.Purchase.Last date" source="Time" foreignKey="card_last_purchasedate"/>
+  <DimensionUsage name="Customers" source="Customers" foreignKey="personid"/>
+
+  <Measure name="Customer group.Count (Tota)" column="usergroupid" aggregator="distinct-count" formatString="Standard" displayFolder="Customers"/>
+  <Measure name="Customer.Count (Total)" column="personid" aggregator="count" formatString="Standard" displayFolder="Customers"/>
+  <Measure name="Cards.Count (Total)" column="number" aggregator="distinct-count" formatString="Standard" displayFolder="Customers"/>
+  </Cube>
+  <VirtualCube name="Loyalty" defaultMeasure="_measure_null">
+      <VirtualCubeDimension name="Customers"/>
+      <VirtualCubeDimension cubeName="Sales" name="Calendar"/>
+      <VirtualCubeDimension cubeName="Sales" name="Stores"/>
+      <VirtualCubeDimension cubeName="Sales" name="Time Period"/>
+      <VirtualCubeDimension cubeName="Customers" name="Customers.Purchase.First date"/>
+      <VirtualCubeDimension cubeName="Customers" name="Customers.Purchase.Last date"/>
+      <VirtualCubeDimension cubeName="Customers" name="Card.Purchase.First date"/>
+      <VirtualCubeDimension cubeName="Customers" name="Card.Purchase.Last date"/>      
+      <!-- <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Amount]"/> -->
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Purchase.Count (Total)]"/>
+         <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Position.Count (Total)]"/>
+         <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Product.Quantity (Total)]"/>
+         <VirtualCubeMeasure cubeName="Sales" name="[Measures].[SKU.Count (Total)]"/>
+      
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Purchase.Customers.Card.Count (Total)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Purchase.Customers.Group.Count (Total)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Purchase.Customers.Count (Total)]"/>
+
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Purchase.SKU.Сount (Avg)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Purchase.Product.Quantity (Avg)]"/>   
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Purchase.Position.Count (Avg)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Сustomer.SKU.Сount (Avg)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Customer.Product.Quantity (Avg)]"/>
+
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Customer.Position.Count (Avg)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Customer.Purchases.Count (Avg)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Points.Deposit (Total)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Points.Deposit, % of MSRP]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Points.Withdraw (Total)]"/>
+
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Points.Withdraw, % of MSRP]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Points.Withdraw, % from deposit]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Discount (Total)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Discount, % of MSRP]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Purchase.Discount.Money (Total) (Avg)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Revenue (Total)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Cost price]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[MSRP (Total)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Amount (Total)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Margin]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Margin %]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Purchase price]"/>
+
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Purchase.MSRP (Avg)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Purchase.Amount (Avg)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Purchase.Revenue (Avg)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Purchase.Margin (Avg)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Purchase.Cost price (Avg)]"/>
+
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Customer.MSRP (Avg)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Customer.Amount (Avg)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Customer.Revenue (Avg)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Customer.Margin (Avg)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Customer.Cost price (Avg)]"/>
+
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Unit.MSRP (Avg)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Unit.Amount (Avg)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Unit.Revenue (Avg)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Unit.Margin (Avg)]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Unit.Cost price (Avg)]"/>
+
+      <!-- <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Returning Customers_hidden]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[Returning Customers]"/>
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[New Customers]"/>  -->
+      <VirtualCubeMeasure cubeName="Sales" name="[Measures].[purch_count]"/>
+           
+   <!-- <CalculatedMember name="Amount per Customer " dimension="Measures">
+      <Formula>[Measures].[Amount] / [Measures].[Customer group.Count (Total)]</Formula>
+   </CalculatedMember> -->
+  </VirtualCube>
+</Schema>

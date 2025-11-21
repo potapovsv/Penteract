@@ -1,0 +1,110 @@
+<?xml version="1.0"?><Schema name="ssb">
+<!-- Shared dimensions -->
+<Dimension name="supplier" type="StandardDimension">
+     <Hierarchy hasAll="true" name="S_CITY" primaryKey="LO_SUPPKEY" displayFolder="Information">
+          <Table name="lineorder_flat"/>
+       <Level name="S_CITY" column="S_CITY" type="String" uniqueMembers="true" approxRowCount="250"/>
+    </Hierarchy> 
+    <Hierarchy hasAll="true" name="S_NATION" primaryKey="LO_SUPPKEY" displayFolder="Information">
+          <Table name="lineorder_flat"/>
+       <Level name="S_NATION" column="S_NATION" type="String" uniqueMembers="true" approxRowCount="25"/>
+    </Hierarchy>  
+    <Hierarchy hasAll="true" name="S_NAME" primaryKey="LO_SUPPKEY" displayFolder="Information">
+          <Table name="lineorder_flat"/>
+       <Level name="S_NAME" column="S_NAME" type="String" uniqueMembers="true" approxRowCount="600000"/>
+    </Hierarchy>      
+</Dimension>
+
+ <Dimension name="customer" type="StandardDimension">
+    <Hierarchy hasAll="true" name="C_NAME" primaryKey="LO_CUSTKEY" displayFolder="Information">
+      <Table name="lineorder_flat"/>
+       <Level name="C_NAME" column="C_NAME" type="String" uniqueMembers="false" approxRowCount="19874545"/>
+    </Hierarchy>
+    <Hierarchy hasAll="true" name="C_ADDRESS" primaryKey="LO_CUSTKEY">
+          <Table name="lineorder_flat"/>
+        <Level name="C_ADDRESS" column="C_ADDRESS" type="String" uniqueMembers="true" approxRowCount="19795190"/>
+    </Hierarchy> 
+    <Hierarchy hasAll="true" name="C_CITY" primaryKey="LO_CUSTKEY" displayFolder="Information">
+          <Table name="lineorder_flat"/>
+       <Level name="C_CITY" column="C_CITY" type="String" uniqueMembers="false" approxRowCount="250"/>
+    </Hierarchy> 
+    <Hierarchy hasAll="true" name="C_REGION" primaryKey="LO_CUSTKEY" displayFolder="Information">
+          <Table name="lineorder_flat"/>
+       <Level name="C_REGION" column="C_REGION" type="String" uniqueMembers="false" approxRowCount="5"/>
+    </Hierarchy> 
+    <Hierarchy hasAll="true" name="C_NATION" primaryKey="LO_CUSTKEY" displayFolder="Information">
+          <Table name="lineorder_flat"/>
+       <Level name="C_NATION" column="C_NATION" type="String" uniqueMembers="true" approxRowCount="25"/>
+    </Hierarchy>  
+</Dimension>
+<Dimension name="part" type="StandardDimension">
+    <Hierarchy hasAll="true" name="P_NAME" primaryKey="LO_PARTKEY" displayFolder="Information">
+          <Table name="lineorder_flat"/>
+       <Level name="P_NAME" column="P_NAME" type="String" uniqueMembers="true" approxRowCount="8372"/>
+    </Hierarchy> 
+    <Hierarchy hasAll="true" name="P_MFGR" primaryKey="LO_PARTKEY" displayFolder="Information">
+          <Table name="lineorder_flat"/>
+       <Level name="P_MFGR" column="P_MFGR" type="String" uniqueMembers="true" approxRowCount="5"/>
+    </Hierarchy>  
+    <Hierarchy hasAll="true" name="P_CATEGORY" primaryKey="LO_PARTKEY" displayFolder="Information">
+          <Table name="lineorder_flat"/>
+       <Level name="P_CATEGORY" column="P_CATEGORY" type="String" uniqueMembers="true" approxRowCount="25"/>
+    </Hierarchy>        
+    <Hierarchy hasAll="true" name="P_BRAND" primaryKey="LO_PARTKEY" displayFolder="Information">
+          <Table name="lineorder_flat"/>
+       <Level name="P_BRAND" column="P_BRAND" type="String" uniqueMembers="true" approxRowCount="1000"/>
+    </Hierarchy>       
+     <Hierarchy hasAll="true" name="P_COLOR" primaryKey="LO_PARTKEY" displayFolder="Information">
+          <Table name="lineorder_flat"/>
+       <Level name="P_COLOR" column="P_COLOR" type="String" uniqueMembers="true" approxRowCount="92"/>
+    </Hierarchy>      
+    <Hierarchy hasAll="true" name="P_TYPE" primaryKey="LO_PARTKEY" displayFolder="Information">
+          <Table name="lineorder_flat"/>
+       <Level name="P_TYPE" column="P_TYPE" type="String" uniqueMembers="true" approxRowCount="150"/>
+    </Hierarchy>         
+    <Hierarchy hasAll="true" name="P_SIZE" primaryKey="LO_PARTKEY" displayFolder="Information">
+          <Table name="lineorder_flat"/>
+       <Level name="P_SIZE" column="P_SIZE" type="String" uniqueMembers="true" approxRowCount="50"/>
+    </Hierarchy>          
+    <Hierarchy hasAll="true" name="P_CONTAINER" primaryKey="LO_PARTKEY" displayFolder="Information">
+          <Table name="lineorder_flat"/>
+       <Level name="P_CONTAINER" column="P_CONTAINER" type="String" uniqueMembers="true" approxRowCount="40"/>
+    </Hierarchy>           
+    <!-- <Hierarchy hasAll="true" name="Attribute1" primaryKey="personid" displayFolder="Information">
+          <Table name="dim_person_rr"/>
+       <Level name="Attribute1" column="attributes.2[1]" type="String" uniqueMembers="true" approxRowCount="3"/>
+    </Hierarchy>      -->
+  </Dimension>
+<!-- LOrder -->
+<Cube name="LOrder" defaultMeasure="line_count" cache="true">
+  <!-- Use annotations to provide translations of this cube's caption and
+       description into German and French. Use of annotations in this manner is
+       experimental and unsupported; just for testing right now. -->
+  <!-- <Annotations>
+    <Annotation name="caption.de_DE">Verkaufen</Annotation>
+    <Annotation name="caption.fr_FR">Ventes</Annotation>
+    <Annotation name="description.fr_FR">Cube des ventes</Annotation>
+    <Annotation name="description.de">Cube Verkaufen</Annotation>
+    <Annotation name="description.de_AT">Cube den Verkaufen</Annotation>
+  </Annotations> -->
+  <Table name="lineorder_flat"/>
+   <!-- <DimensionUsage name="Calendar" source="Time" foreignKey="date"/> -->
+  <DimensionUsage name="supplier" source="supplier" foreignKey="LO_SUPPKEY"/>
+  <DimensionUsage name="customer" source="customer" foreignKey="LO_CUSTKEY"/>
+  <DimensionUsage name="part" source="part" foreignKey="LO_PARTKEY"/> -->
+
+  <!-- <AggName name="events_agg2">
+     <AggMeasure name="[Measures].[Count Events]" column="client_id"/>
+     <AggLevel name="[Time].[Date]" column="full_date"/>
+     <AggLevel name="[Client.Sex].[All Client.Sexs]" column="client_id"/>
+     <AggLevel name="[Types].[All Typess]" column="event_type"/>
+  </AggName> -->
+  <!-- Purchase  -->
+   <Measure name="LO_REVENUE" column="LO_REVENUE" aggregator="sum" formatString="Standard" displayFolder="SSB"/>
+   <Measure name="line_count" column="" aggregator="count" formatString="Standard" displayFolder="SSB"/> 
+
+  
+
+</Cube>
+
+</Schema>

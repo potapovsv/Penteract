@@ -77,7 +77,7 @@ public class NoCacheMemberReader implements MemberReader, MemberCache {
 
     // implement MemberCache
     public Object makeKey(final RolapMember parent, final Object key) {
-        LOGGER.debug("Entering makeKey");
+        // LOGGER.debug("Entering makeKey");
         return new MemberKey(parent, key);
     }
 
@@ -89,14 +89,14 @@ public class NoCacheMemberReader implements MemberReader, MemberCache {
         final Object key,
         final boolean mustCheckCacheStatus)
     {
-        LOGGER.debug("Returning null member: no cache");
+        // LOGGER.debug("Returning null member: no cache");
         return null;
     }
 
 
     // implement MemberCache
     public Object putMember(final Object key, final RolapMember value) {
-        LOGGER.debug("putMember void for no caching");
+        // LOGGER.debug("putMember void for no caching");
         return value;
     }
 
@@ -175,7 +175,7 @@ public class NoCacheMemberReader implements MemberReader, MemberCache {
         final MemberChildrenConstraint constraint)
     {
         assert (constraint != null);
-        LOGGER.debug("Entering getMemberChildren");
+        // LOGGER.debug("Entering getMemberChildren");
         return
             source.getMemberChildren(
                 parentMembers, children, constraint);

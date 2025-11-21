@@ -3095,9 +3095,9 @@ public class XmlaHandler {
                     } else {
                         valueString = vi.value.toString();
                     }
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("emitCell:= " + valueString + " ordinal: " + ordinal );
-                    }
+                    // if (LOGGER.isDebugEnabled()) {
+                    //     LOGGER.debug("emitCell:= " + valueString + " ordinal: " + ordinal );
+                    // }
                     writer.startElement(
                             this.cellPropertyMap.get(propertyName).getAlias(),
                             "xsi:type", valueType);
