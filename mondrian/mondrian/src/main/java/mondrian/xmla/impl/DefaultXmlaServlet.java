@@ -25,7 +25,12 @@ import org.xml.sax.SAXException;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -679,9 +684,9 @@ public abstract class DefaultXmlaServlet extends XmlaServlet {
             //         for (Object byteChunk : byteChunks) {
             //             byte[] chunk = (byte[]) byteChunk;
             //             if (chunk != null && chunk.length > 0) {
-            //                 // buf.append(new String(chunk, encoding));
+            //                 buf.append(new String(chunk, encoding));
             //                 // buf.append(new String(chunk, "UTF-8"));
-            //                 LOGGER.debug(chunk.toString());
+            //                 // LOGGER.debug(chunk.toString());
             //                     ii = ii + chunk.length;
             //             }
             //         }
@@ -690,9 +695,10 @@ public abstract class DefaultXmlaServlet extends XmlaServlet {
             //             "This should be handled at begin of processing request",
             //             uee);
             //     }
-            //     LOGGER.debug("byteChunks length:" +ii);
+                
             //     // LOGGER.debug("buf length:" +buf.length());
             //     LOGGER.debug(buf.toString());
+            //     LOGGER.debug("byteChunks length:" +ii);
             // }
             long start = System.currentTimeMillis();
             if (LOGGER.isDebugEnabled()) {
@@ -725,18 +731,19 @@ public abstract class DefaultXmlaServlet extends XmlaServlet {
                 // Оборачиваем в BufferedOutputStream один раз
             try {    
                 int k=0;
-                // OutputStream bufferedOut = new BufferedOutputStream(outputStream, 65536*16);
+                // this.saveByteChunksToFile(byteChunks, "c:\\tmp\\byteChunks_"+ System.currentTimeMillis() +".bin");
+                OutputStream bufferedOut = new BufferedOutputStream(outputStream, 65536);
                 for (Object chunk : byteChunks) {
                     if (chunk instanceof byte[] b && b.length > 0) {
-                        // bufferedOut.write(b);
-                        outputStream.write(b);
+                        bufferedOut.write(b);
+                        // outputStream.write(b);
                     }
                     k++;
                 }
-                // bufferedOut.flush();
+                bufferedOut.flush();
                 long end = System.currentTimeMillis();
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("XML/A response content to channel end V4.1: time: " + (end - start)  );
+                    LOGGER.debug("XML/A response content to channel end V4.2: time: " + (end - start)  + " Save to file:" );
                 }     
                  outputStream.flush();
             } catch (IOException ioe) {
@@ -759,7 +766,27 @@ public abstract class DefaultXmlaServlet extends XmlaServlet {
      * This produces a SOAP 1.1 version Fault element - not a 1.2 version.
      *
      */
-    protected void handleFault(
+
+// public void saveByteChunksToFile(Object[] byteChunks, String filePath) throws IOException {
+//     return;
+//     // File file = new File(filePath);
+//     // // Создаём директории, если их нет
+//     // file.getParentFile().mkdirs();
+    
+//     // try (BufferedOutputStream bufferedOut = new BufferedOutputStream(
+//     //         new FileOutputStream(file), 65536)) {
+        
+//     //     int k = 0;
+//     //     for (Object chunk : byteChunks) {
+//     //         if (chunk instanceof byte[] b && b.length > 0) {
+//     //             bufferedOut.write(b);
+//     //         }
+//     //         k++;
+//     //     }
+//     //     bufferedOut.flush(); // Опционально, вызывается автоматически при закрытии
+//     } // Потоки закрываются автоматически
+// }   
+        protected void handleFault(
         HttpServletResponse response,
         byte[][] responseSoapParts,
         Phase phase,

@@ -2149,12 +2149,11 @@ public class XmlaHandler {
                     // LOGGER.debug("XmlaHandler.process: sizeresponse " + response.getWriter(). );
                 }
 
-                Format format = getFormat(request, Format.Native);
+                final Format format = getFormat(request, Format.Native);
                 final Content content = getContent(request);
                 final Enumeration.ResponseMimeType responseMimeType =
                     getResponseMimeType(request);
                 final MDDataSet dataSet;
-                // format = Format.Tabular;
                 if (format == Format.Multidimensional || format == Format.Native) {
                     dataSet =
                         new MDDataSet_Multidimensional(
@@ -3064,10 +3063,6 @@ public class XmlaHandler {
                     propertyName = propertyName.toUpperCase();
                 }
                 if(propertyName.equals("CELL_ORDINAL")) {
-                    continue;
-                }
-                if(propertyName.equals("FONT_FLAGS") || propertyName.equals("FORMAT_STRING")) {
-                    // надо подумать пропускать только FORMAT_STRING = STANDART <FormatString>Standard</FormatString>
                     continue;
                 }
                 mondrian.olap4j.MondrianOlap4jCell mondrianOlap4jCell = (mondrian.olap4j.MondrianOlap4jCell)cell;

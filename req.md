@@ -1,0 +1,2 @@
+есть xmla спецификация. Excel делает xmla запрос к Analysis services. Результат так же получает в формате xmla. в настройках SSAS сервера есть такой пункт network\responses\EnableCompression. Предложи варианты инмпементации Compression.
+Без спроса код не правь

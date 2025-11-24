@@ -31,6 +31,9 @@ import java.sql.Statement;
 import java.util.*;
 import java.util.concurrent.*;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * <p>
  * The <code>SegmentLoader</code> queries database and loads the data into the given set of segments.
@@ -63,7 +66,8 @@ public class SegmentLoader {
   public SegmentLoader( SegmentCacheManager cacheMgr ) {
     this.cacheMgr = cacheMgr;
   }
-
+  private static final Logger LOGGER =
+        LogManager.getLogger(SegmentLoader.class);
   /**
    * Loads data for all the segments of the GroupingSets. If the grouping sets list contains more than one Grouping Set
    * then data is loaded using the GROUP BY GROUPING SETS sql. Else if only one grouping set is passed in the list data
@@ -165,21 +169,25 @@ public class SegmentLoader {
         // Nothing to do. We're done here.
         return segmentMap;
       }
-
+         
       boolean[] axisContainsNull = new boolean[arity];
-
+      long t1 = System.currentTimeMillis();
       RowList rows = processData( stmt, axisContainsNull, axisValueSets, groupingSetsList );
-
+    if (LOGGER.isDebugEnabled()) { LOGGER.debug("processData: time: " + (System.currentTimeMillis() - t1));}
+      t1 = System.currentTimeMillis();                  
       boolean sparse = setAxisDataAndDecideSparseUse( axisValueSets, axisContainsNull, groupingSetsList, rows );
-
+      if (LOGGER.isDebugEnabled()) { LOGGER.debug("setAxisDataAndDecideSparseUse: time: " + (System.currentTimeMillis() - t1));}
+      t1 = System.currentTimeMillis();
       final Map<BitKey, GroupingSetsList.Cohort> groupingDataSetsMap =
           createDataSetsForGroupingSets( groupingSetsList, sparse, rows.getTypes().subList( arity, rows.getTypes()
               .size() ) );
-
+      if (LOGGER.isDebugEnabled()) { LOGGER.debug("createDataSetsForGroupingSets: time: " + (System.currentTimeMillis() - t1));}   
+      t1 = System.currentTimeMillis();   
       loadDataToDataSets( groupingSetsList, rows, groupingDataSetsMap );
-
+       if (LOGGER.isDebugEnabled()) { LOGGER.debug("loadDataToDataSets: time: " + (System.currentTimeMillis() - t1));} 
+      t1 = System.currentTimeMillis();       
       setDataToSegments( groupingSetsList, groupingDataSetsMap, segmentMap );
-
+     if (LOGGER.isDebugEnabled()) { LOGGER.debug("setDataToSegments: time: " + (System.currentTimeMillis() - t1));} 
       return segmentMap;
     } catch ( Throwable e ) {
       throwable = e;
@@ -498,7 +506,10 @@ public class SegmentLoader {
       final SortedSet<Comparable>[] axisValueSets, final GroupingSetsList groupingSetsList ) throws SQLException {
     List<Segment> segments = groupingSetsList.getDefaultSegments();
     int measureCount = segments.size();
+     
+    long t1 = System.currentTimeMillis();     
     ResultSet rawRows = loadData( stmt, groupingSetsList );
+    if (LOGGER.isDebugEnabled()) { LOGGER.debug("rawRows = loadData time: " + (System.currentTimeMillis() - t1));}
     assert stmt != null;
     final List<SqlStatement.Type> types = stmt.guessTypes();
     int arity = axisValueSets.length;
@@ -514,19 +525,34 @@ public class SegmentLoader {
     } else {
       processedTypes = types;
     }
+     t1 = System.currentTimeMillis();   
     final RowList processedRows = new RowList( processedTypes, 100 );
-
+if (LOGGER.isDebugEnabled()) { LOGGER.debug("processedRows = loadData time: " + (System.currentTimeMillis() - t1));}
+    t1 = System.currentTimeMillis();  
     Execution execution = Locus.peek().execution;
+    if (LOGGER.isDebugEnabled()) { LOGGER.debug("Locus.peek().execution = loadData time: " + (System.currentTimeMillis() - t1));}
+
+
+    // t1 = System.currentTimeMillis(); 
+    // int k1=0;
+    // while ( rawRows.next() ) {
+    //   k1++;
+    // }
+    //  if (LOGGER.isDebugEnabled()) { LOGGER.debug("rawRows.next() loadData time: " + (System.currentTimeMillis() - t1) + " rows k: " + k1);}
+    t1 = System.currentTimeMillis(); 
+    long w1=0,w2=0,w3=0,w4=0,w5=0,w6=0,w11=0,w12=0,w13=0,w14=0, w15=0, w16=0;
+    // rawRows.first();
     while ( rawRows.next() ) {
+      w1 = System.currentTimeMillis();
       // Check if the MDX query was canceled.
       CancellationChecker.checkCancelOrTimeout( ++stmt.rowCount, execution );
-
+      
       checkResultLimit( stmt.rowCount );
       processedRows.createRow();
-
+      w2 = System.currentTimeMillis();
       // get the columns
       int columnIndex = 0;
-      for ( int axisIndex = 0; axisIndex < arity; axisIndex++, columnIndex++ ) {
+         for ( int axisIndex = 0; axisIndex < arity; axisIndex++, columnIndex++ ) {
         final SqlStatement.Type type = types.get( columnIndex );
         switch ( type ) {
           case OBJECT:
@@ -614,14 +640,14 @@ public class SegmentLoader {
             throw Util.unexpected( type );
         }
       }
-
+      w3 = System.currentTimeMillis();
       // pre-compute which measures are numeric
       final boolean[] numeric = new boolean[measureCount];
       int k = 0;
       for ( Segment segment : segments ) {
         numeric[k++] = segment.measure.getDatatype().isNumeric();
       }
-
+      w4 = System.currentTimeMillis();
       // get the measure
       for ( int i = 0; i < measureCount; i++, columnIndex++ ) {
         final SqlStatement.Type type = types.get( columnIndex );
@@ -687,12 +713,27 @@ public class SegmentLoader {
             throw Util.unexpected( type );
         }
       }
-
+      w5 = System.currentTimeMillis();
       if ( groupingSetsList.useGroupingSets() ) {
         processedRows.setObject( columnIndex, getRollupBitKey( groupingSetsList.getRollupColumns().size(), rawRows,
             columnIndex ) );
       }
+       w6 = System.currentTimeMillis();
+       w11 = w11 +(w2-w1);
+       w12 = w12 +(w3-w2);
+       w13 = w13 +(w4-w3);
+        w14 = w14 +(w5-w4);
+        w15 = w15 +(w6-w5);
+         w16 = w16 +(w6-w1);
     }
+     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) w11 +(w2-w1) " + w11);}
+     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) w12 w12 +(w3-w2)" + w12);}
+     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) w13 +(w4-w3)" + w13);}
+     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) w14+(w5-w4) " + w14);}
+     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) w15 +(w6-w5)" + w15);}
+     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) w16 +(ALL NEXT)" + w16);}
+    //  if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) w16 " + w16);}
+     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) = loadData time: " + (System.currentTimeMillis() - t1));}
     return processedRows;
   }
 
