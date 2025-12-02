@@ -1,0 +1,10 @@
+[package]
+name = "cube_sum"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "cube_sum"
+crate-type = ["cdylib"]
+
+[dependencies]
