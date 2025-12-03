@@ -86,21 +86,31 @@ abstract class EmptyResultSet implements ResultSet, OlapWrapper {
     }
 
     private int deduceColumnType(Object o) {
-        if (o instanceof String) {
-            return Types.VARCHAR;
-        } else if (o instanceof Integer) {
-            return Types.INTEGER;
-        } else if (o instanceof Long) {
-            return Types.BIGINT;
-        } else if (o instanceof Double) {
-            return Types.DOUBLE;
-        } else if (o instanceof Float) {
-            return Types.FLOAT;
-        } else if (o instanceof Boolean) {
-            return Types.BOOLEAN;
-        } else {
-            return Types.VARCHAR;
-        }
+        return switch (o) {
+            case String s -> Types.VARCHAR;
+            case Integer i -> Types.INTEGER;
+            case Long l -> Types.BIGINT;
+            case Double d -> Types.DOUBLE;
+            case Float f -> Types.FLOAT;
+            case Boolean b -> Types.BOOLEAN;
+            case null -> Types.VARCHAR; // Явная обработка null
+            default -> Types.VARCHAR;
+        };        
+        // if (o instanceof String) {
+        //     return Types.VARCHAR;
+        // } else if (o instanceof Integer) {
+        //     return Types.INTEGER;
+        // } else if (o instanceof Long) {
+        //     return Types.BIGINT;
+        // } else if (o instanceof Double) {
+        //     return Types.DOUBLE;
+        // } else if (o instanceof Float) {
+        //     return Types.FLOAT;
+        // } else if (o instanceof Boolean) {
+        //     return Types.BOOLEAN;
+        // } else {
+        //     return Types.VARCHAR;
+        // }
     }
 
     // helper methods

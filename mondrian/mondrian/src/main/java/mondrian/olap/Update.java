@@ -44,14 +44,9 @@ public class Update extends QueryPart {
     public static class UpdateClause extends QueryPart {
         private final Exp tuple;
         private Exp value;
-        private Allocation allocation;
-        private Exp weight;
-
         public UpdateClause(Exp tuple, Exp value, Allocation allocation, Exp weight) {
             this.tuple = tuple;
             this.value = value;
-            this.allocation = allocation;
-            this.weight = weight;
         }
 
         public Exp getTupleExp() {

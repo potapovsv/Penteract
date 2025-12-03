@@ -142,12 +142,12 @@ public class Util extends XOMUtil {
     /**
      * Placeholder which indicates a value NULL.
      */
-    public static final Object nullValue = new Double(FunUtil.DoubleNull);
+    public static final Object nullValue = Double.valueOf(FunUtil.DoubleNull);
 
     /**
      * Placeholder which indicates an EMPTY value.
      */
-    public static final Object EmptyValue = new Double(FunUtil.DoubleEmpty);
+    public static final Object EmptyValue = Double.valueOf(FunUtil.DoubleEmpty);
 
     /**
      * Cumulative time spent accessing the database.
@@ -1723,6 +1723,7 @@ public class Util extends XOMUtil {
      * @param <T> Element type
      * @return List containing the given members
      */
+    @SafeVarargs
     public static <T> List<T> flatList(T... t) {
         return _flatList(t, false);
     }
@@ -1735,6 +1736,7 @@ public class Util extends XOMUtil {
      * @param <T> Element type
      * @return List containing the given members
      */
+    @SafeVarargs
     public static <T> List<T> flatListCopy(T... t) {
         return _flatList(t, true);
     }
@@ -1792,7 +1794,8 @@ public class Util extends XOMUtil {
             //   write our own implementation and reduce creation overhead a
             //   bit.
             //noinspection unchecked
-            return (List<T>) Arrays.asList(t.toArray());
+            // return (List<T>) Arrays.asList(t.toArray());
+            return new ArrayList<T>(t);
         }
     }
 
@@ -1808,11 +1811,11 @@ public class Util extends XOMUtil {
         String[] strings = localeString.split("_");
         switch (strings.length) {
         case 1:
-            return new Locale(strings[0]);
+            return  Locale.of(strings[0]);
         case 2:
-            return new Locale(strings[0], strings[1]);
+            return   Locale.of(strings[0], strings[1]);
         case 3:
-            return new Locale(strings[0], strings[1], strings[2]);
+            return   Locale.of(strings[0], strings[1], strings[2]);
         default:
             throw newInternal(
                 "bad locale string '" + localeString + "'");
@@ -1954,6 +1957,7 @@ public class Util extends XOMUtil {
      * @return Iterable that returns only members of underlying iterable for
      *     for which all conditions evaluate to true
      */
+    @SafeVarargs
     public static <T> Iterable<T> filter(
         final Iterable<T> iterable,
         final Functor1<Boolean, T>... conds)
@@ -2017,6 +2021,7 @@ public class Util extends XOMUtil {
         if (functor1List.size() < conds.length) {
             //noinspection unchecked
             return functor1List.toArray(new Functor1[functor1List.size()]);
+            
         } else {
             return conds;
         }
@@ -2046,6 +2051,7 @@ public class Util extends XOMUtil {
      * @param <T> Element type
      * @return Sorted list
      */
+    
     public static <T> List<T> sort(
         Collection<T> collection,
         Comparator<T> comparator)
