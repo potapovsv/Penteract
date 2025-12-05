@@ -11,7 +11,6 @@ package mondrian.util;
 import mondrian.olap.MondrianProperties;
 import mondrian.spi.Dialect;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 /**

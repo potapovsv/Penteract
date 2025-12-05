@@ -987,9 +987,9 @@ public class Query extends QueryPart {
             if (value instanceof String) {
                 String s = (String) value;
                 try {
-                    return new Integer(s);
+                    return Integer.valueOf(s);
                 } catch (NumberFormatException e) {
-                    return new Double(s);
+                    return   Double.valueOf(s);
                 }
             }
             throw Util.newInternal(
@@ -1010,7 +1010,7 @@ public class Query extends QueryPart {
                     + parameterName + "', type " + type);
             }
             List<Member> expList = new ArrayList<Member>();
-            final List list = (List) value;
+            final List<?> list = (List<?>) value;
             final SetType setType = (SetType) type;
             final Type elementType = setType.getElementType();
             for (Object o : list) {
@@ -1040,19 +1040,19 @@ public class Query extends QueryPart {
                 value = Util.parseIdentifier((String) value);
             }
             if (value instanceof List
-                && Util.canCast((List) value, Id.Segment.class))
+                && Util.canCast((List<?>) value, Id.Segment.class))
             {
-                final List<Id.Segment> segmentList = Util.cast((List) value);
+                final List<Id.Segment> segmentList = Util.cast((List<?>) value);
                 final OlapElement olapElement = Util.lookup(query, segmentList);
                 if (olapElement instanceof Member) {
                     value = olapElement;
                 }
             }
             if (value instanceof List
-                && Util.canCast((List) value, IdentifierSegment.class))
+                && Util.canCast((List<?>) value, IdentifierSegment.class))
             {
                 final List<IdentifierSegment> olap4jSegmentList =
-                    Util.cast((List) value);
+                    Util.cast((List<?>) value);
                 final List<Id.Segment> segmentList =
                     Util.convert(olap4jSegmentList);
                 final OlapElement olapElement = Util.lookup(query, segmentList);

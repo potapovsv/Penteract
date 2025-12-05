@@ -1,6 +1,6 @@
 // Copyright (C) 2022 Sergei Semenkov
 
-package emondrian;
+package penteractsrv;
 
 import org.w3c.dom.Element;
 

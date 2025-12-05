@@ -2,7 +2,6 @@
 
 package mondrian.olap;
 
-import java.io.PrintWriter;
 import java.util.*;
 
 public class DmvQuery extends QueryPart {

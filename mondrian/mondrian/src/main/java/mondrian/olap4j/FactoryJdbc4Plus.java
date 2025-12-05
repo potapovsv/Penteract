@@ -312,7 +312,7 @@ class FactoryJdbc4Plus {
 
     static abstract class AbstractConnection
         extends MondrianOlap4jConnection
-        implements OlapConnection
+        // implements OlapConnection
     {
         AbstractConnection(
             Factory factory,

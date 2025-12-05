@@ -268,13 +268,13 @@ public class Walker implements Enumeration {
                     new Region("Tacoma", null)})});
 
         Walker walker = new Walker(usa);
-        if (false) {
-            while (walker.hasMoreElements()) {
-                Region region = (Region) walker.nextElement();
-                pw.println(region.name);
-                pw.flush();
-            }
-        }
+        // if (false) {
+        //     while (walker.hasMoreElements()) {
+        //         Region region = (Region) walker.nextElement();
+        //         pw.println(region.name);
+        //         pw.flush();
+        //     }
+        // }
 
         Region.walkUntil(walker, "CA");
         walker.prune();

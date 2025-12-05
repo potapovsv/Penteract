@@ -635,11 +635,11 @@ abstract class MondrianOlap4jDatabaseMetaData implements OlapDatabaseMetaData {
     }
 
     public ResultSet getSchemas() throws OlapException {
-        if (false) {
-            // Do not use DBSCHEMA_SCHEMATA: it has different columns than the
-            // JDBC spec requires
-            return getMetadata("DBSCHEMA_SCHEMATA");
-        }
+        // if (false) {
+        //     // Do not use DBSCHEMA_SCHEMATA: it has different columns than the
+        //     // JDBC spec requires
+        //     return getMetadata("DBSCHEMA_SCHEMATA");
+        // }
         List<String> headerList =
             Arrays.asList("TABLE_SCHEM", "TABLE_CAT");
         List<List<Object>> rowList = new ArrayList<List<Object>>();

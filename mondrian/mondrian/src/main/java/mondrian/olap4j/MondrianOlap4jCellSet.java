@@ -14,8 +14,6 @@ import mondrian.olap.*;
 import mondrian.rolap.RolapAxis;
 import mondrian.rolap.RolapCell;
 import mondrian.server.Execution;
-import mondrian.spi.ProfileHandler;
-
 import org.olap4j.Cell;
 import org.olap4j.*;
 import org.olap4j.Position;

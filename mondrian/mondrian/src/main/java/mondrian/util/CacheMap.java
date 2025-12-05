@@ -1,28 +1,20 @@
-/*
-// This software is subject to the terms of the Eclipse Public License v1.0
-// Agreement, available at the following URL:
-// http://www.eclipse.org/legal/epl-v10.html.
-// You must accept the terms of that agreement to use this software.
-//
-// Copyright (C) 2007-2017 Hitachi Vantara and others
-// Copyright (C) 2007-2007 Tasecurity Group S.L, Spain
-// All Rights Reserved.
-*/
-
 package mondrian.util;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
+import java.util.AbstractMap.SimpleEntry;
 
 /**
  * Map with limited size to be used as cache.
  *
+ * @param <S> the type of keys
+ * @param <T> the type of mapped values
  * @author lcanals, www.tasecurity.net
  */
 public class CacheMap<S, T> implements Map<S, T> {
     private LinkedNode head;
     private LinkedNode tail;
-    private final Map<S, Pair<S, T>> map;
+    private final Map<S, Pair> map;
     private final int maxSize;
 
     /**
@@ -33,138 +25,123 @@ public class CacheMap<S, T> implements Map<S, T> {
     public CacheMap(final int size) {
         this.head = new LinkedNode(null, null);
         this.tail = new LinkedNode(head, null);
-        this.map = new WeakHashMap<S, Pair<S, T>>(size);
+        this.map = new WeakHashMap<>(size);
         this.maxSize = size;
     }
 
+    @Override
     public void clear() {
         this.head = new LinkedNode(null, null);
         this.tail = new LinkedNode(head, null);
         map.clear();
     }
 
+    @Override
     public boolean containsKey(final Object key) {
         return map.containsKey(key);
     }
 
+    @Override
     public boolean containsValue(final Object value) {
-        return this.values().contains(value);
+        return values().contains(value);
     }
 
-    public Set entrySet() {
-        final Set<Map.Entry<S, T>> set = new HashSet<Map.Entry<S, T>>();
-        for (final Map.Entry<S, Pair<S, T>> entry : this.map.entrySet()) {
-            set.add(
-                new Map.Entry<S, T>() {
-                    public boolean equals(Object s) {
-                        if (s instanceof Map.Entry) {
-                            return ((Map.Entry) s).getKey().equals(
-                                entry.getKey())
-                                && ((Map.Entry) s).getValue().equals(
-                                    entry.getValue().value);
-                        } else {
-                            return false;
-                        }
-                    }
-
-                    public S getKey() {
-                        return entry.getKey();
-                    }
-
-                    public T getValue() {
-                        return entry.getValue().value;
-                    }
-
-                    public int hashCode() {
-                        return entry.hashCode();
-                    }
-
-                    public T setValue(final T x) {
-                        return entry.setValue(
-                            new Pair<S, T>(
-                                x,
-                                new LinkedNode(head, entry.getKey()))).value;
-                    }
-                });
+    @Override
+    public Set<Map.Entry<S, T>> entrySet() {
+        final Set<Map.Entry<S, T>> set = new HashSet<>();
+        for (final Map.Entry<S, Pair> entry : map.entrySet()) {
+            set.add(new SimpleEntry<>(entry.getKey(), entry.getValue().value));
         }
         return set;
     }
 
+    @Override
     public T get(final Object key) {
-        final Pair<S, T> pair = map.get(key);
+        final Pair pair = map.get(key);
         if (pair != null) {
-            final LinkedNode<S> node = pair.getNode();
+            final LinkedNode node = pair.getNode();
             if (node == null) {
                 map.remove(key);
                 return null;
             }
             node.moveTo(head);
             return pair.value;
-        } else {
-            return null;
         }
+        return null;
     }
 
+    @Override
     public boolean isEmpty() {
         return map.isEmpty();
     }
 
+    @Override
     public Set<S> keySet() {
         return map.keySet();
     }
 
+    @Override
     public T put(final S key, final T value) {
-        final Pair<S, T> pair =
-            new Pair<S, T>(value, new LinkedNode(head, key));
-        final Pair<S, T> obj = map.put(key, pair);
-        if (map.size() > maxSize) {
-            tail.getPrevious().remove();
-            map.remove(key);
+        final Pair pair = new Pair(value, new LinkedNode(head, key));
+        final Pair oldPair = map.put(key, pair);
+        
+        // Удаляем LRU элемент только если добавили новый и превысили размер
+        if (oldPair == null && map.size() > maxSize) {
+            final LinkedNode lruNode = tail.getPrevious();
+            if (lruNode != null && lruNode.key != null) {
+                lruNode.remove();
+                map.remove(lruNode.key);
+            }
         }
-        if (obj != null) {
-            return obj.value;
-        } else {
-            return null;
-        }
+        
+        return oldPair != null ? oldPair.value : null;
     }
 
-    public void putAll(final Map t) {
+    @Override
+    public void putAll(final Map<? extends S, ? extends T> t) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public T remove(final Object key) {
-        final Pair<S, T> pair = map.get(key);
-        if (pair == null) {
-            return null;
+        final Pair pair = map.remove(key);
+        if (pair != null) {
+            pair.getNode().remove();
+            return pair.value;
         }
-        pair.getNode().remove();
-        return map.remove(key).value;
+        return null;
     }
 
+    @Override
     public int size() {
         return map.size();
     }
 
+    @Override
     public Collection<T> values() {
-        final List<T> vals = new ArrayList<T>();
-        for (final Pair<S, T> pair : map.values()) {
+        final List<T> vals = new ArrayList<>();
+        for (final Pair pair : map.values()) {
             vals.add(pair.value);
         }
         return vals;
     }
 
+    @Override
     public int hashCode() {
         return map.hashCode();
     }
 
+    @Override
     public String toString() {
-        return "Ordered keys: " + head.toString() + "\n"
-                + "Map:" + map.toString();
+        return "Ordered keys: " + head + "\nMap:" + map;
     }
 
-    public boolean equals(Object o) {
-        CacheMap c = (CacheMap) o;
-        return map.equals(c.map);
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CacheMap)) return false;
+        final CacheMap<?, ?> cacheMap = (CacheMap<?, ?>) o;
+        return map.equals(cacheMap.map);
     }
 
     //
@@ -174,32 +151,35 @@ public class CacheMap<S, T> implements Map<S, T> {
     /**
      * Pair of linked key - value
      */
-    private final class Pair<S, T> implements java.io.Serializable {
+    private final class Pair implements java.io.Serializable {
+        private static final long serialVersionUID = 1L;
         private final T value;
-        private final WeakReference<LinkedNode<S>> node;
-        private Pair(final T value, final LinkedNode<S> node) {
-            this.node = new WeakReference<LinkedNode<S>>(node);
+        private final WeakReference<LinkedNode> node;
+
+        private Pair(final T value, final LinkedNode node) {
+            this.node = new WeakReference<>(node);
             this.value = value;
         }
 
-        private LinkedNode<S> getNode() {
+        private LinkedNode getNode() {
             return node.get();
         }
 
+        @Override
         public boolean equals(final Object o) {
             return o != null && o.equals(this.value);
         }
     }
 
-
     /**
      * Represents a node in a linked list.
      */
-    private class LinkedNode<S> implements java.io.Serializable {
-        private LinkedNode<S> next, prev;
+    private class LinkedNode implements java.io.Serializable {
+        private static final long serialVersionUID = 1L;
+        private LinkedNode next, prev;
         private S key;
 
-        public LinkedNode(final LinkedNode<S> prev, final S key) {
+        public LinkedNode(final LinkedNode prev, final S key) {
             this.key = key;
             insertAfter(prev);
         }
@@ -213,47 +193,32 @@ public class CacheMap<S, T> implements Map<S, T> {
             }
         }
 
-        public void moveTo(final LinkedNode<S> prev) {
+        public void moveTo(final LinkedNode prev) {
             remove();
             insertAfter(prev);
         }
 
-        public LinkedNode<S> getPrevious() {
+        public LinkedNode getPrevious() {
             return this.prev;
         }
 
-        public String toString() {
-            if (this.next != null) {
-                if (key != null) {
-                    return key.toString() + ", " + this.next.toString();
-                } else {
-                    return "<null>, " + this.next.toString();
-                }
-            } else {
-                if (key != null) {
-                    return key.toString();
-                } else {
-                    return "<null>";
-                }
-            }
-        }
-
-        private void insertAfter(final LinkedNode<S> prev) {
+        private void insertAfter(final LinkedNode prev) {
             if (prev != null) {
                 this.next = prev.next;
-            } else {
-                this.prev = null;
-            }
-            this.prev = prev;
-
-            if (prev != null) {
                 if (prev.next != null) {
                     prev.next.prev = this;
                 }
                 prev.next = this;
             }
+            this.prev = prev;
+        }
+
+        @Override
+        public String toString() {
+            if (key != null) {
+                return this.next != null ? key + ", " + this.next : key.toString();
+            }
+            return this.next != null ? "<null>, " + this.next : "<null>";
         }
     }
 }
-
-// End CacheMap.java

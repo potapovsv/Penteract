@@ -26,7 +26,7 @@ import java.util.List;
  * @since Jul 22, 2006
  */
 public class ParameterImpl
-    implements Parameter, ParameterCompilable
+    implements  ParameterCompilable
 {
     private final String name;
     private String description;
@@ -211,7 +211,7 @@ public class ParameterImpl
         // Convert from old-style tuple list (list of member or member[])
         // to new-style list (TupleList).
         if (value instanceof List && !(value instanceof TupleList)) {
-            List list = (List) value;
+            List<?> list = (List<?>) value;
             return TupleCollections.asTupleList(list);
         }
         if (value instanceof MemberExpr) {

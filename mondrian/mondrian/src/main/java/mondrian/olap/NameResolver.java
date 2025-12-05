@@ -98,6 +98,9 @@ public final class NameResolver {
                             matchType = MatchType.FIRST;
                         }
                         break;
+                    default:
+                        // Обработка для всех остальных констант (LAST, FIRST, BEFORE, AFTER)
+                        break;    
                     }
                     break;
                 }

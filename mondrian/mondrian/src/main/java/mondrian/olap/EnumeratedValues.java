@@ -76,6 +76,7 @@ public class EnumeratedValues<V extends EnumeratedValues.Value>
      */
     public EnumeratedValues(String[] names, int[] codes) {
         for (int i = 0; i < names.length; i++) {
+            
             register((V) new BasicValue(names[i], codes[i], names[i]));
         }
         makeImmutable();

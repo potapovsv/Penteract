@@ -259,7 +259,7 @@ public abstract class MemberBase
   /**
    * Returns the order key of this member among its siblings. The default implementation returns null.
    */
-  public Comparable getOrderKey() {
+  public Comparable<?> getOrderKey() {
     return null;
   }
 

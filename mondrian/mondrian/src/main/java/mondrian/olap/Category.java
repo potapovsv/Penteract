@@ -24,7 +24,7 @@ package mondrian.olap;
  * @author jhyde
  * @since Feb 21, 2003
  */
-public class Category extends EnumeratedValues {
+public class Category extends EnumeratedValues<EnumeratedValues.Value> {
     /**
      * The singleton instance of <code>Category</code>.
      */

@@ -2,12 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.loymax.app</groupId>
-  <artifactId>lmxMondrian</artifactId>
-  <version>9.1</version>
+  <groupId>loymax.app</groupId>
+  <artifactId>Ppenteractsrv</artifactId>
+  <version>1.0</version>
   <packaging>war</packaging>
 
-  <name>lmxMondrian Maven Webapp</name>
+  <name>Penteract server Webapp</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.loymax.com</url>
 
@@ -60,8 +60,8 @@
 
     <dependency>
       <groupId>pentaho</groupId>
-      <artifactId>mondrian</artifactId>
-      <version>9.3.0.2-LMX</version>
+      <artifactId>Penteract-olap</artifactId>
+      <version>1.0.0.1000-LMX</version>
         <exclusions>
             <exclusion>
                 <groupId>commons-io</groupId>
@@ -154,7 +154,7 @@
   </dependencies>
   
   <build>
-    <finalName>emondrian</finalName>
+    <finalName>penteractsrv</finalName>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
         <plugin>
