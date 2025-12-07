@@ -1,21 +1,42 @@
 <?xml version="1.0"?>
 <DataSources>
    <DataSource>
-    <DataSourceName>LoymaxBI_2</DataSourceName>
-    <DataSourceDescription>LoymaxBI_2</DataSourceDescription>
+    <DataSourceName>LoymaxBI_ch</DataSourceName>
+    <DataSourceDescription>LoymaxBI_ch</DataSourceDescription>
     <URL>http://localhost:8080/emondrian/xmla</URL>
-    <DataSourceInfo>Provider=mondrian;JdbcDrivers=com.clickhouse.jdbc.ClickHouseDriver;Jdbc=jdbc:clickhouse://bi-ch01.loymax.local:8123/amwine_loymaxdw_dm?user=default;socket_timeout=300000;JdbcTimeout= 300000;
-      dataSource.maximumPoolSize=200;
-      dataSource.minimumIdle=200</DataSourceInfo>
+    <DataSourceInfo>
+       Provider=mondrian;
+       JdbcDrivers=com.clickhouse.jdbc.ClickHouseDriver;
+       Jdbc=jdbc:clickhouse://dev-bi-ch02.loymax.local:8123/penteract?user=adm&amp;password=adm&amp;http_compression=zstd
+   </DataSourceInfo>
     <ProviderName>Mondrian</ProviderName>
     <ProviderType>MDP</ProviderType>
     <AuthenticationMode>Unauthenticated</AuthenticationMode>
     <Catalogs>
-        <Catalog name="amwine_loymaxdw_dm">
-            <Definition>/WEB-INF/schema/smc.xml</Definition>
+        <Catalog name="penteract">
+            <Definition>/WEB-INF/schema/penteract.xml</Definition>
         </Catalog>
     </Catalogs>
   </DataSource>
+  <!-- <DataSources>
+   <DataSource>
+    <DataSourceName>LoymaxBI_ssb</DataSourceName>
+    <DataSourceDescription>LoymaxBI_ssb</DataSourceDescription>
+    <URL>http://localhost:8080/emondrian/xmla</URL>
+    <DataSourceInfo>
+       Provider=mondrian;
+       JdbcDrivers=com.clickhouse.jdbc.ClickHouseDriver;
+       Jdbc=jdbc:clickhouse://dev-bi-ch04.loymax.local:8123/ssb?user=adm&amp;password=adm&amp;buffer_size=10000000
+   </DataSourceInfo>
+    <ProviderName>Mondrian</ProviderName>
+    <ProviderType>MDP</ProviderType>
+    <AuthenticationMode>Unauthenticated</AuthenticationMode>
+    <Catalogs>
+        <Catalog name="ssb">
+            <Definition>/WEB-INF/schema/ssb.xml</Definition>
+        </Catalog>
+    </Catalogs>
+  </DataSource> -->
   <!-- <DataSource>
     <DataSourceName>Foodmart</DataSourceName>
     <DataSourceDescription>Foodmart Sample Data</DataSourceDescription>

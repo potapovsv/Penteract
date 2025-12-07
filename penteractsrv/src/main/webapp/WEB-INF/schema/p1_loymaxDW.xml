@@ -1,0 +1,242 @@
+<?xml version="1.0"?><Schema name="p1_loymaxDW">
+<!-- Shared dimensions -->
+
+  <Dimension name="Time" type="TimeDimension">
+    <Hierarchy hasAll="true" name="Year" primaryKey="date" displayFolder="Other attributes">
+      <Table name="sales_fct"/>
+       <Level name="Year" column="year_date" type="Integer" uniqueMembers="true" approxRowCount="14" levelType="TimeYears" captionColumn="year_date"/>
+    </Hierarchy>
+    <Hierarchy hasAll="true" name="Month" primaryKey="date" displayFolder="Other attributes">
+      <Table name="sales_fct"/>
+       <Level name="Month" column="month_date" type="String" uniqueMembers="true" approxRowCount="40" levelType="TimeMonths" ordinalColumn="month_date" nameColumn="month_date"/>
+    </Hierarchy>          
+  </Dimension>
+
+  <Dimension name="sales_fct" type="StandardDimension">
+      <Hierarchy hasAll="true" name="ChequeType_SKEY" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="ChequeType_SKEY" column="ChequeType_SKEY" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="PayCurrency_SKEY" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="PayCurrency_SKEY" column="PayCurrency_SKEY" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="BonusPayState" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="BonusPayState" column="BonusPayState" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="Legal_SK" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="Legal_SK" column="Legal_SK" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="OperationType_SK" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="OperationType_SK" column="OperationType_SK" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="OperationLineType_SKEY" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="OperationLineType_SKEY" column="OperationLineType_SKEY" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="OfferKey" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="OfferKey" column="OfferKey" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="Length_Cheque" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="Length_Cheque" column="Length_Cheque" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="date" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="date" column="date" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="year_date" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="year_date" column="year_date" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="month_date" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="month_date" column="month_date" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="Номер чека с кассы" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="Номер чека с кассы" column="Номер чека с кассы" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="Discount" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="Discount" column="Discount" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="ocpcOperationQuantity" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="ocpcOperationQuantity" column="ocpcOperationQuantity" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="Amount_Cheque" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="Amount_Cheque" column="Amount_Cheque" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="toCardAmount" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="toCardAmount" column="toCardAmount" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="Quantity" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="Quantity" column="Quantity" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="fromCardAmount" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="fromCardAmount" column="fromCardAmount" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="Amount" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="Amount" column="Amount" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="PurchaseID" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="PurchaseID" column="PurchaseID" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="LineID" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="LineID" column="LineID" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="AmountCost" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="AmountCost" column="AmountCost" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="toCardAmountCurrency" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="toCardAmountCurrency" column="toCardAmountCurrency" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="fromCardAmountCurrency" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="fromCardAmountCurrency" column="fromCardAmountCurrency" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="IdentifierTypeID" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="IdentifierTypeID" column="IdentifierTypeID" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="IdentifierID" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="IdentifierID" column="IdentifierID" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="RootIdenitifierSK" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="RootIdenitifierSK" column="RootIdenitifierSK" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="EAOperDateTime_SK" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="EAOperDateTime_SK" column="EAOperDateTime_SK" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="MerchantCashier_SKEY" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="MerchantCashier_SKEY" column="MerchantCashier_SKEY" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="SKUCount" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="SKUCount" column="SKUCount" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="POSName" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="POSName" column="POSName" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="MerchantName" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="MerchantName" column="MerchantName" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="AddressLine" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="AddressLine" column="AddressLine" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="MerchantCustomName" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="MerchantCustomName" column="MerchantCustomName" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="MerchantCustomFullName" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="MerchantCustomFullName" column="MerchantCustomFullName" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="MerchantCustomFormat" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="MerchantCustomFormat" column="MerchantCustomFormat" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="BrandName" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="BrandName" column="BrandName" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="InternalName" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="InternalName" column="InternalName" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="CityName" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="CityName" column="CityName" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="RegionName" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="RegionName" column="RegionName" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="Код товара" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="Код товара" column="Код товара" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="Товар" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="Товар" column="Товар" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="Level 07_NameColumn" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="Level 07_NameColumn" column="Level 07_NameColumn" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="Level 06_NameColumn" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="Level 06_NameColumn" column="Level 06_NameColumn" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="Level 05_NameColumn" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="Level 05_NameColumn" column="Level 05_NameColumn" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="Level 04_NameColumn" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="Level 04_NameColumn" column="Level 04_NameColumn" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="Level 03_NameColumn" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="Level 03_NameColumn" column="Level 03_NameColumn" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="Level 02_NameColumn" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="Level 02_NameColumn" column="Level 02_NameColumn" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+      <Hierarchy hasAll="true" name="Католог товаров" primaryKey="PurchaseID" displayFolder="Information">
+            <Table name="sales_fct"/>
+            <Level name="Католог товаров" column="Католог товаров" type="String" uniqueMembers="true" approxRowCount="10"/>
+         </Hierarchy>
+ </Dimension>
+
+ 
+<Cube name="sales_fct" defaultMeasure="Customer.Count (Total)" cache="true">
+  <!-- Use annotations to provide translations of this cube's caption and
+       description into German and French. Use of annotations in this manner is
+       experimental and unsupported; just for testing right now. -->
+  <Annotations>
+    <Annotation name="caption.de_DE">Verkaufen</Annotation>
+    <Annotation name="caption.fr_FR">Ventes</Annotation>
+    <Annotation name="description.fr_FR">Cube des ventes</Annotation>
+    <Annotation name="description.de">Cube Verkaufen</Annotation>
+    <Annotation name="description.de_AT">Cube den Verkaufen</Annotation>
+  </Annotations>
+  <Table name="sales_fct"/>
+  <!-- <AggName name="events_agg2">
+     <AggMeasure name="[Measures].[Count Events]" column="client_id"/>
+     <AggLevel name="[Time].[Date]" column="full_date"/>
+     <AggLevel name="[Client.Sex].[All Client.Sexs]" column="client_id"/>
+     <AggLevel name="[Types].[All Typess]" column="event_type"/>
+  </AggName> -->
+  <DimensionUsage name="Time" source="Time" foreignKey="date"/>
+  <DimensionUsage name="sales_fct" source="sales_fct" foreignKey="PurchaseID"/>
+
+    <Measure name="PurchaseID" column="PurchaseID" aggregator="distinct-count" formatString="Standard" displayFolder="sales_fct"/>
+    <Measure name="Amount" column="Amount" aggregator="sum" formatString="Standard" displayFolder="sales_fct"/>
+    <Measure name="Discount" column="Discount" aggregator="sum" formatString="Standard" displayFolder="sales_fct"/>
+    <Measure name="Discount" column="PurchaseID" aggregator="count" formatString="Standard" displayFolder="sales_fct"/>
+  </Cube>
+
+</Schema>

@@ -43,9 +43,11 @@ import javax.sql.DataSource;
 /**
  * A <code>RolapConnection</code> is a connection to a Mondrian OLAP Server.
  *
- * <p>Typically, you create a connection via
+ * <p>
+ * Typically, you create a connection via
  * {@link DriverManager#getConnection(String, mondrian.spi.CatalogLocator)}.
- * {@link RolapConnectionProperties} describes allowable keywords.</p>
+ * {@link RolapConnectionProperties} describes allowable keywords.
+ * </p>
  *
  * @author jhyde
  * @see RolapSchema
@@ -53,8 +55,7 @@ import javax.sql.DataSource;
  * @since 2 October, 2002
  */
 public class RolapConnection extends ConnectionBase {
-  private static final Logger LOGGER =
-    LogManager.getLogger( RolapConnection.class );
+  private static final Logger LOGGER = LogManager.getLogger(RolapConnection.class);
   private static final AtomicInteger ID_GENERATOR = new AtomicInteger();
 
   private final MondrianServer server;
@@ -87,16 +88,17 @@ public class RolapConnection extends ConnectionBase {
    * @param dataSource  JDBC data source
    */
   public RolapConnection(
-    MondrianServer server,
-    Util.PropertyList connectInfo,
-    DataSource dataSource ) {
-    this( server, connectInfo, null, dataSource );
+      MondrianServer server,
+      Util.PropertyList connectInfo,
+      DataSource dataSource) {
+    this(server, connectInfo, null, dataSource);
   }
 
   /**
    * Creates a RolapConnection.
    *
-   * <p>Only {@link RolapSchemaPool#get} calls this with
+   * <p>
+   * Only {@link RolapSchemaPool#get} calls this with
    * schema != null (to create a schema's internal connection).
    * Other uses retrieve a schema from the cache based upon
    * the <code>Catalog</code> property.
@@ -110,10 +112,10 @@ public class RolapConnection extends ConnectionBase {
    *                    by Mondrian
    */
   RolapConnection(
-    MondrianServer server,
-    Util.PropertyList connectInfo,
-    RolapSchema schema,
-    DataSource dataSource ) {
+      MondrianServer server,
+      Util.PropertyList connectInfo,
+      RolapSchema schema,
+      DataSource dataSource) {
     super();
     assert server != null;
     this.server = server;
@@ -121,86 +123,77 @@ public class RolapConnection extends ConnectionBase {
 
     assert connectInfo != null;
     String provider = connectInfo.get(
-      RolapConnectionProperties.Provider.name(), "mondrian" );
-    Util.assertTrue( provider.equalsIgnoreCase( "mondrian" ) );
+        RolapConnectionProperties.Provider.name(), "mondrian");
+    Util.assertTrue(provider.equalsIgnoreCase("mondrian"));
     this.connectInfo = connectInfo;
-    this.catalogUrl =
-      connectInfo.get( RolapConnectionProperties.Catalog.name() );
-    final String jdbcUser =
-      connectInfo.get( RolapConnectionProperties.JdbcUser.name() );
-    final String jdbcConnectString = getJdbcConnectionString( connectInfo );
-    final String strDataSource =
-      connectInfo.get( RolapConnectionProperties.DataSource.name() );
+    this.catalogUrl = connectInfo.get(RolapConnectionProperties.Catalog.name());
+    final String jdbcUser = connectInfo.get(RolapConnectionProperties.JdbcUser.name());
+    final String jdbcConnectString = getJdbcConnectionString(connectInfo);
+    final String strDataSource = connectInfo.get(RolapConnectionProperties.DataSource.name());
     StringBuilder buf = new StringBuilder();
-    this.dataSource =
-      createDataSource( dataSource, connectInfo, buf );
+    this.dataSource = createDataSource(dataSource, connectInfo, buf);
     Role role = null;
 
     // Register this connection before we register its internal statement.
-    server.addConnection( this );
+    server.addConnection(this);
 
-    if ( schema == null ) {
+    if (schema == null) {
       // If RolapSchema.Pool.get were to call this with schema == null,
       // we would loop.
-      Statement bootstrapStatement = createInternalStatement( false );
-      final Locus locus =
-        new Locus(
-          new Execution( bootstrapStatement, 0 ),
+      Statement bootstrapStatement = createInternalStatement(false);
+      final Locus locus = new Locus(
+          new Execution(bootstrapStatement, 0),
           null,
-          "Initializing connection" );
-      Locus.push( locus );
+          "Initializing connection");
+      Locus.push(locus);
       try {
-        if ( dataSource == null ) {
+        if (dataSource == null) {
           // If there is no external data source is passed in, we
           // expect the properties Jdbc, JdbcUser, DataSource to be
           // set, as they are used to generate the schema cache key.
-          final String connectionKey =
-            jdbcConnectString
-              + getJdbcProperties( connectInfo ).toString();
+          final String connectionKey = jdbcConnectString
+              + getJdbcProperties(connectInfo).toString();
 
           schema = RolapSchemaPool.instance().get(
-            catalogUrl,
-            connectionKey,
-            jdbcUser,
-            strDataSource,
-            connectInfo );
+              catalogUrl,
+              connectionKey,
+              jdbcUser,
+              strDataSource,
+              connectInfo);
         } else {
           schema = RolapSchemaPool.instance().get(
-            catalogUrl,
-            dataSource,
-            connectInfo );
+              catalogUrl,
+              dataSource,
+              connectInfo);
         }
       } finally {
-        Locus.pop( locus );
+        Locus.pop(locus);
         bootstrapStatement.close();
       }
-      internalStatement =
-        schema.getInternalConnection().getInternalStatement();
-      String roleNameList =
-        connectInfo.get( RolapConnectionProperties.Role.name() );
-      if ( roleNameList != null ) {
-        List<String> roleNames = Util.parseCommaList( roleNameList );
+      internalStatement = schema.getInternalConnection().getInternalStatement();
+      String roleNameList = connectInfo.get(RolapConnectionProperties.Role.name());
+      if (roleNameList != null) {
+        List<String> roleNames = Util.parseCommaList(roleNameList);
         List<Role> roleList = new ArrayList<Role>();
-        for ( String roleName : roleNames ) {
-          final LockBox.Entry entry =
-            server.getLockBox().get( roleName );
+        for (String roleName : roleNames) {
+          final LockBox.Entry entry = server.getLockBox().get(roleName);
           Role role1;
-          if ( entry != null ) {
+          if (entry != null) {
             try {
               role1 = (Role) entry.getValue();
-            } catch ( ClassCastException e ) {
+            } catch (ClassCastException e) {
               role1 = null;
             }
           } else {
-            role1 = schema.lookupRole( roleName );
+            role1 = schema.lookupRole(roleName);
           }
-          if ( role1 == null ) {
+          if (role1 == null) {
             throw Util.newError(
-              "Role '" + roleName + "' not found" );
+                "Role '" + roleName + "' not found");
           }
-          roleList.add( role1 );
+          roleList.add(role1);
         }
-        switch ( roleList.size() ) {
+        switch (roleList.size()) {
           case 0:
             // If they specify 'Role=;', the list of names will be
             // empty, and the effect will be as if they did specify
@@ -208,15 +201,15 @@ public class RolapConnection extends ConnectionBase {
             role = null;
             break;
           case 1:
-            role = roleList.get( 0 );
+            role = roleList.get(0);
             break;
           default:
-            role = RoleImpl.union( roleList );
+            role = RoleImpl.union(roleList);
             break;
         }
       }
     } else {
-      this.internalStatement = createInternalStatement( true );
+      this.internalStatement = createInternalStatement(true);
 
       // We are creating an internal connection. Now is a great time to
       // make sure that the JDBC credentials are valid, for this
@@ -225,55 +218,52 @@ public class RolapConnection extends ConnectionBase {
       java.sql.Statement statement = null;
       try {
         conn = this.dataSource.getConnection();
-        Dialect dialect =
-          DialectManager.createDialect( this.dataSource, conn );
-        if ( dialect.getDatabaseProduct()
-          == Dialect.DatabaseProduct.DERBY ) {
+        Dialect dialect = DialectManager.createDialect(this.dataSource, conn);
+        if (dialect.getDatabaseProduct() == Dialect.DatabaseProduct.DERBY) {
           // Derby requires a little extra prodding to do the
           // validation to detect an error.
           statement = conn.createStatement();
-          statement.executeQuery( "select * from bogustable" );
+          statement.executeQuery("select * from bogustable");
         }
-      } catch ( SQLException e ) {
-        if ( e.getMessage().equals(
-          "Table/View 'BOGUSTABLE' does not exist." ) ) {
+      } catch (SQLException e) {
+        if (e.getMessage().equals(
+            "Table/View 'BOGUSTABLE' does not exist.")) {
           // Ignore. This exception comes from Derby when the
           // connection is valid. If the connection were invalid, we
           // would receive an error such as "Schema 'BOGUSUSER' does
           // not exist"
         } else {
           throw Util.newError(
-            e,
-            "Error while creating SQL connection: " + buf );
+              e,
+              "Error while creating SQL connection: " + buf);
         }
       } finally {
         try {
-          if ( statement != null ) {
+          if (statement != null) {
             statement.close();
           }
-          if ( conn != null ) {
+          if (conn != null) {
             conn.close();
           }
-        } catch ( SQLException e ) {
+        } catch (SQLException e) {
           // ignore
         }
       }
     }
 
-    if ( role == null ) {
+    if (role == null) {
       role = schema.getDefaultRole();
     }
 
     // Set the locale.
-    String localeString =
-      connectInfo.get( RolapConnectionProperties.Locale.name() );
-    if ( localeString != null ) {
-      this.locale = Util.parseLocale( localeString );
+    String localeString = connectInfo.get(RolapConnectionProperties.Locale.name());
+    if (localeString != null) {
+      this.locale = Util.parseLocale(localeString);
       assert locale != null;
     }
 
     this.schema = schema;
-    setRole( role );
+    setRole(role);
   }
 
   @Override
@@ -281,11 +271,10 @@ public class RolapConnection extends ConnectionBase {
     try {
       super.finalize();
       close();
-    } catch ( Throwable t ) {
+    } catch (Throwable t) {
       LOGGER.info(
-        MondrianResource.instance()
-          .FinalizerErrorRolapConnection.baseMessage,
-        t );
+          MondrianResource.instance().FinalizerErrorRolapConnection.baseMessage,
+          t);
     }
   }
 
@@ -309,130 +298,121 @@ public class RolapConnection extends ConnectionBase {
    *
    * @param dataSource  Anonymous data source from user, or null
    * @param connectInfo Mondrian connection properties
-   * @param buf         Into which method writes a description of the JDBC credentials
+   * @param buf         Into which method writes a description of the JDBC
+   *                    credentials
    * @return Data source
    */
   static DataSource createDataSource(
-    DataSource dataSource,
-    Util.PropertyList connectInfo,
-    StringBuilder buf ) {
+      DataSource dataSource,
+      Util.PropertyList connectInfo,
+      StringBuilder buf) {
     assert buf != null;
-    final String jdbcConnectString = getJdbcConnectionString( connectInfo );
-    final String jdbcUser =
-      connectInfo.get( RolapConnectionProperties.JdbcUser.name() );
-    final String jdbcPassword =
-      connectInfo.get( RolapConnectionProperties.JdbcPassword.name() );
-    final String dataSourceName =
-      connectInfo.get( RolapConnectionProperties.DataSource.name() );
+    final String jdbcConnectString = getJdbcConnectionString(connectInfo);
+    final String jdbcUser = connectInfo.get(RolapConnectionProperties.JdbcUser.name());
+    final String jdbcPassword = connectInfo.get(RolapConnectionProperties.JdbcPassword.name());
+    final String dataSourceName = connectInfo.get(RolapConnectionProperties.DataSource.name());
 
-    if ( dataSource != null ) {
-      appendKeyValue( buf, "Anonymous data source", dataSource );
+    if (dataSource != null) {
+      appendKeyValue(buf, "Anonymous data source", dataSource);
       appendKeyValue(
-        buf, RolapConnectionProperties.JdbcUser.name(), jdbcUser );
-      if ( jdbcUser != null || jdbcPassword != null ) {
-        dataSource =
-          new UserPasswordDataSource(
-            dataSource, jdbcUser, jdbcPassword );
+          buf, RolapConnectionProperties.JdbcUser.name(), jdbcUser);
+      if (jdbcUser != null || jdbcPassword != null) {
+        dataSource = new UserPasswordDataSource(
+            dataSource, jdbcUser, jdbcPassword);
       }
       return dataSource;
 
-    } else if ( jdbcConnectString != null ) {
+    } else if (jdbcConnectString != null) {
       // Get connection through own pooling datasource
       appendKeyValue(
-        buf, RolapConnectionProperties.Jdbc.name(), jdbcConnectString );
+          buf, RolapConnectionProperties.Jdbc.name(), jdbcConnectString);
       appendKeyValue(
-        buf, RolapConnectionProperties.JdbcUser.name(), jdbcUser );
-      String jdbcDrivers =
-        connectInfo.get( RolapConnectionProperties.JdbcDrivers.name() );
-      if ( jdbcDrivers != null ) {
-        RolapUtil.loadDrivers( jdbcDrivers );
+          buf, RolapConnectionProperties.JdbcUser.name(), jdbcUser);
+      String jdbcDrivers = connectInfo.get(RolapConnectionProperties.JdbcDrivers.name());
+      if (jdbcDrivers != null) {
+        RolapUtil.loadDrivers(jdbcDrivers);
       }
-      final String jdbcDriversProp =
-        MondrianProperties.instance().JdbcDrivers.get();
-      RolapUtil.loadDrivers( jdbcDriversProp );
+      final String jdbcDriversProp = MondrianProperties.instance().JdbcDrivers.get();
+      RolapUtil.loadDrivers(jdbcDriversProp);
 
-      Properties jdbcProperties = getJdbcProperties( connectInfo );
-      final Map<String, String> map = Util.toMap( jdbcProperties );
-      for ( Map.Entry<String, String> entry : map.entrySet() ) {
+      Properties jdbcProperties = getJdbcProperties(connectInfo);
+      final Map<String, String> map = Util.toMap(jdbcProperties);
+      for (Map.Entry<String, String> entry : map.entrySet()) {
         // FIXME ordering is non-deterministic
-        appendKeyValue( buf, entry.getKey(), entry.getValue() );
+        appendKeyValue(buf, entry.getKey(), entry.getValue());
       }
 
-      if ( jdbcUser != null ) {
-        jdbcProperties.put( "user", jdbcUser );
+      if (jdbcUser != null) {
+        jdbcProperties.put("user", jdbcUser);
       }
-      if ( jdbcPassword != null ) {
-        jdbcProperties.put( "password", jdbcPassword );
+      if (jdbcPassword != null) {
+        jdbcProperties.put("password", jdbcPassword);
       }
 
       // JDBC connections are dumb beasts, so we assume they're not
       // pooled. Therefore the default is true.
-      final boolean poolNeeded =
-        connectInfo.get(
+      final boolean poolNeeded = connectInfo.get(
           RolapConnectionProperties.PoolNeeded.name(),
-          "true" ).equalsIgnoreCase( "true" );
+          "true").equalsIgnoreCase("true");
 
-      if ( !poolNeeded ) {
+      if (!poolNeeded) {
         // Connection is already pooled; don't pool it again.
         return new DriverManagerDataSource(
-          jdbcConnectString,
-          jdbcProperties );
+            jdbcConnectString,
+            jdbcProperties);
       }
       String connLc = jdbcConnectString.toLowerCase();
-      if ( ( connLc.indexOf( "mysql" ) > -1 )
-        || ( connLc.indexOf( "mariadb" ) > -1 ) ) {
+      if ((connLc.indexOf("mysql") > -1)
+          || (connLc.indexOf("mariadb") > -1)) {
         // mysql driver needs this autoReconnect parameter
-        jdbcProperties.setProperty( "autoReconnect", "true" );
+        jdbcProperties.setProperty("autoReconnect", "true");
       }
       return RolapConnectionPool.instance()
-        .getDriverManagerPoolingDataSource(
-          jdbcConnectString, jdbcProperties );
+          .getDriverManagerPoolingDataSource(
+              jdbcConnectString, jdbcProperties);
 
-    } else if ( dataSourceName != null ) {
+    } else if (dataSourceName != null) {
       appendKeyValue(
-        buf,
-        RolapConnectionProperties.DataSource.name(),
-        dataSourceName );
+          buf,
+          RolapConnectionProperties.DataSource.name(),
+          dataSourceName);
       appendKeyValue(
-        buf,
-        RolapConnectionProperties.JdbcUser.name(),
-        jdbcUser );
+          buf,
+          RolapConnectionProperties.JdbcUser.name(),
+          jdbcUser);
 
       // Data sources are fairly smart, so we assume they look after
       // their own pooling. Therefore the default is false.
-      final boolean poolNeeded =
-        connectInfo.get(
+      final boolean poolNeeded = connectInfo.get(
           RolapConnectionProperties.PoolNeeded.name(),
-          "false" ).equalsIgnoreCase( "true" );
+          "false").equalsIgnoreCase("true");
 
       // Get connection from datasource.
       DataSourceResolver dataSourceResolver = getDataSourceResolver();
       try {
-        dataSource = dataSourceResolver.lookup( dataSourceName );
-      } catch ( Exception e ) {
+        dataSource = dataSourceResolver.lookup(dataSourceName);
+      } catch (Exception e) {
         throw Util.newInternal(
-          e,
-          "Error while looking up data source ("
-            + dataSourceName + ")" );
+            e,
+            "Error while looking up data source ("
+                + dataSourceName + ")");
       }
-      if ( poolNeeded ) {
-        dataSource =
-          RolapConnectionPool.instance()
+      if (poolNeeded) {
+        dataSource = RolapConnectionPool.instance()
             .getDataSourcePoolingDataSource(
-              dataSource, dataSourceName, jdbcUser, jdbcPassword );
+                dataSource, dataSourceName, jdbcUser, jdbcPassword);
       } else {
-        if ( jdbcUser != null || jdbcPassword != null ) {
-          dataSource =
-            new UserPasswordDataSource(
-              dataSource, jdbcUser, jdbcPassword );
+        if (jdbcUser != null || jdbcPassword != null) {
+          dataSource = new UserPasswordDataSource(
+              dataSource, jdbcUser, jdbcPassword);
         }
       }
       return dataSource;
     } else {
       throw Util.newInternal(
-        "Connect string '" + connectInfo.toString()
-          + "' must contain either '" + RolapConnectionProperties.Jdbc
-          + "' or '" + RolapConnectionProperties.DataSource + "'" );
+          "Connect string '" + connectInfo.toString()
+              + "' must contain either '" + RolapConnectionProperties.Jdbc
+              + "' or '" + RolapConnectionProperties.DataSource + "'");
     }
   }
 
@@ -443,22 +423,19 @@ public class RolapConnection extends ConnectionBase {
    * @return data source resolver
    */
   private static synchronized DataSourceResolver getDataSourceResolver() {
-    if ( dataSourceResolver == null ) {
-      final StringProperty property =
-        MondrianProperties.instance().DataSourceResolverClass;
-      final String className =
-        property.get(
-          JndiDataSourceResolver.class.getName() );
+    if (dataSourceResolver == null) {
+      final StringProperty property = MondrianProperties.instance().DataSourceResolverClass;
+      final String className = property.get(
+          JndiDataSourceResolver.class.getName());
       try {
-        dataSourceResolver =
-          ClassResolver.INSTANCE.instantiateSafe( className );
-      } catch ( ClassCastException e ) {
+        dataSourceResolver = ClassResolver.INSTANCE.instantiateSafe(className);
+      } catch (ClassCastException e) {
         throw Util.newInternal(
-          e,
-          "Plugin class specified by property "
-            + property.getPath()
-            + " must implement "
-            + DataSourceResolver.class.getName() );
+            e,
+            "Plugin class specified by property "
+                + property.getPath()
+                + " must implement "
+                + DataSourceResolver.class.getName());
       }
     }
     return dataSourceResolver;
@@ -472,14 +449,14 @@ public class RolapConnection extends ConnectionBase {
    * @param value Value
    */
   private static void appendKeyValue(
-    StringBuilder buf,
-    String key,
-    Object value ) {
-    if ( value != null ) {
-      if ( buf.length() > 0 ) {
-        buf.append( "; " );
+      StringBuilder buf,
+      String key,
+      Object value) {
+    if (value != null) {
+      if (buf.length() > 0) {
+        buf.append("; ");
       }
-      buf.append( key ).append( '=' ).append( value );
+      buf.append(key).append('=').append(value);
     }
   }
 
@@ -491,15 +468,15 @@ public class RolapConnection extends ConnectionBase {
    * @param connectInfo Connection properties
    * @return The JDBC connection properties.
    */
-  private static Properties getJdbcProperties( Util.PropertyList connectInfo ) {
+  private static Properties getJdbcProperties(Util.PropertyList connectInfo) {
     Properties jdbcProperties = new Properties();
-    for ( Pair<String, String> entry : connectInfo ) {
-      if ( entry.left.startsWith(
-        RolapConnectionProperties.JdbcPropertyPrefix ) ) {
+    for (Pair<String, String> entry : connectInfo) {
+      if (entry.left.startsWith(
+          RolapConnectionProperties.JdbcPropertyPrefix)) {
         jdbcProperties.put(
-          entry.left.substring(
-            RolapConnectionProperties.JdbcPropertyPrefix.length() ),
-          entry.right );
+            entry.left.substring(
+                RolapConnectionProperties.JdbcPropertyPrefix.length()),
+            entry.right);
       }
     }
     return jdbcProperties;
@@ -510,11 +487,11 @@ public class RolapConnection extends ConnectionBase {
   }
 
   public void close() {
-    if ( !closed ) {
+    if (!closed) {
       closed = true;
-      server.removeConnection( this );
+      server.removeConnection(this);
     }
-    if ( internalStatement != null ) {
+    if (internalStatement != null) {
       internalStatement.close();
     }
   }
@@ -525,7 +502,7 @@ public class RolapConnection extends ConnectionBase {
 
   public String getConnectString() {
     final Util.PropertyList connectInfoClone = connectInfo.clone();
-    connectInfoClone.remove( RolapConnectionProperties.JdbcPassword.name() );
+    connectInfoClone.remove(RolapConnectionProperties.JdbcPassword.name());
     return connectInfoClone.toString();
   }
 
@@ -537,9 +514,9 @@ public class RolapConnection extends ConnectionBase {
     return locale;
   }
 
-  public void setLocale( Locale locale ) {
-    if ( locale == null ) {
-      throw new IllegalArgumentException( "locale must not be null" );
+  public void setLocale(Locale locale) {
+    if (locale == null) {
+      throw new IllegalArgumentException("locale must not be null");
     }
     this.locale = locale;
   }
@@ -548,17 +525,17 @@ public class RolapConnection extends ConnectionBase {
     return schemaReader;
   }
 
-  public Object getProperty( String name ) {
+  public Object getProperty(String name) {
     // Mask out the values of certain properties.
-    if ( name.equals( RolapConnectionProperties.JdbcPassword.name() )
-      || name.equals( RolapConnectionProperties.CatalogContent.name() ) ) {
+    if (name.equals(RolapConnectionProperties.JdbcPassword.name())
+        || name.equals(RolapConnectionProperties.CatalogContent.name())) {
       return "";
     }
-    return connectInfo.get( name );
+    return connectInfo.get(name);
   }
 
-  public CacheControl getCacheControl( PrintWriter pw ) {
-    return getServer().getAggregationManager().getCacheControl( this, pw );
+  public CacheControl getCacheControl(PrintWriter pw) {
+    return getServer().getAggregationManager().getCacheControl(this, pw);
   }
 
   /**
@@ -571,13 +548,12 @@ public class RolapConnection extends ConnectionBase {
    * @throws QueryTimeoutException          if query exceeded timeout specified in
    *                                        the property file
    * @deprecated Use {@link #execute(mondrian.server.Execution)}; this method
-   * will be removed in mondrian-4.0
+   *             will be removed in mondrian-4.0
    */
-  public Result execute( Query query ) {
+  public Result execute(Query query) {
     final Statement statement = query.getStatement();
-    Execution execution =
-      new Execution( statement, statement.getQueryTimeoutMillis() );
-    return execute( execution );
+    Execution execution = new Execution(statement, statement.getQueryTimeoutMillis());
+    return execute(execution);
   }
 
   /**
@@ -590,89 +566,87 @@ public class RolapConnection extends ConnectionBase {
    * @throws QueryTimeoutException          if query exceeded timeout specified in
    *                                        the property file
    */
-  public Result execute( final Execution execution ) {
-    return
-      server.getResultShepherd()
+  public Result execute(final Execution execution) {
+    return server.getResultShepherd()
         .shepherdExecution(
-          execution,
-          new Callable<Result>() {
-            public Result call() throws Exception {
-              return executeInternal( execution );
-            }
-          } );
+            execution,
+            new Callable<Result>() {
+              public Result call() throws Exception {
+                return executeInternal(execution);
+              }
+            });
   }
 
-  private Result executeInternal( final Execution execution ) {
+  private Result executeInternal(final Execution execution) {
     execution.setContextMap();
     final Statement statement = execution.getMondrianStatement();
     // Cleanup any previous executions still running
-    synchronized ( statement ) {
-      final Execution previousExecution =
-        statement.getCurrentExecution();
-      if ( previousExecution != null ) {
-        statement.end( previousExecution );
+    synchronized (statement) {
+      final Execution previousExecution = statement.getCurrentExecution();
+      if (previousExecution != null) {
+        statement.end(previousExecution);
       }
     }
     final Query query = statement.getQuery();
     final MemoryMonitor.Listener listener = new MemoryMonitor.Listener() {
-      public void memoryUsageNotification( long used, long max ) {
+      public void memoryUsageNotification(long used, long max) {
         execution.setOutOfMemory(
-          "OutOfMemory used="
-            + used
-            + ", max="
-            + max
-            + " for query: "
-            + query.toString()
-            // connection string can contain user name and password
-            //+ " for connection: "
-            //+ getConnectString()
+            "OutOfMemory used="
+                + used
+                + ", max="
+                + max
+                + " for query: "
+                + query.toString()
+        // connection string can contain user name and password
+        // + " for connection: "
+        // + getConnectString()
         );
       }
     };
     MemoryMonitor mm = MemoryMonitorFactory.getMemoryMonitor();
     final long currId = execution.getId();
     try {
-      mm.addListener( listener );
+      mm.addListener(listener);
       // Check to see if we must punt
       execution.checkCancelOrTimeout();
 
-      if ( LOGGER.isDebugEnabled() ) {
-        LOGGER.debug( Util.unparse( query ) );
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(Util.unparse(query));
       }
 
-      if ( RolapUtil.MDX_LOGGER.isDebugEnabled() ) {
-        RolapUtil.MDX_LOGGER.debug( currId + ": " + Util.unparse( query ) );
+      if (RolapUtil.MDX_LOGGER.isDebugEnabled()) {
+        RolapUtil.MDX_LOGGER.debug(currId + ": " + Util.unparse(query));
       }
 
-      final Locus locus = new Locus( execution, null, "Loading cells" );
-      Locus.push( locus );
+      final Locus locus = new Locus(execution, null, "Loading cells");
+      Locus.push(locus);
       Result result;
       try {
-        statement.start( execution );
-        ( (RolapCube) query.getCube() ).clearCachedAggregations( true );
-        result = new RolapResult( execution, true );
+        statement.start(execution);
+        ((RolapCube) query.getCube()).clearCachedAggregations(true);
+        result = new RolapResult(execution, true);
         int i = 0;
-        for ( QueryAxis axis : query.getAxes() ) {
-          if ( axis.isNonEmpty() ) {
-            result = new NonEmptyResult( result, execution, i );
+        for (QueryAxis axis : query.getAxes()) {
+          if (axis.isNonEmpty()) {
+            result = new NonEmptyResult(result, execution, i);
           }
           ++i;
         }
       } finally {
-        Locus.pop( locus );
-        ( (RolapCube) query.getCube() ).clearCachedAggregations( true );
+        Locus.pop(locus);
+        ((RolapCube) query.getCube()).clearCachedAggregations(true);
       }
-      statement.end( execution );
+      statement.end(execution);
       return result;
-    } catch ( ResultLimitExceededException e ) {
+    } catch (ResultLimitExceededException e) {
       // query has been punted
       throw e;
-    } catch ( Exception e ) {
+    } catch (Exception e) {
       try {
-        if ( !execution.isCancelOrTimeout() ) {
-          statement.end( execution );
+        if (!execution.isCancelOrTimeout()) {
+          statement.end(execution);
         }
-      } catch ( Exception e1 ) {
+      } catch (Exception e1) {
         // We can safely ignore that cleanup exception.
         // If an error is encountered here, it means that
         // one was already encountered at statement.start()
@@ -681,37 +655,37 @@ public class RolapConnection extends ConnectionBase {
       }
       String queryString;
       try {
-        queryString = Util.unparse( query );
-      } catch ( Exception e1 ) {
+        queryString = Util.unparse(query);
+      } catch (Exception e1) {
         queryString = "?";
       }
       throw Util.newError(
-        e,
-        "Error while executing query [" + queryString + "]" );
+          e,
+          "Error while executing query [" + queryString + "]");
     } finally {
-      mm.removeListener( listener );
-      if ( RolapUtil.MDX_LOGGER.isDebugEnabled() ) {
+      mm.removeListener(listener);
+      if (RolapUtil.MDX_LOGGER.isDebugEnabled()) {
         final long elapsed = execution.getElapsedMillis();
         RolapUtil.MDX_LOGGER.debug(
-          currId + ": exec: " + elapsed + " ms" );
+            currId + ": exec: " + elapsed + " ms");
       }
     }
   }
 
-  public void setRole( Role role ) {
+  public void setRole(Role role) {
     assert role != null;
 
     this.role = role;
-    this.schemaReader = new RolapSchemaReader( role, schema );
+    this.schemaReader = new RolapSchemaReader(role, schema);
   }
 
   public Role getRole() {
-    Util.assertPostcondition( role != null, "role != null" );
+    Util.assertPostcondition(role != null, "role != null");
 
     return role;
   }
 
-  public void setScenario( Scenario scenario ) {
+  public void setScenario(Scenario scenario) {
     this.scenario = scenario;
   }
 
@@ -729,64 +703,61 @@ public class RolapConnection extends ConnectionBase {
     return server;
   }
 
-  public QueryPart parseStatement( String query ) {
-    Statement statement = createInternalStatement( false );
-    final Locus locus =
-      new Locus(
-        new Execution( statement, 0 ),
+  public QueryPart parseStatement(String query) {
+    Statement statement = createInternalStatement(false);
+    final Locus locus = new Locus(
+        new Execution(statement, 0),
         "Parse/validate MDX statement",
-        null );
-    Locus.push( locus );
+        null);
+    Locus.push(locus);
     try {
-      QueryPart queryPart =
-        parseStatement( statement, query, null, false );
-      if ( queryPart instanceof Query ) {
-        ( (Query) queryPart ).setOwnStatement( true );
+      QueryPart queryPart = parseStatement(statement, query, null, false);
+      if (queryPart instanceof Query) {
+        ((Query) queryPart).setOwnStatement(true);
         statement = null;
       }
       return queryPart;
     } finally {
-      Locus.pop( locus );
-      if ( statement != null ) {
+      Locus.pop(locus);
+      if (statement != null) {
         statement.close();
       }
     }
   }
 
-  public Exp parseExpression( String expr ) {
+  public Exp parseExpression(String expr) {
     boolean debug = false;
-    if ( getLogger().isDebugEnabled() ) {
-      //debug = true;
+    if (getLogger().isDebugEnabled()) {
+      // debug = true;
       getLogger().debug(
-        Util.nl
-          + expr );
+          Util.nl
+              + expr);
     }
     final Statement statement = getInternalStatement();
     try {
       MdxParserValidator parser = createParser();
       final FunTable funTable = getSchema().getFunTable();
-      return parser.parseExpression( statement, expr, debug, funTable );
-    } catch ( Throwable exception ) {
+      return parser.parseExpression(statement, expr, debug, funTable);
+    } catch (Throwable exception) {
       throw MondrianResource.instance().FailedToParseQuery.ex(
-        expr,
-        exception );
+          expr,
+          exception);
     }
   }
 
   public Statement getInternalStatement() {
-    if ( internalStatement == null ) {
+    if (internalStatement == null) {
       return schema.getInternalConnection().getInternalStatement();
     } else {
       return internalStatement;
     }
   }
 
-  private Statement createInternalStatement( boolean reentrant ) {
-    final Statement statement =
-      reentrant
+  private Statement createInternalStatement(boolean reentrant) {
+    final Statement statement = reentrant
         ? new ReentrantInternalStatement()
         : new InternalStatement();
-    server.addStatement( statement );
+    server.addStatement(statement);
     return statement;
   }
 
@@ -794,7 +765,8 @@ public class RolapConnection extends ConnectionBase {
    * Implementation of {@link DataSource} which calls the good ol'
    * {@link java.sql.DriverManager}.
    *
-   * <p>Overrides {@link #hashCode()} and {@link #equals(Object)} so that
+   * <p>
+   * Overrides {@link #hashCode()} and {@link #equals(Object)} so that
    * {@link Dialect} objects can be cached more effectively.
    */
   private static class DriverManagerDataSource implements DataSource {
@@ -804,8 +776,8 @@ public class RolapConnection extends ConnectionBase {
     private Properties jdbcProperties;
 
     public DriverManagerDataSource(
-      String jdbcConnectString,
-      Properties properties ) {
+        String jdbcConnectString,
+        Properties properties) {
       this.jdbcConnectString = jdbcConnectString;
       this.jdbcProperties = properties;
     }
@@ -813,40 +785,40 @@ public class RolapConnection extends ConnectionBase {
     @Override
     public int hashCode() {
       int h = loginTimeout;
-      h = Util.hash( h, jdbcConnectString );
-      h = Util.hash( h, jdbcProperties );
+      h = Util.hash(h, jdbcConnectString);
+      h = Util.hash(h, jdbcProperties);
       return h;
     }
 
     @Override
-    public boolean equals( Object obj ) {
-      if ( obj instanceof DriverManagerDataSource ) {
+    public boolean equals(Object obj) {
+      if (obj instanceof DriverManagerDataSource) {
         DriverManagerDataSource that = (DriverManagerDataSource) obj;
         return this.loginTimeout == that.loginTimeout
-          && this.jdbcConnectString.equals( that.jdbcConnectString )
-          && this.jdbcProperties.equals( that.jdbcProperties );
+            && this.jdbcConnectString.equals(that.jdbcConnectString)
+            && this.jdbcProperties.equals(that.jdbcProperties);
       }
       return false;
     }
 
     public Connection getConnection() throws SQLException {
       return java.sql.DriverManager.getConnection(
-        jdbcConnectString, jdbcProperties );
+          jdbcConnectString, jdbcProperties);
     }
 
     public Connection getConnection(
-      String username,
-      String password )
-      throws SQLException {
-      if ( jdbcProperties == null ) {
+        String username,
+        String password)
+        throws SQLException {
+      if (jdbcProperties == null) {
         return java.sql.DriverManager.getConnection(
-          jdbcConnectString, username, password );
+            jdbcConnectString, username, password);
       } else {
         Properties temp = (Properties) jdbcProperties.clone();
-        temp.put( "user", username );
-        temp.put( "password", password );
+        temp.put("user", username);
+        temp.put("password", password);
         return java.sql.DriverManager.getConnection(
-          jdbcConnectString, temp );
+            jdbcConnectString, temp);
       }
     }
 
@@ -854,11 +826,11 @@ public class RolapConnection extends ConnectionBase {
       return logWriter;
     }
 
-    public void setLogWriter( PrintWriter out ) throws SQLException {
+    public void setLogWriter(PrintWriter out) throws SQLException {
       logWriter = out;
     }
 
-    public void setLoginTimeout( int seconds ) throws SQLException {
+    public void setLoginTimeout(int seconds) throws SQLException {
       loginTimeout = seconds;
     }
 
@@ -867,14 +839,14 @@ public class RolapConnection extends ConnectionBase {
     }
 
     public java.util.logging.Logger getParentLogger() {
-      return java.util.logging.Logger.getLogger( "" );
+      return java.util.logging.Logger.getLogger("");
     }
 
-    public <T> T unwrap( Class<T> iface ) throws SQLException {
-      throw new SQLException( "not a wrapper" );
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+      throw new SQLException("not a wrapper");
     }
 
-    public boolean isWrapperFor( Class<?> iface ) throws SQLException {
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
       return false;
     }
   }
@@ -891,7 +863,7 @@ public class RolapConnection extends ConnectionBase {
    */
   public ScenarioImpl createScenario() {
     final ScenarioImpl scenario = new ScenarioImpl();
-    scenario.register( schema );
+    scenario.register(schema);
     return scenario;
   }
 
@@ -916,52 +888,47 @@ public class RolapConnection extends ConnectionBase {
      * @param execution Execution context
      * @param axis      Which axis to make non-empty
      */
-    NonEmptyResult( Result result, Execution execution, int axis ) {
-      super( execution, result.getAxes().clone() );
+    NonEmptyResult(Result result, Execution execution, int axis) {
+      super(execution, result.getAxes().clone());
 
       this.underlying = result;
       this.axis = axis;
       this.map = new HashMap<Integer, Integer>();
       int axisCount = underlying.getAxes().length;
-      this.pos = new int[ axisCount ];
+      this.pos = new int[axisCount];
       this.slicerAxis = underlying.getSlicerAxis();
-      TupleList tupleList =
-        ( (RolapAxis) underlying.getAxes()[ axis ] ).getTupleList();
+      TupleList tupleList = ((RolapAxis) underlying.getAxes()[axis]).getTupleList();
 
       final TupleList filteredTupleList;
-      if ( !tupleList.isEmpty()
-        && tupleList.get( 0 ).get( 0 ).getDimension()
-        .isHighCardinality() ) {
+      if (!tupleList.isEmpty()
+          && tupleList.get(0).get(0).getDimension()
+              .isHighCardinality()) {
         LOGGER.warn(
-          MondrianResource.instance()
-            .HighCardinalityInDimension.str(
-            tupleList.get( 0 ).get( 0 ).getDimension()
-              .getUniqueName() ) );
-        filteredTupleList =
-          new DelegatingTupleList(
+            MondrianResource.instance().HighCardinalityInDimension.str(
+                tupleList.get(0).get(0).getDimension()
+                    .getUniqueName()));
+        filteredTupleList = new DelegatingTupleList(
             tupleList.getArity(),
             new FilteredIterableList<List<Member>>(
-              tupleList,
-              new FilteredIterableList.Filter<List<Member>>() {
-                public boolean accept( final List<Member> p ) {
-                  return p.get( 0 ) != null;
-                }
-              }
-            ) );
+                tupleList,
+                new FilteredIterableList.Filter<List<Member>>() {
+                  public boolean accept(final List<Member> p) {
+                    return p.get(0) != null;
+                  }
+                }));
       } else {
-        filteredTupleList =
-          TupleCollections.createList( tupleList.getArity() );
+        filteredTupleList = TupleCollections.createList(tupleList.getArity());
         int i = -1;
         TupleCursor tupleCursor = tupleList.tupleCursor();
-        while ( tupleCursor.forward() ) {
+        while (tupleCursor.forward()) {
           ++i;
-          if ( !isEmpty( i, axis ) ) {
-            map.put( filteredTupleList.size(), i );
-            filteredTupleList.addCurrent( tupleCursor );
+          if (!isEmpty(i, axis)) {
+            map.put(filteredTupleList.size(), i);
+            filteredTupleList.addCurrent(tupleCursor);
           }
         }
       }
-      this.axes[ axis ] = new RolapAxis( filteredTupleList );
+      this.axes[axis] = new RolapAxis(filteredTupleList);
     }
 
     protected Logger getLogger() {
@@ -976,24 +943,24 @@ public class RolapConnection extends ConnectionBase {
      * coordinate fixed at 1, and vary all other coordinates over all
      * possible values.
      */
-    private boolean isEmpty( int offset, int fixedAxis ) {
+    private boolean isEmpty(int offset, int fixedAxis) {
       int axisCount = getAxes().length;
-      pos[ fixedAxis ] = offset;
-      return isEmptyRecurse( fixedAxis, axisCount - 1 );
+      pos[fixedAxis] = offset;
+      return isEmptyRecurse(fixedAxis, axisCount - 1);
     }
 
-    private boolean isEmptyRecurse( int fixedAxis, int axis ) {
-      if ( axis < 0 ) {
-        RolapCell cell = (RolapCell) underlying.getCell( pos );
+    private boolean isEmptyRecurse(int fixedAxis, int axis) {
+      if (axis < 0) {
+        RolapCell cell = (RolapCell) underlying.getCell(pos);
         return cell.isNull();
-      } else if ( axis == fixedAxis ) {
-        return isEmptyRecurse( fixedAxis, axis - 1 );
+      } else if (axis == fixedAxis) {
+        return isEmptyRecurse(fixedAxis, axis - 1);
       } else {
-        List<Position> positions = getAxes()[ axis ].getPositions();
+        List<Position> positions = getAxes()[axis].getPositions();
         final int positionCount = positions.size();
-        for ( int i = 0; i < positionCount; i++ ) {
-          pos[ axis ] = i;
-          if ( !isEmptyRecurse( fixedAxis, axis - 1 ) ) {
+        for (int i = 0; i < positionCount; i++) {
+          pos[axis] = i;
+          if (!isEmptyRecurse(fixedAxis, axis - 1)) {
             return false;
           }
         }
@@ -1002,21 +969,21 @@ public class RolapConnection extends ConnectionBase {
     }
 
     // synchronized because we use 'pos'
-    public synchronized Cell getCell( int[] externalPos ) {
+    public synchronized Cell getCell(int[] externalPos) {
       try {
         System.arraycopy(
-          externalPos, 0, this.pos, 0, externalPos.length );
-        int offset = externalPos[ axis ];
-        int mappedOffset = mapOffsetToUnderlying( offset );
-        this.pos[ axis ] = mappedOffset;
-        return underlying.getCell( this.pos );
-      } catch ( NullPointerException npe ) {
-        return underlying.getCell( externalPos );
+            externalPos, 0, this.pos, 0, externalPos.length);
+        int offset = externalPos[axis];
+        int mappedOffset = mapOffsetToUnderlying(offset);
+        this.pos[axis] = mappedOffset;
+        return underlying.getCell(this.pos);
+      } catch (NullPointerException npe) {
+        return underlying.getCell(externalPos);
       }
     }
 
-    private int mapOffsetToUnderlying( int offset ) {
-      return map.get( offset );
+    private int mapOffsetToUnderlying(int offset) {
+      return map.get(offset);
     }
 
     public void close() {
@@ -1030,7 +997,7 @@ public class RolapConnection extends ConnectionBase {
   private static abstract class DelegatingDataSource implements DataSource {
     protected final DataSource dataSource;
 
-    public DelegatingDataSource( DataSource dataSource ) {
+    public DelegatingDataSource(DataSource dataSource) {
       this.dataSource = dataSource;
     }
 
@@ -1039,22 +1006,22 @@ public class RolapConnection extends ConnectionBase {
     }
 
     public Connection getConnection(
-      String username,
-      String password )
-      throws SQLException {
-      return dataSource.getConnection( username, password );
+        String username,
+        String password)
+        throws SQLException {
+      return dataSource.getConnection(username, password);
     }
 
     public PrintWriter getLogWriter() throws SQLException {
       return dataSource.getLogWriter();
     }
 
-    public void setLogWriter( PrintWriter out ) throws SQLException {
-      dataSource.setLogWriter( out );
+    public void setLogWriter(PrintWriter out) throws SQLException {
+      dataSource.setLogWriter(out);
     }
 
-    public void setLoginTimeout( int seconds ) throws SQLException {
-      dataSource.setLoginTimeout( seconds );
+    public void setLoginTimeout(int seconds) throws SQLException {
+      dataSource.setLoginTimeout(seconds);
     }
 
     public int getLoginTimeout() throws SQLException {
@@ -1062,25 +1029,24 @@ public class RolapConnection extends ConnectionBase {
     }
 
     // JDBC 4.0 support (JDK 1.6 and higher)
-    public <T> T unwrap( Class<T> iface ) throws SQLException {
-      if ( Util.JdbcVersion >= 0x0400 ) {
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+      if (Util.JdbcVersion >= 0x0400) {
         // Do
-        //              return dataSource.unwrap(iface);
+        // return dataSource.unwrap(iface);
         // via reflection.
         try {
-          Method method =
-            DataSource.class.getMethod( "unwrap", Class.class );
-          return iface.cast( method.invoke( dataSource, iface ) );
-        } catch ( IllegalAccessException e ) {
-          throw Util.newInternal( e, "While invoking unwrap" );
-        } catch ( InvocationTargetException e ) {
-          throw Util.newInternal( e, "While invoking unwrap" );
-        } catch ( NoSuchMethodException e ) {
-          throw Util.newInternal( e, "While invoking unwrap" );
+          Method method = DataSource.class.getMethod("unwrap", Class.class);
+          return iface.cast(method.invoke(dataSource, iface));
+        } catch (IllegalAccessException e) {
+          throw Util.newInternal(e, "While invoking unwrap");
+        } catch (InvocationTargetException e) {
+          throw Util.newInternal(e, "While invoking unwrap");
+        } catch (NoSuchMethodException e) {
+          throw Util.newInternal(e, "While invoking unwrap");
         }
       } else {
-        if ( iface.isInstance( dataSource ) ) {
-          return iface.cast( dataSource );
+        if (iface.isInstance(dataSource)) {
+          return iface.cast(dataSource);
         } else {
           return null;
         }
@@ -1088,44 +1054,42 @@ public class RolapConnection extends ConnectionBase {
     }
 
     // JDBC 4.0 support (JDK 1.6 and higher)
-    public boolean isWrapperFor( Class<?> iface ) throws SQLException {
-      if ( Util.JdbcVersion >= 0x0400 ) {
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+      if (Util.JdbcVersion >= 0x0400) {
         // Do
-        //              return dataSource.isWrapperFor(iface);
+        // return dataSource.isWrapperFor(iface);
         // via reflection.
         try {
-          Method method =
-            DataSource.class.getMethod(
-              "isWrapperFor", boolean.class );
-          return (Boolean) method.invoke( dataSource, iface );
-        } catch ( IllegalAccessException e ) {
-          throw Util.newInternal( e, "While invoking isWrapperFor" );
-        } catch ( InvocationTargetException e ) {
-          throw Util.newInternal( e, "While invoking isWrapperFor" );
-        } catch ( NoSuchMethodException e ) {
-          throw Util.newInternal( e, "While invoking isWrapperFor" );
+          Method method = DataSource.class.getMethod(
+              "isWrapperFor", boolean.class);
+          return (Boolean) method.invoke(dataSource, iface);
+        } catch (IllegalAccessException e) {
+          throw Util.newInternal(e, "While invoking isWrapperFor");
+        } catch (InvocationTargetException e) {
+          throw Util.newInternal(e, "While invoking isWrapperFor");
+        } catch (NoSuchMethodException e) {
+          throw Util.newInternal(e, "While invoking isWrapperFor");
         }
       } else {
-        return iface.isInstance( dataSource );
+        return iface.isInstance(dataSource);
       }
     }
 
     // JDBC 4.1 support (JDK 1.7 and higher)
     public java.util.logging.Logger getParentLogger() {
-      if ( Util.JdbcVersion >= 0x0401 ) {
+      if (Util.JdbcVersion >= 0x0401) {
         // Do
-        //              return dataSource.getParentLogger();
+        // return dataSource.getParentLogger();
         // via reflection.
         try {
-          Method method =
-            DataSource.class.getMethod( "getParentLogger" );
-          return (java.util.logging.Logger) method.invoke( dataSource );
-        } catch ( IllegalAccessException e ) {
-          throw Util.newInternal( e, "While invoking getParentLogger" );
-        } catch ( InvocationTargetException e ) {
-          throw Util.newInternal( e, "While invoking getParentLogger" );
-        } catch ( NoSuchMethodException e ) {
-          throw Util.newInternal( e, "While invoking getParentLogger" );
+          Method method = DataSource.class.getMethod("getParentLogger");
+          return (java.util.logging.Logger) method.invoke(dataSource);
+        } catch (IllegalAccessException e) {
+          throw Util.newInternal(e, "While invoking getParentLogger");
+        } catch (InvocationTargetException e) {
+          throw Util.newInternal(e, "While invoking getParentLogger");
+        } catch (NoSuchMethodException e) {
+          throw Util.newInternal(e, "While invoking getParentLogger");
         }
       } else {
         // Can't throw SQLFeatureNotSupportedException... it doesn't
@@ -1135,18 +1099,20 @@ public class RolapConnection extends ConnectionBase {
     }
   }
 
-  private static String getJdbcConnectionString( Util.PropertyList connectInfo ) {
+  private static String getJdbcConnectionString(Util.PropertyList connectInfo) {
 
-    String jdbc = connectInfo.get( RolapConnectionProperties.Jdbc.name() );
+    String jdbc = connectInfo.get(RolapConnectionProperties.Jdbc.name());
 
-    if ( StringUtils.isBlank( jdbc ) ) {
+    if (StringUtils.isBlank(jdbc)) {
       return null;
     }
 
-    String database = StringUtils.isBlank( connectInfo.get( "databaseName" ) )
-      ? "" : ";databaseName=" + connectInfo.get( "databaseName" );
-    String integratedSecurity = Boolean.parseBoolean( connectInfo.get( "integratedSecurity" ) )
-      ? ";integratedSecurity=true" : "";
+    String database = StringUtils.isBlank(connectInfo.get("databaseName"))
+        ? ""
+        : ";databaseName=" + connectInfo.get("databaseName");
+    String integratedSecurity = Boolean.parseBoolean(connectInfo.get("integratedSecurity"))
+        ? ";integratedSecurity=true"
+        : "";
 
     return jdbc + database + integratedSecurity;
   }
@@ -1167,30 +1133,32 @@ public class RolapConnection extends ConnectionBase {
      * @param jdbcPassword Password
      */
     public UserPasswordDataSource(
-      DataSource dataSource,
-      String jdbcUser,
-      String jdbcPassword ) {
-      super( dataSource );
+        DataSource dataSource,
+        String jdbcUser,
+        String jdbcPassword) {
+      super(dataSource);
       this.jdbcUser = jdbcUser;
       this.jdbcPassword = jdbcPassword;
     }
 
     public Connection getConnection() throws SQLException {
-      return dataSource.getConnection( jdbcUser, jdbcPassword );
+      return dataSource.getConnection(jdbcUser, jdbcPassword);
     }
   }
 
   /**
-   * <p>Implementation of {@link Statement} for use when you don't have an
-   * olap4j connection.</p>
+   * <p>
+   * Implementation of {@link Statement} for use when you don't have an
+   * olap4j connection.
+   * </p>
    */
   private class InternalStatement extends StatementImpl {
     private boolean closed = false;
 
     public void close() {
-      if ( !closed ) {
+      if (!closed) {
         closed = true;
-        server.removeStatement( this );
+        server.removeStatement(this);
       }
     }
 
@@ -1200,25 +1168,30 @@ public class RolapConnection extends ConnectionBase {
   }
 
   /**
-   * <p>A statement that can be used for all of the various internal
+   * <p>
+   * A statement that can be used for all of the various internal
    * operations, such as resolving MDX identifiers, that require a
    * {@link Statement} and an {@link Execution}.
    *
-   * <p>The statement needs to be reentrant because there are many such
+   * <p>
+   * The statement needs to be reentrant because there are many such
    * operations; several of these operations might be active at one time. We
    * don't want to create a new statement for each, but just one internal
    * statement for each connection. The statement shouldn't have a unique
    * execution. For this reason, we don't use the inherited {@link #execution}
-   * field.</p>
+   * field.
+   * </p>
    *
-   * <p>But there is a drawback. If we can't find the unique execution, the
+   * <p>
+   * But there is a drawback. If we can't find the unique execution, the
    * statement cannot be canceled or time out. If you want that behavior
    * from an internal statement, use the base class: create a new
-   * {@link InternalStatement} for each operation.</p>
+   * {@link InternalStatement} for each operation.
+   * </p>
    */
   private class ReentrantInternalStatement extends InternalStatement {
     @Override
-    public void start( Execution execution ) {
+    public void start(Execution execution) {
       // Unlike StatementImpl, there is not a unique execution. An
       // internal statement can execute several at the same time. So,
       // we don't set this.execution.
@@ -1226,7 +1199,7 @@ public class RolapConnection extends ConnectionBase {
     }
 
     @Override
-    public void end( Execution execution ) {
+    public void end(Execution execution) {
       execution.end();
     }
 

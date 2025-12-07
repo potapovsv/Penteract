@@ -17,7 +17,7 @@
         <Logger name="org.apache" level="info">
             <AppenderRef ref="STDOUT"/>
         </Logger>
-        <Logger name="mondrian" level="info">
+        <Logger name="mondrian" level="debug">
         </Logger>
         <Logger name="mondrian.mdx" level="debug">
             <AppenderRef ref="MDXLOG"/>

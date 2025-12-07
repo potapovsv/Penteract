@@ -47,7 +47,7 @@
     <jakarta.jws-api.version>3.0.0</jakarta.jws-api.version>
     <jakarta.servlet.jsp.jstl-api.version>3.0.2</jakarta.servlet.jsp.jstl-api.version>
     <jakarta.servlet.jsp.jstl.version>3.0.1</jakarta.servlet.jsp.jstl.version>    
-    <fasterxml-jackson.version>2.17.2</fasterxml-jackson.version>    
+    <fasterxml-jackson.version>2.20.1</fasterxml-jackson.version>    
   </properties>
 
   <dependencies>
@@ -55,13 +55,13 @@
     <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.16.1</version>
+        <version>2.21.0</version>
     </dependency>
 
     <dependency>
       <groupId>pentaho</groupId>
       <artifactId>Penteract-olap</artifactId>
-      <version>1.0.0.1000-LMX</version>
+      <version>1.0.0.1001-LMX</version>
         <exclusions>
             <exclusion>
                 <groupId>commons-io</groupId>
@@ -86,7 +86,16 @@
       <artifactId>clickhouse-jdbc</artifactId>
       <version>0.9.4</version>
     </dependency>
-    
+    <dependency>
+      <groupId>com.clickhouse</groupId>
+      <artifactId>clickhouse-client</artifactId>
+      <version>0.9.4</version>
+    </dependency>
+    <dependency>
+        <groupId>com.clickhouse</groupId>
+        <artifactId>clickhouse-http-client</artifactId>
+        <version>0.9.4</version>
+    </dependency>      
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
@@ -112,7 +121,7 @@
     <dependency>
       <groupId>org.lz4</groupId>
       <artifactId>lz4-java</artifactId>
-      <version>1.8.0</version>
+      <version>1.8.1</version>
     </dependency>
 
 

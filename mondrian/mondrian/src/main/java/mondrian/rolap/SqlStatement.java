@@ -92,6 +92,8 @@ public class SqlStatement {
   private State state = State.FRESH;
   private final long id;
   private Functor1<Void, Statement> callback;
+  public int fetchSize; 
+ 
 
   /**
    * Creates a SqlStatement.
@@ -185,7 +187,8 @@ public class SqlStatement {
       if ( maxRows > 0 ) {
         statement.setMaxRows( maxRows );
       }
-
+      // statement.setFetchSize(50000);
+      // fetchSize = statement.getFetchSize();
       // First make sure to register with the execution instance.
       if ( getPurpose() != Purpose.CELL_SEGMENT ) {
         locus.execution.registerStatement( locus, statement );

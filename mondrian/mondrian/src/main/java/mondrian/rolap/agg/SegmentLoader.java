@@ -506,9 +506,18 @@ public class SegmentLoader {
       final SortedSet<Comparable>[] axisValueSets, final GroupingSetsList groupingSetsList ) throws SQLException {
     List<Segment> segments = groupingSetsList.getDefaultSegments();
     int measureCount = segments.size();
-     
-    long t1 = System.currentTimeMillis();     
-    ResultSet rawRows = loadData( stmt, groupingSetsList );
+    long t1 = System.currentTimeMillis();   
+       
+    ResultSet rawRows = loadData( stmt, groupingSetsList );     
+// /*POOOOR */
+//     t1 = System.currentTimeMillis(); 
+//     int k1=0;
+//     while ( rawRows.next() ) {
+//       k1++;
+//     }
+// /*POOOOR */      
+//      if (LOGGER.isDebugEnabled()) { LOGGER.debug("POOOOR rawRows.next() loadData time: " + (System.currentTimeMillis() - t1) + " rows k: " + k1);}       
+    // rawRows = loadData( stmt, groupingSetsList );
     if (LOGGER.isDebugEnabled()) { LOGGER.debug("rawRows = loadData time: " + (System.currentTimeMillis() - t1));}
     assert stmt != null;
     final List<SqlStatement.Type> types = stmt.guessTypes();
@@ -527,35 +536,40 @@ public class SegmentLoader {
     }
      t1 = System.currentTimeMillis();   
     final RowList processedRows = new RowList( processedTypes, 100 );
-if (LOGGER.isDebugEnabled()) { LOGGER.debug("processedRows = loadData time: " + (System.currentTimeMillis() - t1));}
+    if (LOGGER.isDebugEnabled()) { LOGGER.debug("processedRows = loadData time: " + (System.currentTimeMillis() - t1));}
     t1 = System.currentTimeMillis();  
     Execution execution = Locus.peek().execution;
     if (LOGGER.isDebugEnabled()) { LOGGER.debug("Locus.peek().execution = loadData time: " + (System.currentTimeMillis() - t1));}
 
 
-    // t1 = System.currentTimeMillis(); 
-    // int k1=0;
-    // while ( rawRows.next() ) {
-    //   k1++;
-    // }
-    //  if (LOGGER.isDebugEnabled()) { LOGGER.debug("rawRows.next() loadData time: " + (System.currentTimeMillis() - t1) + " rows k: " + k1);}
-    t1 = System.currentTimeMillis(); 
+    t1 = System.nanoTime(); 
+  
     long w1=0,w2=0,w3=0,w4=0,w5=0,w6=0,w11=0,w12=0,w13=0,w14=0, w15=0, w16=0;
     // rawRows.first();
-    while ( rawRows.next() ) {
-      w1 = System.currentTimeMillis();
+    while (true ) {
+      w1 = System.nanoTime();
       // Check if the MDX query was canceled.
+      boolean hasNext =rawRows.next() ;
+      if (!hasNext) {
+        break; // Выходим из цикла, если строк больше нет
+      }
       CancellationChecker.checkCancelOrTimeout( ++stmt.rowCount, execution );
       
       checkResultLimit( stmt.rowCount );
       processedRows.createRow();
-      w2 = System.currentTimeMillis();
+      w2 = System.nanoTime();
       // get the columns
       int columnIndex = 0;
-         for ( int axisIndex = 0; axisIndex < arity; axisIndex++, columnIndex++ ) {
+        for ( int axisIndex = 0; axisIndex < arity; axisIndex++, columnIndex++ ) {
         final SqlStatement.Type type = types.get( columnIndex );
         switch ( type ) {
           case OBJECT:
+            // Object o1 = rawRows.getObject(columnIndex + 1);
+            // if ( o1 == null ) {
+            //   o1 = Util.nullValue; // convert to placeholder
+            // }
+            // processedRows.setObject( columnIndex, o );
+            // break;
           case STRING:
             Object o = rawRows.getObject( columnIndex + 1 );
             if ( o == null ) {
@@ -640,14 +654,14 @@ if (LOGGER.isDebugEnabled()) { LOGGER.debug("processedRows = loadData time: " + 
             throw Util.unexpected( type );
         }
       }
-      w3 = System.currentTimeMillis();
+      w3 = System.nanoTime();
       // pre-compute which measures are numeric
       final boolean[] numeric = new boolean[measureCount];
       int k = 0;
       for ( Segment segment : segments ) {
         numeric[k++] = segment.measure.getDatatype().isNumeric();
       }
-      w4 = System.currentTimeMillis();
+      w4 = System.nanoTime();
       // get the measure
       for ( int i = 0; i < measureCount; i++, columnIndex++ ) {
         final SqlStatement.Type type = types.get( columnIndex );
@@ -713,27 +727,27 @@ if (LOGGER.isDebugEnabled()) { LOGGER.debug("processedRows = loadData time: " + 
             throw Util.unexpected( type );
         }
       }
-      w5 = System.currentTimeMillis();
+      w5 = System.nanoTime();
       if ( groupingSetsList.useGroupingSets() ) {
         processedRows.setObject( columnIndex, getRollupBitKey( groupingSetsList.getRollupColumns().size(), rawRows,
             columnIndex ) );
       }
-       w6 = System.currentTimeMillis();
+       w6 = System.nanoTime();
        w11 = w11 +(w2-w1);
        w12 = w12 +(w3-w2);
        w13 = w13 +(w4-w3);
-        w14 = w14 +(w5-w4);
-        w15 = w15 +(w6-w5);
-         w16 = w16 +(w6-w1);
+       w14 = w14 +(w5-w4);
+       w15 = w15 +(w6-w5);
+       w16 = w16 +(w6-w1);
     }
-     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) w11 +(w2-w1) " + w11);}
-     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) w12 w12 +(w3-w2)" + w12);}
-     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) w13 +(w4-w3)" + w13);}
-     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) w14+(w5-w4) " + w14);}
-     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) w15 +(w6-w5)" + w15);}
-     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) w16 +(ALL NEXT)" + w16);}
+     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) w11 +(w2-w1) " + w11 / 1000000 + " мс ");}
+     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) w12 w12 +(w3-w2)" + w12 / 1000000 + " мс ");}
+     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) w13 +(w4-w3)" + w13 / 1000000 + " мс " );}
+     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) w14+(w5-w4) " + w14 / 1000000 + " мс ");}
+     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) w15 +(w6-w5)" + w15 / 1000000 + " мс ");}
+     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) w16 +(ALL NEXT)" + w16/ 1000000 + " мс ");}
     //  if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) w16 " + w16);}
-     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) = loadData time: " + (System.currentTimeMillis() - t1));}
+     if (LOGGER.isDebugEnabled()) { LOGGER.debug("while ( rawRows.next() ) = loadData time: " + (System.nanoTime() - t1) / 1000000 + " мс " +"stmt" + stmt.fetchSize);}
     return processedRows;
   }
 
