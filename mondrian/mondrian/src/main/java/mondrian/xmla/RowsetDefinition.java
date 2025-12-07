@@ -5325,7 +5325,10 @@ TODO: see above
                 RolapHierarchy rolapHierarchy = (RolapHierarchy)mondrianOlap4jHierarchy.getHierarchy();
                 MondrianDef.Hierarchy xmlHierarchy = rolapHierarchy.getXmlHierarchy();
                 try {
-                    hierarchyOrigin = Integer.parseInt(xmlHierarchy.origin);
+                    if(xmlHierarchy.origin ==null)
+                         hierarchyOrigin =  1;
+                    else     
+                        hierarchyOrigin = Integer.parseInt(xmlHierarchy.origin);
                 }
                 catch (NumberFormatException e) {
                     hierarchyOrigin =  1;

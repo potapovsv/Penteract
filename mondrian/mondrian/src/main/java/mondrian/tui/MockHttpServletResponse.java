@@ -328,6 +328,25 @@ public class MockHttpServletResponse implements HttpServletResponse {
     }
 
     /**
+     * Sends a redirect response to the client using the specified
+     * redirect location URL, status code, and clearBody flag.
+     * This method is part of Jakarta Servlet 6.0+ API.
+     *
+     * @param location the redirect location URL
+     * @param status the HTTP status code for the redirect
+     * @param clearBody whether to clear the response body
+     * @throws IOException if an I/O error occurs
+     */
+    public void sendRedirect(String location, int status, boolean clearBody) throws IOException {
+        setStatus(status);
+        setHeader("Location", location);
+        if (clearBody) {
+            resetBuffer();
+        }
+        wasRedirectSent = true;
+    }
+
+    /**
      * Sets a response header with the given name and date-value.
      *
      */

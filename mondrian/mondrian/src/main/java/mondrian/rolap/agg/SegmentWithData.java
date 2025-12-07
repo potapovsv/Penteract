@@ -11,7 +11,8 @@ package mondrian.rolap.agg;
 
 import mondrian.olap.Util;
 import mondrian.rolap.*;
-
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import java.util.*;
 
 /**
@@ -25,7 +26,7 @@ public class SegmentWithData extends Segment {
      * returned for that constraining column.
      */
     final SegmentAxis[] axes;
-
+    private static final Logger LOGGER = LogManager.getLogger(SegmentWithData.class);
     /**
      * <p><code>data</code> holds a reference to the <code>SegmentDataset</code>
      * that contains the underlying cell values.</p>
