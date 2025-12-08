@@ -151,6 +151,7 @@ public class SegmentWithData extends Segment {
         assert keys.length == axes.length;
         int missed = 0;
         CellKey cellKey = CellKey.Generator.newCellKey(axes.length);
+        // if (LOGGER.isDebugEnabled()) { LOGGER.debug("getCellValue : keys.length " + keys.length);}
         for (int i = 0; i < keys.length; i++) {
             Comparable key = (Comparable) keys[i];
             int offset = axes[i].getOffset(key);
