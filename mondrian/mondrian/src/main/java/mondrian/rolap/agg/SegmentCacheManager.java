@@ -1545,29 +1545,29 @@ public class SegmentCacheManager {
         if ( bodyFuture != null ) {
           // Check if the DataSourceChangeListener wants us to clear
           // the current segment
-          if ( star.getChangeListener() != null
-            && star.getChangeListener().isAggregationChanged( key ) ) {
-            // We can't satisfy this request, and we must clear the
-            // data from our cache. This must be in sync with the
-            // actor thread to maintain consistency.
-            indexRegistry.getIndex( star ).remove( header );
-            final MDCUtil mdc = new MDCUtil();
-            Util.safeGet(
-              cacheExecutor.submit(
-                () -> {
-                  mdc.setContextMap();
-                  try {
-                    compositeCache.remove( header );
-                  } catch ( Exception e ) {
-                    LOGGER.warn(
-                      "remove header failed: "
-                        + header,
-                      e );
-                  }
-                } ),
-              "SegmentCacheManager.peek" );
-            continue;
-          }
+          // if ( star.getChangeListener() != null
+          //   && star.getChangeListener().isAggregationChanged( key ) ) {
+          //   // We can't satisfy this request, and we must clear the
+          //   // data from our cache. This must be in sync with the
+          //   // actor thread to maintain consistency.
+          //   indexRegistry.getIndex( star ).remove( header );
+          //   final MDCUtil mdc = new MDCUtil();
+          //   Util.safeGet(
+          //     cacheExecutor.submit(
+          //       () -> {
+          //         mdc.setContextMap();
+          //         try {
+          //           compositeCache.remove( header );
+          //         } catch ( Exception e ) {
+          //           LOGGER.warn(
+          //             "remove header failed: "
+          //               + header,
+          //             e );
+          //         }
+          //       } ),
+          //     "SegmentCacheManager.peek" );
+          //   continue;
+          // }
           converterMap.put(
             SegmentCacheIndexImpl.makeConverterKey( header ),
             getConverter( star, header ) );

@@ -140,7 +140,7 @@ public class RolapSchema implements Schema {
 
     private Date schemaLoadDate;
 
-    private DataSourceChangeListener dataSourceChangeListener;
+    // private DataSourceChangeListener dataSourceChangeListener;
 
     /**
      * List of warnings. Populated when a schema is created by a connection
@@ -192,8 +192,8 @@ public class RolapSchema implements Schema {
             internalConnection.getInternalStatement());
 
         this.aggTableManager = new AggTableManager(this);
-        this.dataSourceChangeListener =
-            createDataSourceChangeListener(connectInfo);
+        // this.dataSourceChangeListener =
+        //     createDataSourceChangeListener(connectInfo);
     }
 
     /**
@@ -1288,38 +1288,38 @@ System.out.println("RolapSchema.createMemberReader: CONTAINS NAME");
      * Creates a {@link DataSourceChangeListener} with which to detect changes
      * to datasources.
      */
-    private DataSourceChangeListener createDataSourceChangeListener(
-        Util.PropertyList connectInfo)
-    {
-        DataSourceChangeListener changeListener = null;
+    // private DataSourceChangeListener createDataSourceChangeListener(
+    //     Util.PropertyList connectInfo)
+    // {
+    //     DataSourceChangeListener changeListener = null;
 
-        // If CatalogContent is specified in the connect string, ignore
-        // everything else. In particular, ignore the dynamic schema
-        // processor.
-        String dataSourceChangeListenerStr = connectInfo.get(
-            RolapConnectionProperties.DataSourceChangeListener.name());
+    //     // If CatalogContent is specified in the connect string, ignore
+    //     // everything else. In particular, ignore the dynamic schema
+    //     // processor.
+    //     String dataSourceChangeListenerStr = connectInfo.get(
+    //         RolapConnectionProperties.DataSourceChangeListener.name());
 
-        if (!Util.isEmpty(dataSourceChangeListenerStr)) {
-            try {
-                changeListener =
-                    ClassResolver.INSTANCE.instantiateSafe(
-                        dataSourceChangeListenerStr);
-            } catch (Exception e) {
-                throw Util.newError(
-                    e,
-                    "loading DataSourceChangeListener "
-                    + dataSourceChangeListenerStr);
-            }
+    //     if (!Util.isEmpty(dataSourceChangeListenerStr)) {
+    //         try {
+    //             changeListener =
+    //                 ClassResolver.INSTANCE.instantiateSafe(
+    //                     dataSourceChangeListenerStr);
+    //         } catch (Exception e) {
+    //             throw Util.newError(
+    //                 e,
+    //                 "loading DataSourceChangeListener "
+    //                 + dataSourceChangeListenerStr);
+    //         }
 
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(
-                    "RolapSchema.createDataSourceChangeListener: "
-                    + "create datasource change listener \""
-                    + dataSourceChangeListenerStr);
-            }
-        }
-        return changeListener;
-    }
+    //         if (LOGGER.isDebugEnabled()) {
+    //             LOGGER.debug(
+    //                 "RolapSchema.createDataSourceChangeListener: "
+    //                 + "create datasource change listener \""
+    //                 + dataSourceChangeListenerStr);
+    //         }
+    //     }
+    //     return changeListener;
+    // }
 
     /**
      * Returns the checksum of this schema. Returns
@@ -1439,18 +1439,18 @@ System.out.println("RolapSchema.createMemberReader: CONTAINS NAME");
     /**
      * @return Returns the dataSourceChangeListener.
      */
-    public DataSourceChangeListener getDataSourceChangeListener() {
-        return dataSourceChangeListener;
-    }
+    // public DataSourceChangeListener getDataSourceChangeListener() {
+    //     return dataSourceChangeListener;
+    // }
 
     /**
      * @param dataSourceChangeListener The dataSourceChangeListener to set.
      */
-    public void setDataSourceChangeListener(
-        DataSourceChangeListener dataSourceChangeListener)
-    {
-        this.dataSourceChangeListener = dataSourceChangeListener;
-    }
+    // public void setDataSourceChangeListener(
+    //     DataSourceChangeListener dataSourceChangeListener)
+    // {
+    //     this.dataSourceChangeListener = dataSourceChangeListener;
+    // }
 
     /**
      * Location of a node in an XML document.

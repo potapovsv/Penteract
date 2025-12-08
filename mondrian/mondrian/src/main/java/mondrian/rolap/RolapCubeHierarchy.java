@@ -879,30 +879,30 @@ public class RolapCubeHierarchy extends RolapHierarchy {
                 //   - local regular RolapMember cache, used when cube
                 //     specific joins occur
 
-                if (cacheHelper.getChangeListener() != null) {
-                    if (cacheHelper.getChangeListener().isHierarchyChanged(
-                            getHierarchy()))
-                    {
-                        cacheHelper.flushCache();
-                        rolapCubeCacheHelper.flushCache();
+                // if (cacheHelper.getChangeListener() != null) {
+                //     if (cacheHelper.getChangeListener().isHierarchyChanged(
+                //             getHierarchy()))
+                //     {
+                //         cacheHelper.flushCache();
+                //         rolapCubeCacheHelper.flushCache();
 
-                        if (rolapHierarchy.getMemberReader()
-                                instanceof SmartMemberReader)
-                        {
-                            SmartMemberReader smartMemberReader =
-                                (SmartMemberReader)
-                                    rolapHierarchy.getMemberReader();
-                            if (smartMemberReader.getMemberCache()
-                                    instanceof MemberCacheHelper)
-                            {
-                                MemberCacheHelper helper =
-                                    (MemberCacheHelper)
-                                        smartMemberReader.getMemberCache();
-                                helper.flushCache();
-                            }
-                        }
-                    }
-                }
+                //         if (rolapHierarchy.getMemberReader()
+                //                 instanceof SmartMemberReader)
+                //         {
+                //             SmartMemberReader smartMemberReader =
+                //                 (SmartMemberReader)
+                //                     rolapHierarchy.getMemberReader();
+                //             if (smartMemberReader.getMemberCache()
+                //                     instanceof MemberCacheHelper)
+                //             {
+                //                 MemberCacheHelper helper =
+                //                     (MemberCacheHelper)
+                //                         smartMemberReader.getMemberCache();
+                //                 helper.flushCache();
+                //             }
+                //         }
+                //     }
+                // }
             }
         }
     }

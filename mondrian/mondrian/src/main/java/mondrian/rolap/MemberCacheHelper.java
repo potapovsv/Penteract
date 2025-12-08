@@ -13,20 +13,14 @@
 */
 package mondrian.rolap;
 
-import mondrian.olap.Level;
 import mondrian.olap.Util;
 import mondrian.rolap.cache.*;
 import mondrian.rolap.sql.MemberChildrenConstraint;
 import mondrian.rolap.sql.TupleConstraint;
-import mondrian.spi.DataSourceChangeListener;
+// import mondrian.spi.DataSourceChangeListener;
 import mondrian.util.*;
-import java.util.stream.Collectors;
-import org.apache.commons.collections.Predicate;
-
 import java.util.*;
 import java.util.Map.Entry;
-
-import static org.apache.commons.collections.CollectionUtils.filter;
 
 /**
  * Encapsulation of member caching.
@@ -52,7 +46,7 @@ public class MemberCacheHelper implements MemberCache {
     /** a cache for all members to ensure uniqueness */
     SmartCache<Object, RolapMember> mapKeyToMember;
     RolapHierarchy rolapHierarchy;
-    DataSourceChangeListener changeListener;
+    // DataSourceChangeListener changeListener;
 
     /** maps a level to its members */
     final SmartMemberListCache<RolapLevel, List<RolapMember>>
@@ -76,12 +70,12 @@ public class MemberCacheHelper implements MemberCache {
         this.mapParentToNamedChildren =
             new SmartIncrementalCache<RolapMember, Collection<RolapMember>>();
 
-        if (rolapHierarchy != null) {
-            changeListener =
-                rolapHierarchy.getRolapSchema().getDataSourceChangeListener();
-        } else {
-            changeListener = null;
-        }
+        // if (rolapHierarchy != null) {
+        //     changeListener =
+        //         rolapHierarchy.getRolapSchema().getDataSourceChangeListener();
+        // } else {
+        //     changeListener = null;
+        // }
     }
 
     public RolapMember getMember(
@@ -111,11 +105,11 @@ public class MemberCacheHelper implements MemberCache {
     }
 
     public synchronized void checkCacheStatus() {
-        if (changeListener != null) {
-            if (changeListener.isHierarchyChanged(rolapHierarchy)) {
-                flushCache();
-            }
-        }
+        // if (changeListener != null) {
+        //     if (changeListener.isHierarchyChanged(rolapHierarchy)) {
+        //         flushCache();
+        //     }
+        // }
     }
 
     /**
@@ -258,13 +252,13 @@ public class MemberCacheHelper implements MemberCache {
 //        }
     }
 
-    public DataSourceChangeListener getChangeListener() {
-        return changeListener;
-    }
+    // public DataSourceChangeListener getChangeListener() {
+    //     return changeListener;
+    // }
 
-    public void setChangeListener(DataSourceChangeListener listener) {
-        changeListener = listener;
-    }
+    // public void setChangeListener(DataSourceChangeListener listener) {
+    //     changeListener = listener;
+    // }
 
     public boolean isMutable()
     {

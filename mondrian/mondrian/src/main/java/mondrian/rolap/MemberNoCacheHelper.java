@@ -13,7 +13,7 @@ package mondrian.rolap;
 
 import mondrian.rolap.sql.MemberChildrenConstraint;
 import mondrian.rolap.sql.TupleConstraint;
-import mondrian.spi.DataSourceChangeListener;
+// import mondrian.spi.DataSourceChangeListener;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ import java.util.List;
  * @version 1.0
  */
 public class MemberNoCacheHelper extends MemberCacheHelper {
-    DataSourceChangeListener changeListener;
+    // DataSourceChangeListener changeListener;
 
     public MemberNoCacheHelper() {
         super(null);
@@ -86,13 +86,13 @@ public class MemberNoCacheHelper extends MemberCacheHelper {
         return null;
     }
 
-    public DataSourceChangeListener getChangeListener() {
-        return changeListener;
-    }
+    // public DataSourceChangeListener getChangeListener() {
+    //     return changeListener;
+    // }
 
-    public void setChangeListener(DataSourceChangeListener listener) {
-        changeListener = listener;
-    }
+    // public void setChangeListener(DataSourceChangeListener listener) {
+    //     changeListener = listener;
+    // }
 
     public boolean isMutable() {
         return true;

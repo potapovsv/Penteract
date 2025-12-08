@@ -82,7 +82,7 @@ public class RolapStar {
      */
     private final List<AggStar> aggStars = new LinkedList<AggStar>();
 
-    private DataSourceChangeListener changeListener;
+    // private DataSourceChangeListener changeListener;
 
     // temporary model, should eventually use RolapStar.Table and
     // RolapStar.Column
@@ -112,7 +112,7 @@ public class RolapStar {
             new StarNetworkNode(null, factTable.alias, null, null, null);
 
         this.sqlQueryDialect = schema.getDialect();
-        this.changeListener = schema.getDataSourceChangeListener();
+        // this.changeListener = schema.getDataSourceChangeListener();
         this.statisticsCache = new RolapStatisticsCache(this);
     }
 
@@ -581,13 +581,13 @@ public class RolapStar {
 
         // Let the change listener get the opportunity to register the
         // first time the aggregation is used
-        if (this.cacheAggregations
-            && !isCacheDisabled()
-            && changeListener != null)
-        {
-            Util.discard(
-                changeListener.isAggregationChanged(aggregationKey));
-        }
+        // if (this.cacheAggregations
+        //     && !isCacheDisabled()
+        //     && changeListener != null)
+        // {
+        //     Util.discard(
+        //         changeListener.isAggregationChanged(aggregationKey));
+        // }
         return aggregation;
     }
 
@@ -816,18 +816,18 @@ public class RolapStar {
      *
      * @return Returns the Data source change listener.
      */
-    public DataSourceChangeListener getChangeListener() {
-        return changeListener;
-    }
+    // public DataSourceChangeListener getChangeListener() {
+    //     return changeListener;
+    // }
 
     /**
      * Sets the listener for changes to this star's underlying database.
      *
      * @param changeListener The Data source change listener to set
      */
-    public void setChangeListener(DataSourceChangeListener changeListener) {
-        this.changeListener = changeListener;
-    }
+    // public void setChangeListener(DataSourceChangeListener changeListener) {
+    //     this.changeListener = changeListener;
+    // }
 
     // -- Inner classes --------------------------------------------------------
 
