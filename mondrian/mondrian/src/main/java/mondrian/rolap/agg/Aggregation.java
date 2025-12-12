@@ -19,6 +19,9 @@ import mondrian.rolap.*;
 import java.util.*;
 import java.util.concurrent.Future;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * A <code>Aggregation</code> is a pre-computed aggregation over a set of
  * columns.
@@ -54,7 +57,7 @@ import java.util.concurrent.Future;
  * @since 28 August, 2001
  */
 public class Aggregation {
-
+    static final Logger LOGGER = LogManager.getLogger(Aggregation.class);
     private final List<StarPredicate> compoundPredicateList;
     private final RolapStar star;
     private final BitKey constrainedColumnsBitKey;
@@ -169,6 +172,11 @@ public class Aggregation {
                     Collections.<Segment.ExcludedRegion>emptyList(),
                     compoundPredicateList);
             segments.add(segment);
+            // var i = 0;
+            // for( StarPredicate predicate : segment.predicates){
+            //         LOGGER.debug("createSegments:" + i + " " + predicate.getConstrainedColumnList()+ + " compoundPredicateList: "+ compoundPredicateList.toString());
+            //         i++;
+            // }
         }
         // It is important to sort the segments per measure bitkey.
         // The order in which the measures come in is not deterministic.

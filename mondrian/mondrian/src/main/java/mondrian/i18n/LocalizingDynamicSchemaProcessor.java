@@ -11,7 +11,6 @@ package mondrian.i18n;
 
 import mondrian.olap.MondrianProperties;
 import mondrian.olap.Util;
-import mondrian.spi.DynamicSchemaProcessor;
 import mondrian.spi.impl.FilterDynamicSchemaProcessor;
 
 import org.apache.logging.log4j.Logger;
@@ -32,7 +31,7 @@ import java.util.regex.Pattern;
  */
 public class LocalizingDynamicSchemaProcessor
     extends FilterDynamicSchemaProcessor
-    implements DynamicSchemaProcessor
+    // implements DynamicSchemaProcessor
 {
     private static final Logger LOGGER =
         LogManager.getLogger(LocalizingDynamicSchemaProcessor.class);

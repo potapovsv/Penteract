@@ -33,7 +33,6 @@ import mondrian.olap.fun.AggregateFunDef;
 import mondrian.olap.fun.MemberExtractingVisitor;
 import mondrian.olap.fun.ParenthesesFunDef;
 import mondrian.olap.fun.ValidMeasureFunDef;
-import mondrian.olap.type.SetType;
 import mondrian.resource.MondrianResource;
 import mondrian.rolap.RestrictedMemberReader.MultiCardinalityDefaultMember;
 import mondrian.rolap.RolapHierarchy.LimitedRollupMember;
@@ -1429,6 +1428,9 @@ public class SqlConstraintUtils {
         }
         values.add( value );
       }
+         if (LOG.isDebugEnabled()) {
+            LOG.debug("getColumnValueConstraint: columnValue:" + columnValue + " values: "+values.toString());
+        }
     }
 
     if ( caseSensitive && datatype == Dialect.Datatype.String && !MondrianProperties.instance().CaseSensitive.get() ) {

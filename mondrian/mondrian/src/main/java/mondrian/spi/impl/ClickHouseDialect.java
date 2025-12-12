@@ -52,7 +52,10 @@ public class ClickHouseDialect extends JdbcDialectImpl {
 
         buf.append('\'');
     }
-
+    @Override
+    public String toUpper(String expr) {
+        return "UPPER(" + expr + ")";
+    }
     @Override
     public String getDefaultUnion() {
         return "union distinct";

@@ -334,7 +334,7 @@ public class RankFunDef extends FunDefBase {
   }
 
   private static boolean valueNotReady( Object value ) {
-    return value == RolapUtil.valueNotReadyException || value == new Double( Double.NaN );
+    return value == RolapUtil.valueNotReadyException || value == Double.valueOf( Double.NaN );
   }
 
   /**

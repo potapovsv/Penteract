@@ -22,7 +22,7 @@ import mondrian.olap.type.Type;
  * @author jhyde
  * @since Sep 26, 2005
  */
-public class HierarchyExpr extends ExpBase implements Exp {
+public class HierarchyExpr extends ExpBase   {
     private final Hierarchy hierarchy;
 
     /**

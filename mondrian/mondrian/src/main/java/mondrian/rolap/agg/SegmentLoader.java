@@ -144,6 +144,9 @@ public class SegmentLoader {
       mdc.setContextMap();
       Locus.push( locus );
       try {
+        // for ( GroupingSet groupingSet : groupingSets ) {
+        //   groupingSet
+        // }
         return segmentLoader.loadImpl( cellRequestCount, groupingSets, compoundPredicateList );
       } finally {
         Locus.pop( locus );
@@ -439,6 +442,10 @@ public class SegmentLoader {
     RolapStar star = groupingSetsList.getStar();
     Pair<String, List<SqlStatement.Type>> pair =
         AggregationManager.generateSql( groupingSetsList, compoundPredicateList );
+     if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(
+                "AggregationManager.generateSql: pair.left: " + pair.left + " pair.right: " + pair.right);
+     }    
     final Locus locus =
         new SqlStatement.StatementLocus( Locus.peek().execution, "Segment.load", "Error while loading segment",
             SqlStatementEvent.Purpose.CELL_SEGMENT, cellRequestCount );
@@ -489,10 +496,15 @@ public class SegmentLoader {
     };
 
     try {
+     if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(
+                "RolapUtil.executeQuery: pair.left: " + pair.left + " pair.right: " + pair.right);
+     }       
       return RolapUtil.executeQuery( star.getDataSource(), pair.left, pair.right, 0, 0, locus, -1, -1,
           // Only one of the two callbacks are required, depending if we
           // cache the segments or not.
           MondrianProperties.instance().DisableCaching.get() ? callbackNoCaching : callbackWithCaching );
+          
     } catch ( Throwable t ) {
       if ( Util.getMatchingCause( t, AbortException.class ) != null ) {
         return null;

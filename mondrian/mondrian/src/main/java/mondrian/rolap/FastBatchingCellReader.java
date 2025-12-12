@@ -589,8 +589,13 @@ class BatchLoader {
     }
 
     final boolean shouldUseGroupingFunction() {
+            // if (LOGGER.isDebugEnabled()) {
+            //    LOGGER.debug("shouldUseGroupingFunction:" + MondrianProperties.instance().EnableGroupingSets.get() 
+            //                 + " dialect.supportsGroupingSets()" + dialect.supportsGroupingSets());
+            // }
         return MondrianProperties.instance().EnableGroupingSets.get()
             && dialect.supportsGroupingSets();
+        
     }
 
     private void recordCellRequest2(final CellRequest request) {
@@ -892,7 +897,9 @@ class BatchLoader {
         final List<Future<Map<Segment, SegmentWithData>>> segmentMapFutures =
             new ArrayList<Future<Map<Segment, SegmentWithData>>>();
         if (shouldUseGroupingFunction()) {
-            LOGGER.debug("Using grouping sets");
+            if (LOGGER.isDebugEnabled()) {
+               LOGGER.debug("Using grouping sets");
+            }
             List<CompositeBatch> groupedBatches = groupBatches(batchList);
             for (CompositeBatch batch : groupedBatches) {
                 batch.load(segmentMapFutures);
@@ -931,14 +938,23 @@ class BatchLoader {
                 final Batch iBatch = batchList.get(i);
                 final Batch jBatch = batchList.get(j);
                 if (iBatch.canBatch(jBatch)) {
+                    // if (LOGGER.isDebugEnabled()) {
+                    //  LOGGER.debug("iBatch.canBatch(jBatch):" + jBatch.cellRequestCount);
+                    // }
                     batchList.remove(j);
                     addToCompositeBatch(batchGroups, iBatch, jBatch);
                 } else if (jBatch.canBatch(iBatch)) {
+                //    if (LOGGER.isDebugEnabled()) {
+                //      LOGGER.debug("iBatch.canBatch(jBatch):" + iBatch.cellRequestCount);
+                //     }                    
                     batchList.set(i, jBatch);
                     batchList.remove(j);
                     addToCompositeBatch(batchGroups, jBatch, iBatch);
                     j = i + 1;
                 } else {
+                    //  if (LOGGER.isDebugEnabled()) {
+                    //  LOGGER.debug("NOT canBatch");
+                    // }
                     j++;
                 }
             }
@@ -1504,6 +1520,16 @@ class BatchLoader {
          * </ul>
          */
         boolean canBatch(Batch other) {
+                // if (LOGGER.isDebugEnabled()) {
+                //      LOGGER.debug("_canBatch: " +
+                //         "hasOverlappingBitKeys(other): " +  hasOverlappingBitKeys(other)
+                //      + "constraintsMatch(other): " +  constraintsMatch(other)
+                //      +   "hasSameMeasureList(other): " +  hasSameMeasureList(other)                     
+                //         +   "!hasDistinctCountMeasure(other): " +  !hasDistinctCountMeasure()                   
+                //         +   "haveSameStarAndAggregation(other): " +  haveSameStarAndAggregation(other)                     
+                //        +   "haveSameClosureColumns(other): " +  haveSameClosureColumns(other)                     
+                //      );
+                //     }
             return hasOverlappingBitKeys(other)
                 && constraintsMatch(other)
                 && hasSameMeasureList(other)

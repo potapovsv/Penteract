@@ -10,7 +10,6 @@
 package mondrian.calc.impl;
 
 import mondrian.calc.Calc;
-import mondrian.calc.VoidCalc;
 import mondrian.olap.Evaluator;
 import mondrian.olap.Exp;
 
@@ -25,7 +24,7 @@ import mondrian.olap.Exp;
  * @author jhyde
  * @since Sep 29, 2005
  */
-public class AbstractVoidCalc extends GenericCalc implements VoidCalc {
+public class AbstractVoidCalc extends GenericCalc  {
     private final Calc[] calcs;
 
     protected AbstractVoidCalc(Exp exp, Calc[] calcs) {

@@ -22,7 +22,7 @@ import java.util.List;
  * @author jhyde
  * @since Sep 26, 2005
  */
-public class NamedSetExpr extends ExpBase implements Exp {
+public class NamedSetExpr extends ExpBase   {
     private final NamedSet namedSet;
 
     /**

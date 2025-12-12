@@ -54,7 +54,7 @@ public class RolapUtil {
     /**
      * Special cell value indicates that the value is not in cache yet.
      */
-    public static final Object valueNotReadyException = new Double(0);
+    public static final Object valueNotReadyException = Double.valueOf(0);
 
     /**
      * Hook to run when a query is executed. This should not be
@@ -349,6 +349,18 @@ public class RolapUtil {
                 callback == null
                     ? getDefaultCallback(locus)
                     : callback);
+
+        if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(
+                    "RolapUtil.executeQuery: dataSource: " + dataSource +
+                     " sql: " + sql +
+                     " maxRowCount: " + maxRowCount +
+                    " maxRowCount: " + maxRowCount +
+                " resultSetType: " + resultSetType +
+                 " resultSetConcurrency: " + resultSetConcurrency
+            );
+        }         
+                   
         stmt.execute();
         return stmt;
     }

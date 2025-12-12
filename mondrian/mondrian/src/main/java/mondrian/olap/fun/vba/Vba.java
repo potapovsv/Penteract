@@ -12,6 +12,9 @@ package mondrian.olap.fun.vba;
 
 import mondrian.olap.InvalidArgumentException;
 import mondrian.olap.Util;
+import mondrian.olap.fun.JavaFunDef.Description;
+import mondrian.olap.fun.JavaFunDef.FunctionName;
+import mondrian.olap.fun.JavaFunDef.Signature;
 
 import java.text.*;
 import java.util.*;
@@ -118,7 +121,7 @@ public class Vba {
             return number.doubleValue();
         } else {
             final String s = String.valueOf(expression);
-            return new Double(s);
+            return Double.valueOf(s);
         }
     }
 
@@ -152,7 +155,7 @@ public class Vba {
             try {
                 return Integer.parseInt(s);
             } catch (NumberFormatException e) {
-                return new Double(s).intValue();
+                return Double.valueOf(s).intValue();
             }
         }
     }

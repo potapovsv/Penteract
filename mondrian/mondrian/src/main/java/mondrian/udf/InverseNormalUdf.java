@@ -82,7 +82,7 @@ public class InverseNormalUdf implements UserDefinedFunction {
             return null;
         }
 
-        final Double d = new Double(((Number) argValue).doubleValue());
+        final Double d = Double.valueOf(((Number) argValue).doubleValue());
         LOGGER.debug("Inverse Normal argument as Double was : " + d);
 
         if (d.isNaN()) {
@@ -101,7 +101,7 @@ public class InverseNormalUdf implements UserDefinedFunction {
                 "Invalid value for inverse normal distribution: " + dbl);
         }
         try {
-            Double result = new Double(nd.inverseCumulativeProbability(dbl));
+            Double result = Double.valueOf(nd.inverseCumulativeProbability(dbl));
             LOGGER.debug("Inverse Normal result : " + result.doubleValue());
             return result;
         } catch (MathException e) {

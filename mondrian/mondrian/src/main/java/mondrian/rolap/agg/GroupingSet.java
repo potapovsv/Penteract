@@ -85,11 +85,11 @@ public class GroupingSet {
     /**
      * Sets all the segments which are in loading state as failed
      */
-    public void setSegmentsFailed() {
-        for (Segment segment : segments) {
-            // TODO: segment.setFailIfStillLoading();
-        }
-    }
+    // public void setSegmentsFailed() {
+    //     for (Segment segment : segments) {
+    //         // TODO: segment.setFailIfStillLoading();
+    //     }
+    // }
 }
 
 // End GroupingSet.java

@@ -16,7 +16,6 @@ import mondrian.mdx.MemberExpr;
 import mondrian.mdx.ResolvedFunCall;
 import mondrian.olap.*;
 import mondrian.olap.Role.RollupPolicy;
-import mondrian.rolap.RolapAggregator;
 import mondrian.rolap.RolapEvaluator;
 
 import org.apache.logging.log4j.Logger;
@@ -250,9 +249,9 @@ public class AggregateFunDef extends AbstractAggregateFunDef {
             // characters long and Access gives "Query is too complex".
             // The optimization is expensive, so we only want to do it
             // if the DBMS can't execute the query otherwise.
-            if (false) {
-                tupleList = removeOverlappingTupleEntries(tupleList);
-            }
+            // if (false) {
+            //     tupleList = removeOverlappingTupleEntries(tupleList);
+            // }
             tupleList =
                 optimizeChildren(
                     tupleList,
@@ -395,6 +394,7 @@ public class AggregateFunDef extends AbstractAggregateFunDef {
             int tupleLength = tuples.getArity();
 
             //noinspection unchecked
+            @SuppressWarnings("unchecked")
             Set<Member>[] sets = new Set[tupleLength];
             boolean optimized = false;
             for (int i = 0; i < tupleLength; i++) {

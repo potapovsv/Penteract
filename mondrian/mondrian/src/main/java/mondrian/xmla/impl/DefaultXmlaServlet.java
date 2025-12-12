@@ -23,14 +23,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.channels.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -675,31 +668,31 @@ public abstract class DefaultXmlaServlet extends XmlaServlet {
                     uee);
             }
 
-            // if (LOGGER.isDebugEnabled()) {
-            //     StringBuilder buf = new StringBuilder(100);
-            //     int ii = 0;
-            //     // buf.append("XML/A response content").append(nl);
-            //     LOGGER.debug(("XML/A response content"));
-            //     try {
-            //         for (Object byteChunk : byteChunks) {
-            //             byte[] chunk = (byte[]) byteChunk;
-            //             if (chunk != null && chunk.length > 0) {
-            //                 buf.append(new String(chunk, encoding));
-            //                 // buf.append(new String(chunk, "UTF-8"));
-            //                 // LOGGER.debug(chunk.toString());
-            //                     ii = ii + chunk.length;
-            //             }
-            //         }
-            //     } catch (Exception uee) {
-            //         LOGGER.warn(
-            //             "This should be handled at begin of processing request",
-            //             uee);
-            //     }
+            if (LOGGER.isDebugEnabled()) {
+                StringBuilder buf = new StringBuilder(100);
+                int ii = 0;
+                buf.append("XML/A response content Body").append(nl);
+                // LOGGER.debug(("XML/A response content"));
+                try {
+                    for (Object byteChunk : byteChunks) {
+                        byte[] chunk = (byte[]) byteChunk;
+                        if (chunk != null && chunk.length > 0) {
+                            buf.append(new String(chunk, encoding));
+                            // buf.append(new String(chunk, "UTF-8"));
+                            // LOGGER.debug(chunk.toString());
+                                ii = ii + chunk.length;
+                        }
+                    }
+                } catch (Exception uee) {
+                    LOGGER.warn(
+                        "This should be handled at begin of processing request",
+                        uee);
+                }
                 
-            //     // LOGGER.debug("buf length:" +buf.length());
-            //     LOGGER.debug(buf.toString());
-            //     LOGGER.debug("byteChunks length:" +ii);
-            // }
+                // LOGGER.debug("buf length:" +buf.length());
+                LOGGER.debug(buf.toString());
+                LOGGER.debug("byteChunks length:" +ii);
+            }
             long start = System.currentTimeMillis();
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("XML/A response content to channel start V4:");

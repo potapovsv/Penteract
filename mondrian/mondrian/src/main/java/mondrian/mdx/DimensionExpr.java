@@ -22,7 +22,7 @@ import mondrian.olap.type.Type;
  * @author jhyde
  * @since Sep 26, 2005
  */
-public class DimensionExpr extends ExpBase implements Exp {
+public class DimensionExpr extends ExpBase   {
     private final Dimension dimension;
 
     /**

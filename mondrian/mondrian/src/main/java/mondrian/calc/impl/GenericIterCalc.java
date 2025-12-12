@@ -23,7 +23,7 @@ import mondrian.olap.type.SetType;
  */
 public abstract class GenericIterCalc
     extends AbstractCalc
-    implements ListCalc, IterCalc
+    implements ListCalc
 {
     /**
      * Creates a GenericIterCalc without specifying child calculated

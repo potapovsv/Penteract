@@ -35,6 +35,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicLong;
@@ -325,8 +326,10 @@ public class SqlStatement {
     status += ", ex=" + Counters.SQL_STATEMENT_EXECUTE_COUNT.get()
       + ", close=" + Counters.SQL_STATEMENT_CLOSE_COUNT.get()
       + ", open=" + Counters.SQL_STATEMENT_EXECUTING_IDS;
-
+    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+    Thread.dumpStack();
     if ( RolapUtil.LOGGER.isDebugEnabled() ) {
+      RolapUtil.LOGGER.debug("RolapUtil.StackTrace: " + Arrays.toString(stackTrace));
       RolapUtil.LOGGER.debug(
         locus.component + ": done executing sql [" + sql + "]"
           + status );

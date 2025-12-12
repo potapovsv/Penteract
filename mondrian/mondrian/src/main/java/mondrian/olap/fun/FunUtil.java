@@ -853,7 +853,7 @@ public class FunUtil extends Util {
 
   private static Object _var( SetWrapper sw, boolean biased ) {
     if ( sw.errorCount > 0 ) {
-      return new Double( Double.NaN );
+      return Double.valueOf( Double.NaN );
     } else if ( sw.v.size() == 0 ) {
       return Util.nullValue;
     } else {
@@ -867,7 +867,7 @@ public class FunUtil extends Util {
       if ( !biased ) {
         n--;
       }
-      return new Double( stdev / (double) n );
+      return  Double.valueOf( stdev / (double) n );
     }
   }
 
@@ -934,7 +934,7 @@ public class FunUtil extends Util {
     if ( !biased ) {
       n--;
     }
-    return new Double( covar / (double) n );
+    return Double.valueOf( covar / (double) n );
   }
 
   static Object stdev(
@@ -944,7 +944,7 @@ public class FunUtil extends Util {
     boolean biased ) {
     Object o = var( evaluator, members, exp, biased );
     return ( o instanceof Double )
-      ? new Double( Math.sqrt( ( (Number) o ).doubleValue() ) )
+      ? Double.valueOf( Math.sqrt( ( (Number) o ).doubleValue() ) )
       : o;
   }
 
@@ -954,10 +954,10 @@ public class FunUtil extends Util {
     Calc calc ) {
     SetWrapper sw = evaluateSet( evaluator, members, calc );
     return ( sw.errorCount > 0 )
-      ? new Double( Double.NaN )
+      ? Double.valueOf( Double.NaN )
       : ( sw.v.size() == 0 )
       ? Util.nullValue
-      : new Double( _avg( sw ) );
+      : Double.valueOf( _avg( sw ) );
   }
 
   // TODO: parameterize inclusion of nulls; also, maybe make _avg a method of
@@ -976,7 +976,7 @@ public class FunUtil extends Util {
     TupleList members,
     Calc exp ) {
     double d = sumDouble( evaluator, members, exp );
-    return d == DoubleNull ? Util.nullValue : new Double( d );
+    return d == DoubleNull ? Util.nullValue : Double.valueOf( d );
   }
 
   public static double sumDouble(

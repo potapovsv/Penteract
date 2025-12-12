@@ -445,7 +445,7 @@ public class XmlaHandler {
                         Double d = (Double) inputValue;
                         // See if it can be an integer or long
                         long lval = d.longValue();
-                        if (d.equals(new Double(lval))) {
+                        if (d.equals(Double.valueOf(lval))) {
                             // It can be converted from double to long
                             // without loss of precision.
                             setValueAndType(lval);

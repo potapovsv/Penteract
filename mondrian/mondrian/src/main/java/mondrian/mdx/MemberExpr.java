@@ -22,7 +22,7 @@ import mondrian.olap.type.Type;
  * @author jhyde
  * @since Sep 26, 2005
  */
-public class MemberExpr extends ExpBase implements Exp {
+public class MemberExpr extends ExpBase  {
     private final Member member;
     private MemberType type;
 

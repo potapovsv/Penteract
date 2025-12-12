@@ -22,7 +22,7 @@ import mondrian.olap.type.Type;
  * @author jhyde
  * @since Sep 26, 2005
  */
-public class LevelExpr extends ExpBase implements Exp {
+public class LevelExpr extends ExpBase   {
     private final Level level;
 
     /**
