@@ -976,60 +976,89 @@ public abstract class MondrianOlap4jConnection implements OlapConnection {
             }
             return list;
         }
-
         private ParseTreeNode toOlap4j(Exp exp) {
-            if (exp instanceof Id) {
-                Id id = (Id) exp;
-                return toOlap4j(id);
-            }
-            if (exp instanceof ResolvedFunCall) {
-                ResolvedFunCall call = (ResolvedFunCall) exp;
-                return toOlap4j(call);
-            }
-            if (exp instanceof DimensionExpr) {
-                DimensionExpr dimensionExpr = (DimensionExpr) exp;
-                return new DimensionNode(
-                    null,
-                    olap4jConnection.toOlap4j(dimensionExpr.getDimension()));
-            }
-            if (exp instanceof HierarchyExpr) {
-                HierarchyExpr hierarchyExpr = (HierarchyExpr) exp;
-                return new HierarchyNode(
-                    null,
-                    olap4jConnection.toOlap4j(hierarchyExpr.getHierarchy()));
-            }
-            if (exp instanceof LevelExpr) {
-                LevelExpr levelExpr = (LevelExpr) exp;
-                return new LevelNode(
-                    null,
-                    olap4jConnection.toOlap4j(levelExpr.getLevel()));
-            }
-            if (exp instanceof MemberExpr) {
-                MemberExpr memberExpr = (MemberExpr) exp;
-                return new MemberNode(
-                    null,
-                    olap4jConnection.toOlap4j(memberExpr.getMember()));
-            }
-            if (exp instanceof Literal) {
-                Literal literal = (Literal) exp;
-                final Object value = literal.getValue();
-                if (literal.getCategory() == Category.Symbol) {
-                    return LiteralNode.createSymbol(
-                        null, (String) literal.getValue());
-                } else if (value instanceof Number) {
-                    Number number = (Number) value;
-                    BigDecimal bd = bigDecimalFor(number);
-                    return LiteralNode.createNumeric(null, bd, false);
-                } else if (value instanceof String) {
-                    return LiteralNode.createString(null, (String) value);
-                } else if (value == null) {
-                    return LiteralNode.createNull(null);
-                } else {
-                    throw new RuntimeException("unknown literal " + literal);
+            return switch (exp) {
+                case Id id -> toOlap4j(id);
+                case ResolvedFunCall call -> toOlap4j(call);
+                case DimensionExpr de -> new DimensionNode(
+                    null, olap4jConnection.toOlap4j(de.getDimension()));
+                case HierarchyExpr he -> new HierarchyNode(
+                    null, olap4jConnection.toOlap4j(he.getHierarchy()));
+                case LevelExpr le -> new LevelNode(
+                    null, olap4jConnection.toOlap4j(le.getLevel()));
+                case MemberExpr me -> new MemberNode(
+                    null, olap4jConnection.toOlap4j(me.getMember()));
+                case Literal literal -> {
+                    final Object value = literal.getValue();
+                    if (literal.getCategory() == Category.Symbol) {
+                        yield LiteralNode.createSymbol(null, (String) literal.getValue());
+                    }
+                    yield switch (value) {
+                        case Number number -> {
+                            BigDecimal bd = bigDecimalFor(number);
+                            yield LiteralNode.createNumeric(null, bd, false);
+                        }
+                        case String s -> LiteralNode.createString(null, s);
+                        case null -> LiteralNode.createNull(null);
+                        default -> throw new RuntimeException("unknown literal " + literal);
+                    };
                 }
-            }
-            throw Util.needToImplement(exp.getClass());
+                default -> throw Util.needToImplement(exp.getClass());
+            };
         }
+        // private ParseTreeNode toOlap4j(Exp exp) {
+        //     if (exp instanceof Id) {
+        //         Id id = (Id) exp;
+        //         return toOlap4j(id);
+        //     }
+        //     if (exp instanceof ResolvedFunCall) {
+        //         ResolvedFunCall call = (ResolvedFunCall) exp;
+        //         return toOlap4j(call);
+        //     }
+        //     if (exp instanceof DimensionExpr) {
+        //         DimensionExpr dimensionExpr = (DimensionExpr) exp;
+        //         return new DimensionNode(
+        //             null,
+        //             olap4jConnection.toOlap4j(dimensionExpr.getDimension()));
+        //     }
+        //     if (exp instanceof HierarchyExpr) {
+        //         HierarchyExpr hierarchyExpr = (HierarchyExpr) exp;
+        //         return new HierarchyNode(
+        //             null,
+        //             olap4jConnection.toOlap4j(hierarchyExpr.getHierarchy()));
+        //     }
+        //     if (exp instanceof LevelExpr) {
+        //         LevelExpr levelExpr = (LevelExpr) exp;
+        //         return new LevelNode(
+        //             null,
+        //             olap4jConnection.toOlap4j(levelExpr.getLevel()));
+        //     }
+        //     if (exp instanceof MemberExpr) {
+        //         MemberExpr memberExpr = (MemberExpr) exp;
+        //         return new MemberNode(
+        //             null,
+        //             olap4jConnection.toOlap4j(memberExpr.getMember()));
+        //     }
+        //     if (exp instanceof Literal) {
+        //         Literal literal = (Literal) exp;
+        //         final Object value = literal.getValue();
+        //         if (literal.getCategory() == Category.Symbol) {
+        //             return LiteralNode.createSymbol(
+        //                 null, (String) literal.getValue());
+        //         } else if (value instanceof Number) {
+        //             Number number = (Number) value;
+        //             BigDecimal bd = bigDecimalFor(number);
+        //             return LiteralNode.createNumeric(null, bd, false);
+        //         } else if (value instanceof String) {
+        //             return LiteralNode.createString(null, (String) value);
+        //         } else if (value == null) {
+        //             return LiteralNode.createNull(null);
+        //         } else {
+        //             throw new RuntimeException("unknown literal " + literal);
+        //         }
+        //     }
+        //     throw Util.needToImplement(exp.getClass());
+        // }
 
         /**
          * Converts a number to big decimal, non-lossy if possible.

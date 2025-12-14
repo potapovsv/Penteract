@@ -15,6 +15,7 @@ import mondrian.calc.Calc;
 import mondrian.calc.ExpCompiler;
 
 import java.io.PrintWriter;
+import java.util.Arrays;
 
 /**
  * Skeleton implementation of {@link Exp} interface.
@@ -25,14 +26,18 @@ public abstract class ExpBase
     extends QueryPart
     implements Exp
 {
-
     protected static Exp[] cloneArray(Exp[] a) {
-        Exp[] a2 = new Exp[a.length];
-        for (int i = 0; i < a.length; i++) {
-            a2[i] = a[i].clone();
-        }
-        return a2;
-    }
+    return Arrays.stream(a)
+                 .map(Exp::clone)
+                 .toArray(Exp[]::new);
+}
+    // protected static Exp[] cloneArray(Exp[] a) {
+    //     Exp[] a2 = new Exp[a.length];
+    //     for (int i = 0; i < a.length; i++) {
+    //         a2[i] = a[i].clone();
+    //     }
+    //     return a2;
+    // }
 
     protected ExpBase() {
     }

@@ -315,26 +315,39 @@ public final class IdBatchResolver {
      * Returns the member associated with a MemberExpr.
      * For all other Exp returns null.
      */
+    // private Member getMemberFromExp(Exp exp) {
+    //     if (exp instanceof DimensionExpr) {
+    //         Hierarchy hier = ((DimensionExpr)exp)
+    //             .getDimension().getHierarchy();
+    //         if (hier.hasAll()) {
+    //             return hier.getAllMember();
+    //         }
+    //     } else if (exp instanceof HierarchyExpr) {
+    //         Hierarchy hier = ((HierarchyExpr)exp)
+    //             .getHierarchy();
+    //         if (hier.hasAll()) {
+    //             return hier.getAllMember();
+    //         }
+    //     } else if (exp instanceof MemberExpr) {
+    //         return ((MemberExpr)exp).getMember();
+    //     }
+    //     return null;
+    // }
     private Member getMemberFromExp(Exp exp) {
-        if (exp instanceof DimensionExpr) {
-            Hierarchy hier = ((DimensionExpr)exp)
-                .getDimension().getHierarchy();
-            if (hier.hasAll()) {
-                return hier.getAllMember();
+        return switch (exp) {
+            case DimensionExpr de -> {
+                Hierarchy hier = de.getDimension().getHierarchy();
+                yield hier.hasAll() ? hier.getAllMember() : null;
             }
-        } else if (exp instanceof HierarchyExpr) {
-            Hierarchy hier = ((HierarchyExpr)exp)
-                .getHierarchy();
-            if (hier.hasAll()) {
-                return hier.getAllMember();
+            case HierarchyExpr he -> {
+                Hierarchy hier = he.getHierarchy();
+                yield hier.hasAll() ? hier.getAllMember() : null;
             }
-        } else if (exp instanceof MemberExpr) {
-            return ((MemberExpr)exp).getMember();
-        }
-        return null;
+            case MemberExpr me -> me.getMember();
+            default -> null;
+        };
     }
-
-    /**
+        /**
      * Returns a collection of strings corresponding to the name
      * or uniqueName of each OlapElement in olapElements, based on the
      * flag uniqueName.

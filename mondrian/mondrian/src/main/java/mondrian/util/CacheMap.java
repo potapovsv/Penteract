@@ -138,11 +138,15 @@ public class CacheMap<S, T> implements Map<S, T> {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CacheMap)) return false;
-        final CacheMap<?, ?> cacheMap = (CacheMap<?, ?>) o;
-        return map.equals(cacheMap.map);
-    }
+        return o instanceof CacheMap<?, ?> cacheMap 
+            && Objects.equals(this.map, cacheMap.map);
+    }    
+    // public boolean equals(final Object o) {
+    //     if (this == o) return true;
+    //     if (!(o instanceof CacheMap)) return false;
+    //     final CacheMap<?, ?> cacheMap = (CacheMap<?, ?>) o;
+    //     return map.equals(cacheMap.map);
+    // }
 
     //
     // PRIVATE STUFF ------------------

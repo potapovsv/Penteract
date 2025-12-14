@@ -541,7 +541,9 @@ String keyword() :
 Id compoundId() :
 {
     Id.Segment i;
-    List<Id.Segment> list = new ArrayList<Id.Segment>();
+  //  List<Id.Segment> list = new ArrayList<Id.Segment>();
+    var list = new ArrayList<Id.Segment>();
+    
 }
 {
     i = identifier() {

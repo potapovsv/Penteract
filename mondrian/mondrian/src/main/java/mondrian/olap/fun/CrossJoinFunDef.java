@@ -567,7 +567,10 @@ public class CrossJoinFunDef extends FunDefBase {
         return TupleCollections.emptyList( list.getArity() );
       }
       final int missCount2 = evaluator.getMissCount();
-      final int puntMissCountListSize = 1000;
+      final int puntMissCountListSize = 1000000;
+      // if (LOGGER.isDebugEnabled()) {
+      //   LOGGER.debug( "nonEmptyOptimizeList: missCount=" + missCount + " missCount2=" + missCount2 + " size=" + size );
+      // }
       if ( missCount2 > missCount && size > puntMissCountListSize ) {
         // We've hit some cells which are not in the cache. They
         // registered as non-empty, but we won't really know until
@@ -576,6 +579,10 @@ public class CrossJoinFunDef extends FunDefBase {
         // has been loaded.
         // Return an empty list short circuits higher level
         // evaluation poping one all the way to the top.
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug( "nonEmptyOptimizeList: list.getArity()=" + list.getArity() );
+          LOGGER.debug( "nonEmptyOptimizeList: missCount=" + missCount + " missCount2=" + missCount2 + " size=" + size );        
+        }        
         return TupleCollections.emptyList( list.getArity() );
       }
     }
@@ -989,39 +996,71 @@ public class CrossJoinFunDef extends FunDefBase {
    *          the Evaluator.
    * @return True if at least one combination evaluated to non-null.
    */
-  private static boolean checkData( Member[][] nonAllMembers, int cnt, Set<Member> measureSet, Evaluator evaluator ) {
-    if ( cnt < 0 ) {
-      // no measures found, use standard algorithm
-      if ( measureSet.isEmpty() ) {
-        Object value = evaluator.evaluateCurrent();
-        if ( value != null && !( value instanceof Throwable ) ) {
-          return true;
-        }
-      } else {
-        // Here we evaluate across all measures just to
-        // make sure that the data is all loaded
-        boolean found = false;
-        for ( Member measure : measureSet ) {
-          evaluator.setContext( measure );
-          Object value = evaluator.evaluateCurrent();
-          if ( value != null && !( value instanceof Throwable ) ) {
-            found = true;
+        private static boolean checkData(Member[][] nonAllMembers, int cnt, Set<Member> measureSet, Evaluator evaluator) {
+          // Базовый случай: проверяем меры
+          if (cnt < 0) {
+              return checkMeasures(measureSet, evaluator);
           }
-        }
-        return found;
+
+          // Рекурсивный случай: итерируем по текущему уровню
+          Member[] currentMembers = nonAllMembers[cnt]; // Кэшируем доступ к массиву
+          for (int i = 0; i < currentMembers.length; i++) {
+              evaluator.setContext(currentMembers[i]);
+              if (checkData(nonAllMembers, cnt - 1, measureSet, evaluator)) {
+                  return true; // ⭐️ РАННИЙ ВЫХОД — главная оптимизация
+              }
+          }
+          return false;
       }
-    } else {
-      boolean found = false;
-      for ( Member m : nonAllMembers[cnt] ) {
-        evaluator.setContext( m );
-        if ( checkData( nonAllMembers, cnt - 1, measureSet, evaluator ) ) {
-          found = true;
-        }
+
+      private static boolean checkMeasures(Set<Member> measureSet, Evaluator evaluator) {
+          if (measureSet.isEmpty()) {
+              Object value = evaluator.evaluateCurrent();
+              return value != null && !(value instanceof Throwable);
+          }
+
+          for (Member measure : measureSet) {
+              evaluator.setContext(measure);
+              Object value = evaluator.evaluateCurrent();
+              if (value != null && !(value instanceof Throwable)) {
+                  return true; // ⭐️ Ранний выход
+              }
+          }
+          return false;
       }
-      return found;
-    }
-    return false;
-  }
+  // private static boolean checkData( Member[][] nonAllMembers, int cnt, Set<Member> measureSet, Evaluator evaluator ) {
+  //   if ( cnt < 0 ) {
+  //     // no measures found, use standard algorithm
+  //     if ( measureSet.isEmpty() ) {
+  //       Object value = evaluator.evaluateCurrent();
+  //       if ( value != null && !( value instanceof Throwable ) ) {
+  //         return true;
+  //       }
+  //     } else {
+  //       // Here we evaluate across all measures just to
+  //       // make sure that the data is all loaded
+  //       boolean found = false;
+  //       for ( Member measure : measureSet ) {
+  //         evaluator.setContext( measure );
+  //         Object value = evaluator.evaluateCurrent();
+  //         if ( value != null && !( value instanceof Throwable ) ) {
+  //           found = true;
+  //         }
+  //       }
+  //       return found;
+  //     }
+  //   } else {
+  //     boolean found = false;
+  //     for ( Member m : nonAllMembers[cnt] ) {
+  //       evaluator.setContext( m );
+  //       if ( checkData( nonAllMembers, cnt - 1, measureSet, evaluator ) ) {
+  //         found = true;
+  //       }
+  //     }
+  //     return found;
+  //   }
+  //   return false;
+  // }
 
   private static class ResolverImpl extends ResolverBase {
     public ResolverImpl() {

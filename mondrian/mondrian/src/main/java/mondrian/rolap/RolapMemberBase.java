@@ -225,10 +225,10 @@ public class RolapMemberBase
                 String name = keyToString(key);
                 n = Util.quoteMdxIdentifier(n);
                 this.uniqueName = Util.makeFqName(n, name);
-                if (getLogger().isDebugEnabled()) {
-                    getLogger().debug(
-                        "RolapMember.makeUniqueName: uniqueName=" + uniqueName);
-                }
+                // if (getLogger().isDebugEnabled()) {
+                //     getLogger().debug(
+                //         "RolapMember.makeUniqueName: uniqueName=" + uniqueName);
+                // }
             }
         }
     }

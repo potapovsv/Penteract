@@ -185,22 +185,40 @@ public class SqlContextConstraint
         Set<RolapCube> baseCubes,
         List<RolapCube> baseCubeList)
     {
-        if (exp instanceof MemberExpr) {
-            MemberExpr memberExpr = (MemberExpr) exp;
-            Member member = memberExpr.getMember();
-            if (member instanceof RolapStoredMeasure) {
-                addMeasure(
-                    (RolapStoredMeasure) member, baseCubes, baseCubeList);
-            } else if (member instanceof RolapCalculatedMember) {
-                findMeasures(member.getExpression(), baseCubes, baseCubeList);
+        switch (exp) {
+            case MemberExpr me -> {
+                Member member = me.getMember();
+                switch (member) {
+                    case RolapStoredMeasure rsm -> 
+                        addMeasure(rsm, baseCubes, baseCubeList);
+                    case RolapCalculatedMember rcm -> 
+                        findMeasures(rcm.getExpression(), baseCubes, baseCubeList);
+                    default -> {} // другие типы Member игнорируются
+                }
             }
-        } else if (exp instanceof ResolvedFunCall) {
-            ResolvedFunCall funCall = (ResolvedFunCall) exp;
-            Exp [] args = funCall.getArgs();
-            for (Exp arg : args) {
-                findMeasures(arg, baseCubes, baseCubeList);
+            case ResolvedFunCall rfc -> {
+                for (Exp arg : rfc.getArgs()) {
+                    findMeasures(arg, baseCubes, baseCubeList);
+                }
             }
+            default -> {} // другие типы Exp игнорируются
         }
+        // if (exp instanceof MemberExpr) {
+        //     MemberExpr memberExpr = (MemberExpr) exp;
+        //     Member member = memberExpr.getMember();
+        //     if (member instanceof RolapStoredMeasure) {
+        //         addMeasure(
+        //             (RolapStoredMeasure) member, baseCubes, baseCubeList);
+        //     } else if (member instanceof RolapCalculatedMember) {
+        //         findMeasures(member.getExpression(), baseCubes, baseCubeList);
+        //     }
+        // } else if (exp instanceof ResolvedFunCall) {
+        //     ResolvedFunCall funCall = (ResolvedFunCall) exp;
+        //     Exp [] args = funCall.getArgs();
+        //     for (Exp arg : args) {
+        //         findMeasures(arg, baseCubes, baseCubeList);
+        //     }
+        // }
     }
 
     /**

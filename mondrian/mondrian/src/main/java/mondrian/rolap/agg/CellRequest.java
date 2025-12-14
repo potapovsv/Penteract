@@ -163,7 +163,9 @@ public class CellRequest {
 
     /**
      * Adds a constraint to this request.
-     *
+     *Stack Trace	Count	Percentage
+   CellRequest mondrian.rolap.RolapAggregationManager.makeCellRequest(Member[], boolean, boolean, RolapCube, Evaluator, List, List)	2408	12 %
+
      * @param column Column to constraint
      * @param predicate Constraint to apply, or null to add column to the
      *   output without applying constraint

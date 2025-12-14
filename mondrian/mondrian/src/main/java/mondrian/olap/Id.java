@@ -68,13 +68,20 @@ public class Id
     }
 
     public String[] toStringArray() {
-        String[] names = new String[segments.size()];
-        int k = 0;
-        for (Segment segment : segments) {
-            names[k++] = ((NameSegment) segment).getName();
-        }
-        return names;
-    }
+        return segments.stream()
+            .filter(NameSegment.class::isInstance)
+            .map(NameSegment.class::cast)
+            .map(NameSegment::getName)
+            .toArray(String[]::new);
+    }    
+    // public String[] toStringArray() {
+    //     String[] names = new String[segments.size()];
+    //     int k = 0;
+    //     for (Segment segment : segments) {
+    //         names[k++] = ((NameSegment) segment).getName();
+    //     }
+    //     return names;
+    // }
 
     public List<Segment> getSegments() {
         return Collections.unmodifiableList(this.segments);
@@ -228,15 +235,20 @@ public class Id
         }
 
         public boolean equals(final Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof NameSegment)) {
-                return false;
-            }
-            NameSegment that = (NameSegment) o;
-            return that.name.equals(this.name);
+            return o instanceof NameSegment that 
+                && Objects.equals(this.name, that.name);
         }
+
+        // public boolean equals(final Object o) {
+        //     if (this == o) {
+        //         return true;
+        //     }
+        //     if (!(o instanceof NameSegment)) {
+        //         return false;
+        //     }
+        //     NameSegment that = (NameSegment) o;
+        //     return that.name.equals(this.name);
+        // }
 
         public int hashCode() {
             return name.hashCode();
@@ -309,17 +321,20 @@ public class Id
                     subSegmentList.toArray(
                         new NameSegment[subSegmentList.size()]));
         }
-
         public boolean equals(final Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof KeySegment)) {
-                return false;
-            }
-            KeySegment that = (KeySegment) o;
-            return this.subSegmentList.equals(that.subSegmentList);
+            return o instanceof KeySegment that 
+                && Objects.equals(this.subSegmentList, that.subSegmentList);
         }
+        // public boolean equals(final Object o) {
+        //     if (this == o) {
+        //         return true;
+        //     }
+        //     if (!(o instanceof KeySegment)) {
+        //         return false;
+        //     }
+        //     KeySegment that = (KeySegment) o;
+        //     return this.subSegmentList.equals(that.subSegmentList);
+        // }
 
         public int hashCode() {
             return subSegmentList.hashCode();

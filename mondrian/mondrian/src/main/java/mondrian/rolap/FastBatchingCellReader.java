@@ -173,12 +173,15 @@ public class FastBatchingCellReader implements CellReader {
     public final void recordCellRequest(CellRequest request) {
         assert !request.isUnsatisfiable();
         ++missCount;
+        // if (LOGGER.isDebugEnabled()) {
+        //        LOGGER.debug("recordCellRequest missCount = " + missCount + " ");
+        //     }        
         cellRequests.add(request);
-        if (cellRequests.size() % cellRequestLimit == 0) {
-            // Signal that it's time to ask the cache manager if it has cells
-            // we need in the cache. Not really an exception.
-            throw CellRequestQuantumExceededException.INSTANCE;
-        }
+        // if (cellRequests.size() % cellRequestLimit == 0) {
+        //     // Signal that it's time to ask the cache manager if it has cells
+        //     // we need in the cache. Not really an exception.
+        //     throw CellRequestQuantumExceededException.INSTANCE;
+        // }
     }
 
     /**

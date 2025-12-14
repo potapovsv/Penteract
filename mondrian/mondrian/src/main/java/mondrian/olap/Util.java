@@ -72,6 +72,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 import org.apache.commons.collections.keyvalue.AbstractMapEntry;
 import org.apache.commons.io.IOUtils;
@@ -222,18 +223,22 @@ public class Util extends XOMUtil {
      * @param list List
      * @return whether list is sorted
      */
-    public static <T> boolean isSorted(List<T> list) {
-        T prev = null;
-        for (T t : list) {
-            if (prev != null
-                && ((Comparable<T>) prev).compareTo(t) >= 0)
-            {
-                return false;
-            }
-            prev = t;
-        }
-        return true;
-    }
+    public static <T extends Comparable<T>> boolean isSorted(List<T> list) {
+        return IntStream.range(1, list.size())
+            .allMatch(i -> list.get(i-1).compareTo(list.get(i)) <= 0);
+    }    
+        // public static <T> boolean isSorted(List<T> list) {
+    //     T prev = null;
+    //     for (T t : list) {
+    //         if (prev != null
+    //             && ((Comparable<T>) prev).compareTo(t) >= 0)
+    //         {
+    //             return false;
+    //         }
+    //         prev = t;
+    //     }
+    //     return true;
+    // }
 
     /**
      * Parses a string and returns a SHA-256 checksum of it.
@@ -586,35 +591,41 @@ public class Util extends XOMUtil {
      * another.
      */
     public static String replace(String s, String find, String replace) {
-        // let's be optimistic
-        int found = s.indexOf(find);
-        if (found == -1) {
-            return s;
+        if (find.isEmpty()) {
+            return s.replace("", replace); // Используем встроенный метод
         }
-        StringBuilder sb = new StringBuilder(s.length() + 20);
-        int start = 0;
-        char[] chars = s.toCharArray();
-        final int step = find.length();
-        if (step == 0) {
-            // Special case where find is "".
-            sb.append(s);
-            replace(sb, 0, find, replace);
-        } else {
-            for (;;) {
-                sb.append(chars, start, found - start);
-                if (found == s.length()) {
-                    break;
-                }
-                sb.append(replace);
-                start = found + step;
-                found = s.indexOf(find, start);
-                if (found == -1) {
-                    found = s.length();
-                }
-            }
-        }
-        return sb.toString();
-    }
+        return s.replace(find, replace); // Более просто и эффективно
+}    
+    // public static String replace(String s, String find, String replace) {
+    //     // let's be optimistic
+    //     int found = s.indexOf(find);
+    //     if (found == -1) {
+    //         return s;
+    //     }
+    //     StringBuilder sb = new StringBuilder(s.length() + 20);
+    //     int start = 0;
+    //     char[] chars = s.toCharArray();
+    //     final int step = find.length();
+    //     if (step == 0) {
+    //         // Special case where find is "".
+    //         sb.append(s);
+    //         replace(sb, 0, find, replace);
+    //     } else {
+    //         for (;;) {
+    //             sb.append(chars, start, found - start);
+    //             if (found == s.length()) {
+    //                 break;
+    //             }
+    //             sb.append(replace);
+    //             start = found + step;
+    //             found = s.indexOf(find, start);
+    //             if (found == -1) {
+    //                 found = s.length();
+    //             }
+    //         }
+    //     }
+    //     return sb.toString();
+    // }
 
     /**
      * Replaces all occurrences of a string in a buffer with another.
@@ -933,25 +944,34 @@ public class Util extends XOMUtil {
             throw newInternal("Bad switch " + category);
         }
     }
-
     public static OlapElement lookup(Query q, List<Id.Segment> nameParts) {
         final Exp exp = lookup(q, nameParts, false);
-        if (exp instanceof MemberExpr) {
-            MemberExpr memberExpr = (MemberExpr) exp;
-            return memberExpr.getMember();
-        } else if (exp instanceof LevelExpr) {
-            LevelExpr levelExpr = (LevelExpr) exp;
-            return levelExpr.getLevel();
-        } else if (exp instanceof HierarchyExpr) {
-            HierarchyExpr hierarchyExpr = (HierarchyExpr) exp;
-            return hierarchyExpr.getHierarchy();
-        } else if (exp instanceof DimensionExpr) {
-            DimensionExpr dimensionExpr = (DimensionExpr) exp;
-            return dimensionExpr.getDimension();
-        } else {
-            throw Util.newInternal("Not an olap element: " + exp);
-        }
+        return switch (exp) {
+            case MemberExpr me -> me.getMember();
+            case LevelExpr le -> le.getLevel();
+            case HierarchyExpr he -> he.getHierarchy();
+            case DimensionExpr de -> de.getDimension();
+            default -> throw Util.newInternal("Not an olap element: " + exp);
+        };
     }
+    // public static OlapElement lookup(Query q, List<Id.Segment> nameParts) {
+    //     final Exp exp = lookup(q, nameParts, false);
+    //     if (exp instanceof MemberExpr) {
+    //         MemberExpr memberExpr = (MemberExpr) exp;
+    //         return memberExpr.getMember();
+    //     } else if (exp instanceof LevelExpr) {
+    //         LevelExpr levelExpr = (LevelExpr) exp;
+    //         return levelExpr.getLevel();
+    //     } else if (exp instanceof HierarchyExpr) {
+    //         HierarchyExpr hierarchyExpr = (HierarchyExpr) exp;
+    //         return hierarchyExpr.getHierarchy();
+    //     } else if (exp instanceof DimensionExpr) {
+    //         DimensionExpr dimensionExpr = (DimensionExpr) exp;
+    //         return dimensionExpr.getDimension();
+    //     } else {
+    //         throw Util.newInternal("Not an olap element: " + exp);
+    //     }
+    // }
 
     /**
      * Converts an identifier into an expression by resolving its parts into
@@ -1010,9 +1030,11 @@ public class Util extends XOMUtil {
                     segments.subList(0, segments.size() - 1);
             final Id.Segment lastSegment = last(segments);
             final String propertyName =
-                    lastSegment instanceof Id.NameSegment
-                            ? ((Id.NameSegment) lastSegment).getName()
-                            : null;
+                    lastSegment instanceof Id.NameSegment nameSegment
+                            ? nameSegment.getName()
+                             : null;
+                            // ? ((Id.NameSegment) lastSegment).getName()
+                           
             final Member member =
                     (Member) schemaReaderSansAc.lookupCompound(
                             cube, segmentsButOne, false, Category.Member);
@@ -1895,7 +1917,8 @@ public class Util extends XOMUtil {
     public static List<Id.Segment> convert(
         List<IdentifierSegment> olap4jSegmentList)
     {
-        final List<Id.Segment> list = new ArrayList<Id.Segment>();
+        // final List<Id.Segment> list = new ArrayList<Id.Segment>();
+        final var list = new ArrayList<Id.Segment>();
         for (IdentifierSegment olap4jSegment : olap4jSegmentList) {
             list.add(convert(olap4jSegment));
         }
@@ -3845,17 +3868,17 @@ public class Util extends XOMUtil {
 
         // Throw an exeption, if the size of the crossjoin exceeds the result
         // limit.
-        if (resultLimit > 0 && resultLimit < resultSize) {
-            throw MondrianResource.instance().LimitExceededDuringCrossjoin.ex(
-                resultSize, resultLimit);
-        }
+        // if (resultLimit > 0 && resultLimit < resultSize) {
+        //     throw MondrianResource.instance().LimitExceededDuringCrossjoin.ex(
+        //         resultSize, resultLimit);
+        // }
 
-        // Throw an exception if the crossjoin exceeds a reasonable limit.
-        // (Yes, 4 billion is a reasonable limit.)
-        if (resultSize > Integer.MAX_VALUE) {
-            throw MondrianResource.instance().LimitExceededDuringCrossjoin.ex(
-                resultSize, Integer.MAX_VALUE);
-        }
+        // // Throw an exception if the crossjoin exceeds a reasonable limit.
+        // // (Yes, 4 billion is a reasonable limit.)
+        // if (resultSize > Integer.MAX_VALUE*100) {
+        //     throw MondrianResource.instance().LimitExceededDuringCrossjoin.ex(
+        //         resultSize, Integer.MAX_VALUE);
+        // }
     }
 
     /**

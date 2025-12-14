@@ -20,6 +20,8 @@ import org.olap4j.OlapConnection;
 import org.olap4j.OlapException;
 
 import org.olap4j.impl.LcidLocale;
+import org.olap4j.metadata.XmlaConstants.Format;
+import org.olap4j.metadata.XmlaConstants.Method;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
@@ -29,6 +31,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.regex.Matcher;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -443,18 +446,22 @@ way too noisy
         }
         return result;
     }
-
     private static <T> String toString(List<T> list) {
-        StringBuilder buf = new StringBuilder();
-        int k = -1;
-        for (T t : list) {
-            if (++k > 0) {
-                buf.append(", ");
-            }
-            buf.append(t);
-        }
-        return buf.toString();
+        return list.stream()
+            .map(String::valueOf)
+            .collect(Collectors.joining(", "));
     }
+    // private static <T> String toString(List<T> list) {
+    //     StringBuilder buf = new StringBuilder();
+    //     int k = -1;
+    //     for (T t : list) {
+    //         if (++k > 0) {
+    //             buf.append(", ");
+    //         }
+    //         buf.append(t);
+    //     }
+    //     return buf.toString();
+    // }
 
     /**
      * Chooses the appropriate response mime type given an HTTP "Accept" header.

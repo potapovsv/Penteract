@@ -3070,7 +3070,8 @@ public class RolapCube extends CubeBase {
         String name,
         Calc calc)
     {
-        final List<Id.Segment> segmentList = new ArrayList<Id.Segment>();
+        // final List<Id.Segment> segmentList = new ArrayList<Id.Segment>();
+        final var segmentList = new ArrayList<Id.Segment>();
         segmentList.addAll(
             Util.parseIdentifier(hierarchy.getUniqueName()));
         segmentList.add(new Id.NameSegment(name));

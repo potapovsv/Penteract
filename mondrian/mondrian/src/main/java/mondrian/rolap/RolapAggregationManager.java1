@@ -281,122 +281,115 @@ public abstract class RolapAggregationManager {
         boolean drillThrough,
         final boolean extendedContext,
         RolapCube cube,
-        Evaluator evaluator,
-        List<OlapElement> fieldsList,
+        Evaluator evaluator, List<OlapElement> fieldsList,
         List<OlapElement> nonApplicableFields)
     {
-        // Утверждения убираются в продакшене с -ea, поэтому бесплатны
+        // Need cube for drill-through requests
         assert drillThrough == (cube != null);
-        assert !extendedContext || drillThrough;
 
-        // Быстрый путь для пустого массива (частый кейс?)
-        if (members.length == 0) {
-            return null;
+        if (extendedContext) {
+            assert (drillThrough);
         }
 
-        // Оптимизированное вычисление measure (убрана дупликация)
-        final RolapStoredMeasure measure = getMeasure(members, cube, drillThrough);
-        if (measure == null) {
-            return null;
+        final RolapStoredMeasure measure;
+        if (drillThrough) {
+            cube = RolapCell.chooseDrillThroughCube(members, cube);
+            if (cube == null) {
+                return null;
+            }
+            if (members.length > 0
+                && members[0] instanceof RolapStoredMeasure)
+            {
+                measure = (RolapStoredMeasure) members[0];
+            } else {
+                measure = (RolapStoredMeasure) cube.getMeasures().get(0);
+            }
+        } else {
+            if (members.length > 0
+                && members[0] instanceof RolapStoredMeasure)
+            {
+                measure = (RolapStoredMeasure) members[0];
+            } else {
+                return null;
+            }
         }
 
-        final RolapStar.Measure starMeasure = (RolapStar.Measure) measure.getStarMeasure();
+        final RolapStar.Measure starMeasure =
+            (RolapStar.Measure) measure.getStarMeasure();
         assert starMeasure != null;
-        
-        final CellRequest request = createRequest(starMeasure, extendedContext, drillThrough, nonApplicableFields);
-        
-        // Горячий цикл: обработка остальных членов
-        return processMembers(members, extendedContext, cube, measure, evaluator, fieldsList, request) 
-            ? request : null;
-    }
-
-    // === Вспомогательные методы (инлайнятся JIT) ===
-
-    private static RolapStoredMeasure getMeasure(Member[] members, RolapCube cube, boolean drillThrough) {
-        // Pattern matching + тройной оператор = компактно и без кастов
-        return (members[0] instanceof RolapStoredMeasure rsm) ? rsm
-            : drillThrough ? (RolapStoredMeasure) cube.getMeasures().get(0)
-            : null;
-    }
-
-    private static CellRequest createRequest(RolapStar.Measure starMeasure, boolean extendedContext, 
-                                            boolean drillThrough, List<OlapElement> nonApplicableFields) {
-        // Убрано ветвление в GC-чувствительном коде
-        return drillThrough 
-            ? new DrillThroughCellRequest(starMeasure, extendedContext, nonApplicableFields)
-            : new CellRequest(starMeasure, extendedContext, false);
-    }
-
-    private static boolean processMembers(
-        Member[] members,
-        boolean extendedContext,
-        RolapCube cube,
-        RolapStoredMeasure measure,
-        Evaluator evaluator,
-        List<OlapElement> fieldsList,
-        CellRequest request)
-    {
-        final int n = members.length;
-        if (n <= 1) return true; // Быстрый выход
-
-        // Вынесены частые разыменования за цикл
-        final RolapCube measureCube = measure.getCube();
-        
-        return extendedContext
-            ? processExtended(members, cube, measureCube, request, fieldsList)
-            : processStandard(members, evaluator, measureCube, request);
-    }
-
-    private static boolean processExtended(
-        Member[] members, RolapCube cube, RolapCube measureCube,
-        CellRequest request, List<OlapElement> fieldsList)
-    {
-        // Обработка fieldsList вынесена в отдельный метод для лучшей инлайнинга
-        final boolean allowDefaults = fieldsList == null || fieldsList.isEmpty();
-        if (!allowDefaults) {
-            fieldsList.forEach(member -> addNonConstrainingColumns(member, cube, request));
+        final CellRequest request;
+        if (drillThrough) {
+            request =
+                new DrillThroughCellRequest(
+                    starMeasure, extendedContext, nonApplicableFields);
+        } else {
+            request =
+                new CellRequest(starMeasure, extendedContext, drillThrough);
         }
 
-        final int n = members.length;
-        for (int i = 1; i < n; i++) {
-            // Pattern matching + ранний continue = минимум вложенности
-            if (!(members[i] instanceof RolapCubeMember member)) continue;
-            
-            // Кэширование промежуточного результата (2 разыменования → 1)
-            RolapHierarchy hierarchy = member.getHierarchy().getRolapHierarchy();
-            if (hierarchy.closureFor != null) continue;
+        // Since 'request.extendedContext == false' is a well-worn code path,
+        // we have moved the test outside the loop.
+        if (extendedContext) {
+            boolean isAllowDefaultMembers = true;
+            if (fieldsList != null && !fieldsList.isEmpty()) {
+                // If a field list was specified, there will be some columns
+                // to include in the result set, other that we don't. This
+                // happens when the MDX is a DRILLTHROUGH operation and
+                // includes a RETURN clause.
+                for (OlapElement member : fieldsList) {
+                    addNonConstrainingColumns(member, cube, request);
+                }
+                isAllowDefaultMembers = false;
+            }
+            for (int i = 1; i < members.length; i++) {
+                final RolapCubeMember member = (RolapCubeMember) members[i];
+                if (member.getHierarchy().getRolapHierarchy().closureFor
+                    != null)
+                {
+                    continue;
+                }
 
-            if (!allowDefaults && member.isAllMember()) continue;
+                if (!isAllowDefaultMembers && member.isAllMember()) {
+                    continue;
+                }
 
-            addNonConstrainingColumns(member, cube, request);
+                addNonConstrainingColumns(member, cube, request);
 
-            // Горячий вызов: минимизируем разыменования
-            if (member.getLevel().getLevelReader().constrainRequest(member, measureCube, request)) {
-                return false; // Сигнал остановки
+                final RolapCubeLevel level = member.getLevel();
+                final boolean needToReturnNull =
+                    level.getLevelReader().constrainRequest(
+                        member, measure.getCube(), request);
+                if (needToReturnNull) {
+                    return null;
+                }
+            }
+
+        } else {
+            for (int i = 1; i < members.length; i++) {
+                if(members[i].isNull()) {
+                    return null;
+                }
+                if (!(members[i] instanceof RolapCubeMember)) {
+                    continue;
+                }
+                RolapCubeMember member = (RolapCubeMember) members[i];
+                final RolapCubeLevel level = member.getLevel();
+                final boolean needToReturnNull =
+                    level.getLevelReader().constrainRequest(
+                        member, measure.getCube(), request);
+                if (needToReturnNull) {
+                    // check to see if the current member is part of an ignored
+                    // unrelated dimension
+                    if (evaluator == null
+                        || !evaluator.mightReturnNullForUnrelatedDimension()
+                        || evaluator.needToReturnNullForUnrelatedDimension(
+                            new Member[] {member})) {
+                        return null;
+                    }
+                }
             }
         }
-        return true;
-    }
-
-    private static boolean processStandard(
-        Member[] members, Evaluator evaluator, RolapCube measureCube, CellRequest request)
-    {
-        final int n = members.length;
-        // Кэшируем частые вызовы
-        final boolean mightReturnNull = evaluator != null && evaluator.mightReturnNullForUnrelatedDimension();
-        
-        for (int i = 1; i < n; i++) {
-            Member m = members[i];
-            // Объединенная проверка (&& короткозамкнутое)
-            if (m.isNull() || !(m instanceof RolapCubeMember member)) continue;
-
-            if (member.getLevel().getLevelReader().constrainRequest(member, measureCube, request)) {
-                // Оптимизированная логика без лишних проверок
-                return !mightReturnNull 
-                    || !evaluator.needToReturnNullForUnrelatedDimension(new Member[]{member});
-            }
-        }
-        return true;
+        return request;
     }
 
     /**

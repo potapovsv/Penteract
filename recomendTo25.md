@@ -445,7 +445,7 @@ public record Pair<T1, T2>(T1 left, T2 right) {
 
 ### 15. Улучшение многопоточности
 
-**Текущий код в Util.java для создания ExecutorService:**
+1. **Текущий код в Util.java для создания ExecutorService:**
 ```java
 final ThreadFactory factory =
     new ThreadFactory() {
@@ -460,7 +460,7 @@ final ThreadFactory factory =
     };
 ```
 
-**Улучшенная версия с lambda:**
+2. **Улучшенная версия с lambda:**
 ```java
 final ThreadFactory factory = r -> {
     Thread t = Executors.defaultThreadFactory().newThread(r);

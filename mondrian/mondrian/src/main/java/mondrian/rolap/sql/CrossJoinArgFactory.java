@@ -317,15 +317,24 @@ public class CrossJoinArgFactory {
     private int countNonLiteralMeasures(Exp[] length) {
         int count = 0;
         for (Exp exp : length) {
-            if (exp instanceof MemberExpr) {
-                Exp calcExp = ((MemberExpr) exp).getMember().getExpression();
-                if (!(calcExp instanceof Literal)) {
-                    count++;
+            switch (exp) {
+                case MemberExpr me -> {
+                    if (!(me.getMember().getExpression() instanceof Literal)) {
+                        count++;
+                    }
                 }
-            } else if (exp instanceof ResolvedFunCall) {
-                count +=
-                    countNonLiteralMeasures(((ResolvedFunCall) exp).getArgs());
-            }
+                case ResolvedFunCall rfc -> count += countNonLiteralMeasures(rfc.getArgs());
+                default -> {} // другие типы игнорируются
+            }            
+            // if (exp instanceof MemberExpr) {
+            //     Exp calcExp = ((MemberExpr) exp).getMember().getExpression();
+            //     if (!(calcExp instanceof Literal)) {
+            //         count++;
+            //     }
+            // } else if (exp instanceof ResolvedFunCall) {
+            //     count +=
+            //         countNonLiteralMeasures(((ResolvedFunCall) exp).getArgs());
+            // }
         }
         return count;
     }
