@@ -567,7 +567,7 @@ public class CrossJoinFunDef extends FunDefBase {
         return TupleCollections.emptyList( list.getArity() );
       }
       final int missCount2 = evaluator.getMissCount();
-      final int puntMissCountListSize = 1000000;
+      final int puntMissCountListSize = 5000;
       // if (LOGGER.isDebugEnabled()) {
       //   LOGGER.debug( "nonEmptyOptimizeList: missCount=" + missCount + " missCount2=" + missCount2 + " size=" + size );
       // }

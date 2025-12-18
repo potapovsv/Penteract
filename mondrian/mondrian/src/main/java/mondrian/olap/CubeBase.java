@@ -12,8 +12,12 @@
 package mondrian.olap;
 
 import mondrian.resource.MondrianResource;
+import mondrian.rolap.RolapLevel;
 
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * <code>CubeBase</code> is an abstract implementation of {@link Cube}.
@@ -72,7 +76,7 @@ public abstract class CubeBase extends OlapElementBase implements Cube {
         this.dimensions = dimensions;
         this.uniqueName = Util.quoteMdxIdentifier(name);
     }
-
+    private static final Logger LOGGER = LogManager.getLogger(CubeBase.class);
     // implement OlapElement
     public String getName() {
         return name;
@@ -122,6 +126,9 @@ public abstract class CubeBase extends OlapElementBase implements Cube {
         Id.Segment s,
         MatchType matchType)
     {
+            //  if (LOGGER.isDebugEnabled()) {
+            //    LOGGER.debug("lookupChild = " + s.toString() + " ");
+            // }     
         Dimension mdxDimension = lookupDimension(s);
         if (mdxDimension != null) {
             return mdxDimension;

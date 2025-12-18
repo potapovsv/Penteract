@@ -131,6 +131,9 @@ public final class SegmentCacheWorker {
     public SegmentBody get(SegmentHeader header) {
         checkThread();
         try {
+             if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("SegmentCacheWorker get reading segment body for key: {}"+ header.toString());
+             }
             return cache.get(header);
         } catch (Throwable t) {
             LOGGER.error(

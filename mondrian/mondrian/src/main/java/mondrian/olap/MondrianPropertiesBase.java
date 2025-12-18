@@ -62,7 +62,7 @@ public abstract class MondrianPropertiesBase extends TriggerableProperties {
 
     protected static final String mondrianDotProperties = "mondrian.properties";
 
-    public static final String buildNums = "v:1.0.0.1002-LMX";
+    public static final String buildNums = "v:1.0.0.1024-LMX";
 
     protected MondrianPropertiesBase(PropertySource propertySource) {
         this.propertySource = propertySource;
@@ -307,7 +307,7 @@ public abstract class MondrianPropertiesBase extends TriggerableProperties {
         try (InputStream input = new FileInputStream(fileName)) {
             // load a properties file
             prop.load(input);
-            LOGGER.info(buildNums+"NEW LOAD prop size: " + prop.size() );
+            LOGGER.info(buildNums+" Loading prop size: " + prop.size() );
 
             // get the property value and print it out
 

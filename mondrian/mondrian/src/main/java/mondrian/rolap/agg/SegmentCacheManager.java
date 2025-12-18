@@ -1402,8 +1402,14 @@ public class SegmentCacheManager {
 
     public SegmentBody get( SegmentHeader header ) {
       for ( SegmentCacheWorker worker : workers ) {
+             if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("CompositeSegmentCache get reading segment body for key: {} worker "+ worker.getClass().getName());
+            }
         final SegmentBody body = worker.get( header );
         if ( body != null ) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("CompositeSegmentCache get reading segment body for key: {} body "+ body.toString());
+            }          
           return body;
         }
       }

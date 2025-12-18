@@ -61,7 +61,7 @@
     <dependency>
       <groupId>pentaho</groupId>
       <artifactId>Penteract-olap</artifactId>
-      <version>1.0.0.1001-LMX</version>
+      <version>1.0.0.1024-LMX</version>
         <exclusions>
             <exclusion>
                 <groupId>commons-io</groupId>

@@ -24,6 +24,7 @@ import java.util.*;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
+import mondrian.olap.MondrianProperties;
 
 /**
  * Base XML/A servlet.
@@ -147,6 +148,7 @@ public abstract class XmlaServlet
         HttpServletResponse response)
         throws ServletException, IOException
     {
+         MondrianProperties.instance().populate();
         // Request Soap Header and Body
         // header [0] and body [1]
         Element[] requestSoapParts = new Element[2];

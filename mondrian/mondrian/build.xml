@@ -58,7 +58,7 @@
   </target>
 
   <target name="generate.properties">
-    <!-- Generate MondrianProperties.java,
+         <!-- Generate MondrianProperties.java,
          mondrian.properties.template, property.html. -->
     <javac
         srcdir="${java.dir}"

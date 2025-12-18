@@ -14,6 +14,7 @@ package mondrian.xmla.impl;
 
 import mondrian.util.XmlParserFactoryProducer;
 import mondrian.xmla.*;
+import mondrian.olap.MondrianProperties;
 import mondrian.server.Session;
 
 import org.olap4j.impl.Olap4jUtil;
@@ -668,7 +669,7 @@ public abstract class DefaultXmlaServlet extends XmlaServlet {
                     uee);
             }
 
-            if (LOGGER.isDebugEnabled()) {
+            if (LOGGER.isDebugEnabled() && MondrianProperties.instance().printXMLAreq.get()) {
                 StringBuilder buf = new StringBuilder(100);
                 int ii = 0;
                 buf.append("XML/A response content Body").append(nl);

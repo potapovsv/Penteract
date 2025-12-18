@@ -55,6 +55,7 @@
     <servlet-api.version>6.0.0</servlet-api.version>
     <commons-lang.version>2.6</commons-lang.version>
     <xmlunit.version>1.6</xmlunit.version>
+    <lettuce.version>7.2.0.RELEASE</lettuce.version>
   </properties>
   <profiles>
     <profile>

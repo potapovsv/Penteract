@@ -937,7 +937,7 @@ determines the list of tables and columns of a specific datasource.</p>
         <Description>
 <p>Property that defines
 the name of the plugin class that resolves data source names to
-{@link jakarta.sql.DataSource} objects. The class must implement the
+{@link javax.sql.DataSource} objects. The class must implement the
 {@link mondrian.spi.DataSourceResolver} interface. If not specified,
 the default implementation uses JNDI to perform resolution.</p>
 
@@ -1574,4 +1574,111 @@ log4j.configuration=file:log4j.properties</code></blockquote>
         <Type>boolean</Type>
         <Default>false</Default>
     </PropertyDefinition>
+    <PropertyDefinition>
+        <Name>redisUri</Name>
+        <Path>mondrian.spi.segmentCache.redis.redisUri</Path>
+        <Description>
+            <p>
+               mondrian.spi.segmentCache.redis.redisUri
+            </p>
+        </Description>
+        <Type>String</Type>
+        <Default>redis://localhost:6379</Default>
+    </PropertyDefinition>    
+
+    <PropertyDefinition>
+        <Name>redisKeyPrefix</Name>
+        <Path>mondrian.spi.segmentCache.redis.redisKeyPrefix</Path>
+        <Description>
+            <p>
+               mondrian.spi.segmentCache.redis.redisKeyPrefix
+            </p>
+        </Description>
+        <Type>String</Type>
+        <Default>mondrian:prod:segment:</Default>
+    </PropertyDefinition>   
+
+   <PropertyDefinition>
+        <Name>redisTtlSeconds</Name>
+        <Path>mondrian.spi.segmentCache.redis.redisTtlSeconds</Path>
+        <Description>
+            <p>
+               mondrian.spi.segmentCache.redis.redisUri
+            </p>
+        </Description>
+        <Type>int</Type>
+        <Default>86400</Default>
+    </PropertyDefinition>       
+
+   <PropertyDefinition>
+        <Name>redisCompressionLevel</Name>
+        <Path>mondrian.spi.segmentCache.redis.redisCompressionLevel</Path>
+        <Description>
+            <p>
+               mondrian.spi.segmentCache.redis.redisUseCompression
+            </p>
+        </Description>
+        <Type>int</Type>
+        <Default>3</Default>
+    </PropertyDefinition>      
+
+   <PropertyDefinition>
+        <Name>redisUseCompression</Name>
+        <Path>mondrian.spi.segmentCache.redis.redisUseCompression</Path>
+        <Description>
+            <p>
+               mondrian.spi.segmentCache.redis.redisUseCompression
+            </p>
+        </Description>
+        <Type>boolean</Type>
+        <Default>true</Default>
+    </PropertyDefinition>   
+
+   <PropertyDefinition>
+        <Name>redisUseKeyExpiration</Name>
+        <Path>mondrian.spi.segmentCache.redis.redisUseKeyExpiration</Path>
+        <Description>
+            <p>
+               mondrian.spi.segmentCache.redis.redisUseKeyExpiration
+            </p>
+        </Description>
+        <Type>boolean</Type>
+        <Default>true</Default>
+    </PropertyDefinition>     
+
+   <PropertyDefinition>
+        <Name>printXMLAreq</Name>
+        <Path>mondrian.server.printXMLAreq</Path>
+        <Description>
+            <p>
+               mondrian.server.printXMLAreq
+            </p>
+        </Description>
+        <Type>boolean</Type>
+        <Default>true</Default>
+    </PropertyDefinition>   
+
+   <PropertyDefinition>
+        <Name>redisConnectionTimeout</Name>
+        <Path>mondrian.spi.segmentCache.redis.redisConnectionTimeout</Path>
+        <Description>
+            <p>
+               mondrian.spi.segmentCache.redis.redisConnectionTimeout
+            </p>
+        </Description>
+        <Type>int</Type>
+        <Default>86400</Default>
+    </PropertyDefinition>       
+
+   <PropertyDefinition>
+        <Name>redisCommandTimeout</Name>
+        <Path>mondrian.spi.segmentCache.redis.redisCommandTimeout</Path>
+        <Description>
+            <p>
+               mondrian.spi.segmentCache.redis.redisCommandTimeout
+            </p>
+        </Description>
+        <Type>int</Type>
+        <Default>120</Default>
+    </PropertyDefinition>       
 </PropertyDefinitions>
