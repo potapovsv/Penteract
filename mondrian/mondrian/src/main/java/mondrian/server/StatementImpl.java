@@ -11,7 +11,7 @@ package mondrian.server;
 
 import mondrian.olap.*;
 import mondrian.rolap.RolapSchema;
-import mondrian.spi.ProfileHandler;
+// import mondrian.spi.ProfileHandler;
 
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicLong;
@@ -31,7 +31,7 @@ public abstract class StatementImpl implements Statement {
      * Writer to which to send profiling information, or null if profiling is
      * disabled.
      */
-    private ProfileHandler profileHandler;
+    // private ProfileHandler profileHandler;
 
     protected Query query;
 
@@ -97,13 +97,13 @@ public abstract class StatementImpl implements Statement {
         execution.end();
     }
 
-    public void enableProfiling(ProfileHandler profileHandler) {
-        this.profileHandler = profileHandler;
-    }
+    // public void enableProfiling(ProfileHandler profileHandler) {
+    //     this.profileHandler = profileHandler;
+    // }
 
-    public ProfileHandler getProfileHandler() {
-        return profileHandler;
-    }
+    // public ProfileHandler getProfileHandler() {
+    //     return profileHandler;
+    // }
 
     public void setQueryTimeoutMillis(long timeoutMillis) {
         this.queryTimeout = timeoutMillis;

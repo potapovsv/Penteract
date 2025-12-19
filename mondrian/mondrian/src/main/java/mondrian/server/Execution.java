@@ -113,7 +113,7 @@ public class Execution {
     this.startTimeMillis = System.currentTimeMillis();
     this.timeoutTimeMillis = timeoutIntervalMillis > 0 ? this.startTimeMillis + timeoutIntervalMillis : 0L;
     this.state = State.RUNNING;
-    this.queryTiming.init( this.statement.getProfileHandler() != null );
+    // this.queryTiming.init( this.statement.getProfileHandler() != null );
     fireExecutionStartEvent();
   }
 

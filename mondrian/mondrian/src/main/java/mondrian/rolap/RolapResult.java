@@ -130,7 +130,8 @@ public class RolapResult extends ResultBase {
       this.evaluator = new RolapDependencyTestingEvaluator( this, expDeps );
     } else {
       final RolapEvaluatorRoot root = new RolapResultEvaluatorRoot( this );
-      if ( statement.getProfileHandler() != null ) {
+      // if ( statement.getProfileHandler() != null ) {
+      if ( false ) {
         this.evaluator = new RolapProfilingEvaluator( root );
       } else {
         this.evaluator = new RolapEvaluator( root );
@@ -368,7 +369,8 @@ public class RolapResult extends ResultBase {
         this.evaluator = new RolapDependencyTestingEvaluator( this, expDeps );
       } else {
         final RolapEvaluatorRoot root = new RolapResultEvaluatorRoot( this );
-        if ( statement.getProfileHandler() != null ) {
+        // if ( statement.getProfileHandler() != null ) {
+        if ( false ) {
           this.evaluator = new RolapProfilingEvaluator( root );
         } else {
           this.evaluator = new RolapEvaluator( root );
@@ -513,9 +515,10 @@ public class RolapResult extends ResultBase {
           Member placeholder =
               setPlaceholderSlicerAxis( (RolapMember) tupleList.get( 0 ).get( 0 ), calc, true, tupleList );
 
-          Util.explain( evaluator.root.statement.getProfileHandler(), "Axis (FILTER):", query.slicerCalc, evaluator
+          // Util.explain( evaluator.root.statement.getProfileHandler(), "Axis (FILTER):", query.slicerCalc, evaluator
+          //     .getTiming() );
+        Util.explain( null, "Axis (FILTER):", query.slicerCalc, evaluator
               .getTiming() );
-
           evaluator.setContext( placeholder );
         }
       } while ( phase() );
@@ -608,8 +611,10 @@ public class RolapResult extends ResultBase {
               }
 
               if ( !redo ) {
-                Util.explain( evaluator.root.statement.getProfileHandler(), "Axis (" + axis.getAxisName() + "):", calc,
-                    evaluator.getTiming() );
+                // Util.explain( evaluator.root.statement.getProfileHandler(), "Axis (" + axis.getAxisName() + "):", calc,
+                //     evaluator.getTiming() );
+                Util.explain( null, "Axis (" + axis.getAxisName() + "):", calc,
+                    evaluator.getTiming() );                    
               }
 
               this.axes[i] = new RolapAxis( TupleCollections.materialize( tupleIterable, false ) );
@@ -634,7 +639,8 @@ public class RolapResult extends ResultBase {
         try {
           executeBody( internalSlicerEvaluator, query, new int[axes.length] );
         } finally {
-          Util.explain( evaluator.root.statement.getProfileHandler(), "QueryBody:", null, evaluator.getTiming() );Locus.pop( locus );
+          // Util.explain( evaluator.root.statement.getProfileHandler(), "QueryBody:", null, evaluator.getTiming() );Locus.pop( locus );
+          Util.explain( null, "QueryBody:", null, evaluator.getTiming() );Locus.pop( locus );
         }
       }
 
@@ -1025,6 +1031,7 @@ public class RolapResult extends ResultBase {
     }
 
     for ( int i = 0; i < pos.length; i++ ) {
+      // if ( positionsHighCardinality.containsKey(i) && positionsHighCardinality.get( i ) ) {
       if ( positionsHighCardinality.containsKey(i) && positionsHighCardinality.get( i ) ) {
         final Locus locus = new Locus( execution, null, "Loading cells" );
         Locus.push( locus );

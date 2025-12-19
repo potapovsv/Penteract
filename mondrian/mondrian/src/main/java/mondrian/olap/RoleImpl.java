@@ -483,7 +483,8 @@ public class RoleImpl implements Role {
 
     public HierarchyAccess getAccessDetails(Hierarchy hierarchy) {
         Util.assertPrecondition(hierarchy != null, "hierarchy != null");
-        if (hierarchyGrants.containsKey(hierarchy)) {
+        HierarchyAccessImpl hr = hierarchyGrants.get(hierarchy);
+        if (hr!=null) {
             return hierarchyGrants.get(hierarchy);
         }
         final Access hierarchyAccess;

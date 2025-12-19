@@ -442,8 +442,8 @@ public class AggregateFunDef extends AbstractAggregateFunDef {
                 for (int i = 0; i < tuple.size(); i++) {
                     Member member = tuple.get(i);
                     Map<Member, Integer> map = counters[i];
-                    if (map.containsKey(member)) {
-                        Integer count = map.get(member);
+                     Integer count = map.get(member); 
+                    if (count !=null) {
                         map.put(member, ++count);
                     } else {
                         map.put(member, 1);

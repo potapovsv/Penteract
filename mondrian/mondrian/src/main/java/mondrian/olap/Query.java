@@ -227,20 +227,20 @@ public class Query extends QueryPart {
         statement.setQuery(this);
         resolve();
 
-        if (RolapUtil.PROFILE_LOGGER.isDebugEnabled()
-            && statement.getProfileHandler() == null)
-        {
-            statement.enableProfiling(
-                new ProfileHandler() {
-                    public void explain(String plan, QueryTiming timing) {
-                        if (timing != null) {
-                            plan += "\n" + timing;
-                        }
-                        RolapUtil.PROFILE_LOGGER.debug(plan);
-                    }
-                }
-            );
-        }
+        // if (RolapUtil.PROFILE_LOGGER.isDebugEnabled()
+        //     && statement.getProfileHandler() == null)
+        // {
+        //     statement.enableProfiling(
+        //         new ProfileHandler() {
+        //             public void explain(String plan, QueryTiming timing) {
+        //                 if (timing != null) {
+        //                     plan += "\n" + timing;
+        //                 }
+        //                 RolapUtil.PROFILE_LOGGER.debug(plan);
+        //             }
+        //         }
+        //     );
+        // }
     }
 
     /**
@@ -761,23 +761,23 @@ public class Query extends QueryPart {
 
     @Override
     public void explain(PrintWriter pw) {
-        final boolean profiling = getStatement().getProfileHandler() != null;
-        final CalcWriter calcWriter = new CalcWriter(pw, profiling);
-        for (Formula formula : formulas) {
-            formula.getMdxMember(); // TODO:
-        }
-        if (slicerCalc != null) {
-            pw.println("Axis (FILTER):");
-            slicerCalc.accept(calcWriter);
-            pw.println();
-        }
-        int i = -1;
-        for (QueryAxis axis : axes) {
-            ++i;
-            pw.println("Axis (" + axis.getAxisName() + "):");
-            axisCalcs[i].accept(calcWriter);
-            pw.println();
-        }
+        // final boolean profiling = getStatement().getProfileHandler() != null;
+        // final CalcWriter calcWriter = new CalcWriter(pw, profiling);
+        // for (Formula formula : formulas) {
+        //     formula.getMdxMember(); // TODO:
+        // }
+        // if (slicerCalc != null) {
+        //     pw.println("Axis (FILTER):");
+        //     slicerCalc.accept(calcWriter);
+        //     pw.println();
+        // }
+        // int i = -1;
+        // for (QueryAxis axis : axes) {
+        //     ++i;
+        //     pw.println("Axis (" + axis.getAxisName() + "):");
+        //     axisCalcs[i].accept(calcWriter);
+        //     pw.println();
+        // }
         pw.flush();
     }
 
@@ -1477,8 +1477,9 @@ public class Query extends QueryPart {
 
         final int expDeps =
             MondrianProperties.instance().TestExpDependencies.get();
-        final ProfileHandler profileHandler = statement.getProfileHandler();
-        if (profileHandler != null) {
+        // final ProfileHandler profileHandler = statement.getProfileHandler();
+        // if (profileHandler != null) {
+        if (false) {
             // Cannot test dependencies and profile at the same time. Profiling
             // trumps.
             compiler = RolapUtil.createProfilingCompiler(compiler);
@@ -1697,15 +1698,19 @@ public class Query extends QueryPart {
                 members = Util.addLevelCalculatedMembers(this, level, members);
             }
 
-            Hierarchy hierarchy = level.getHierarchy();
-            if(query.subcubeHierarchies.containsKey(hierarchy)) {
+              Hierarchy hierarchy = level.getHierarchy();
+              HashMap<Member, Member> subcubeMembers = query.subcubeHierarchies.get(hierarchy);
+            if(subcubeMembers != null) {
                 ArrayList<Member> newMembers = new ArrayList<Member>();
-                HashMap<Member, Member> subcubeMembers = query.subcubeHierarchies.get(hierarchy);
                 for (int i = 0; i < members.size(); i++) {
                     Member sourceMember = members.get(i);
-                    if(subcubeMembers.containsKey(sourceMember)) {
-                        newMembers.add(subcubeMembers.get(sourceMember));
+                    Member subcubeMember = subcubeMembers.get(sourceMember);
+                    if (subcubeMember != null) {
+                        newMembers.add(subcubeMember);
                     }
+                    // if(subcubeMembers.containsKey(sourceMember)) {
+                    //     newMembers.add(subcubeMembers.get(sourceMember));
+                    // }
                 }
                 members = newMembers;
             }
@@ -2414,10 +2419,11 @@ public class Query extends QueryPart {
 
     private Member getSubcubeMember(Member member, boolean addNullMember) {
         Hierarchy hierarchy = ((RolapMember)member).getHierarchy();
-        if(this.subcubeHierarchies.containsKey(hierarchy)) {
-            HashMap<Member, Member> subcubeMembers = this.subcubeHierarchies.get(hierarchy);
-            if(subcubeMembers.containsKey(member)) {
-                return subcubeMembers.get(member);
+        HashMap<Member, Member> subcubeMembers = this.subcubeHierarchies.get(hierarchy);
+        if(subcubeMembers != null) {
+            Member  sm = subcubeMembers.get(member);
+            if(sm != null) {
+                return sm;
             }
             else if(addNullMember) {
                 return hierarchy.getNullMember();

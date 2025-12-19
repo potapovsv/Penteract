@@ -84,9 +84,9 @@ class MemberExcludeConstraint implements TupleConstraint {
                 }
             }
         }
-
-        if (roles.containsKey(level)) {
-            List<RolapMember> members = roles.get(level);
+        List<RolapMember> members = roles.get(level);
+        if (members != null) {
+            
             SqlConstraintUtils.addMemberConstraint(
                 query, baseCube, aggStar, members, true, false, false);
         }

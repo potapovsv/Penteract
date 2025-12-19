@@ -1563,6 +1563,7 @@ RME is this right
             throws CreationException
         {
             return new NullValuePoolFactory();
+            // return new FastMemoryEfficientValuePoolFactory();
         }
     }
 }

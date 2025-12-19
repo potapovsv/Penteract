@@ -34,16 +34,16 @@ public final class Unsafe {
         OlapStatement statement,
         final PrintWriter pw)
     {
-        ((MondrianOlap4jStatement) statement).enableProfiling(
-            new ProfileHandler() {
-                public void explain(String plan, QueryTiming timing) {
-                    pw.println(plan);
-                    if (timing != null) {
-                        pw.println(timing);
-                    }
-                }
-            }
-        );
+        // ((MondrianOlap4jStatement) statement).enableProfiling(
+        //     new ProfileHandler() {
+        //         public void explain(String plan, QueryTiming timing) {
+        //             pw.println(plan);
+        //             if (timing != null) {
+        //                 pw.println(timing);
+        //             }
+        //         }
+        //     }
+        // );
     }
 }
 

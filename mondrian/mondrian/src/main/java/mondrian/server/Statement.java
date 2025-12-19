@@ -13,7 +13,7 @@ import mondrian.olap.Query;
 import mondrian.olap.SchemaReader;
 import mondrian.rolap.RolapConnection;
 import mondrian.rolap.RolapSchema;
-import mondrian.spi.ProfileHandler;
+// import mondrian.spi.ProfileHandler;
 
 import java.sql.SQLException;
 
@@ -71,9 +71,9 @@ public interface Statement {
      *
      * @param profileHandler Writer to which to send profiling information
      */
-    void enableProfiling(ProfileHandler profileHandler);
+    // void enableProfiling(ProfileHandler profileHandler);
 
-    ProfileHandler getProfileHandler();
+    // ProfileHandler getProfileHandler();
 
     /**
      * Sets the timeout of this statement, in milliseconds.

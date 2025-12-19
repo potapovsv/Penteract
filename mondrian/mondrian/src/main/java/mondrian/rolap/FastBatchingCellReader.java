@@ -41,6 +41,9 @@ import java.util.concurrent.Future;
  * <p>This class tries to minimize the amount of storage needed to record the
  * fact that a cell was requested.</p>
  */
+
+
+
 public class FastBatchingCellReader implements CellReader {
     private static final Logger LOGGER =
         LogManager.getLogger(FastBatchingCellReader.class);

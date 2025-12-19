@@ -177,10 +177,10 @@ public class SqlConstraintUtils {
       }
 
       final MondrianDef.Expression keyForSlicerMap = column.getExpression();
-
-      if ( mapOfSlicerMembers.containsKey( keyForSlicerMap ) ) {
+      Set<RolapMember> slicerMembersSet = mapOfSlicerMembers.get( keyForSlicerMap );
+      if ( slicerMembersSet != null ) {
         if ( !done.containsKey( keyForSlicerMap ) ) {
-          Set<RolapMember> slicerMembersSet = mapOfSlicerMembers.get( keyForSlicerMap );
+          
 
           // get only constraining members
           // TODO: can we do this right at getSlicerMemberMap?

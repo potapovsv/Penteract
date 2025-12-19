@@ -326,10 +326,10 @@ public class SqlStatement {
     status += ", ex=" + Counters.SQL_STATEMENT_EXECUTE_COUNT.get()
       + ", close=" + Counters.SQL_STATEMENT_CLOSE_COUNT.get()
       + ", open=" + Counters.SQL_STATEMENT_EXECUTING_IDS;
-    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-    Thread.dumpStack();
+    // StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+    // Thread.dumpStack();
     if ( RolapUtil.LOGGER.isDebugEnabled() ) {
-      RolapUtil.LOGGER.debug("RolapUtil.StackTrace: " + Arrays.toString(stackTrace));
+      // RolapUtil.LOGGER.debug("RolapUtil.StackTrace: " + Arrays.toString(stackTrace));
       RolapUtil.LOGGER.debug(
         locus.component + ": done executing sql [" + sql + "]"
           + status );

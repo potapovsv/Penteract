@@ -153,8 +153,8 @@ public class RedisSegmentCache implements SegmentCache {
 
             // Build client resources
             ClientResources clientResources = DefaultClientResources.builder()
-                    .ioThreadPoolSize(1)
-                    .computationThreadPoolSize(1)
+                    .ioThreadPoolSize(4)
+                    .computationThreadPoolSize(4)
                     .build();
 
             // Create Redis client

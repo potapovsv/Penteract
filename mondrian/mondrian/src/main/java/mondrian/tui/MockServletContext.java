@@ -13,6 +13,7 @@
 
 package mondrian.tui;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -126,7 +127,9 @@ public class MockServletContext implements ServletContext {
      */
     public URL getResource(String name) throws MalformedURLException {
         if (!resources.containsKey(name)) {
-            addResource(name, new URL("file://" + name));
+            addResource(name, new File(name).toURI().toURL());
+            // addResource(name, new URL("file://" + name));
+
         }
         return resources.get(name);
     }

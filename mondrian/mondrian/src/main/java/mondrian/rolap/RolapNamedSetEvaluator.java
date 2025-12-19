@@ -112,9 +112,11 @@ class RolapNamedSetEvaluator implements Evaluator.NamedSetEvaluator, TupleList.P
       // way NamedSet evaluation was implemented in Mondrian, they could...
       // So as a result, the nameset calc has to be profiled at the time of use instead
       // of on close of the statement.
-      Util.explain( rrer.statement.getProfileHandler(), "NamedSet (" + namedSet.getName() + "):", calc, evaluator
-          .getTiming() );
       
+      // Util.explain( rrer.statement.getProfileHandler(), "NamedSet (" + namedSet.getName() + "):", calc, evaluator
+      //     .getTiming() );
+          Util.explain( null, "NamedSet (" + namedSet.getName() + "):", calc, evaluator
+          .getTiming() );  
       // Wrap list so that currentOrdinal is updated whenever the list
       // is accessed. The list is immutable, because we don't override
       // AbstractList.set(int, Object).
