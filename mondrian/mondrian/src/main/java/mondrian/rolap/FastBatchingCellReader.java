@@ -90,6 +90,7 @@ public class FastBatchingCellReader implements CellReader {
 
     public HashMap<List<List<Member>>, CompoundPredicateInfo> aggregationListHash = new HashMap<>();
 
+    public final Map<AggregationListKey, CompoundPredicateInfo> aggregationCache = new HashMap<>();
     /**
      * Creates a FastBatchingCellReader.
      *

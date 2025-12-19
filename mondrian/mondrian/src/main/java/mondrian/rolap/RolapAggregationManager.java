@@ -260,9 +260,12 @@ public abstract class RolapAggregationManager {
         //It takes a lot of resources and memory to calculate it for every one.
         CellReader cellReader = evaluator.getCellReader();
         FastBatchingCellReader fastBatchingCellReader = null;
+        AggregationListKey key = new AggregationListKey(aggregationList);
         if(cellReader instanceof FastBatchingCellReader) {
             fastBatchingCellReader = (FastBatchingCellReader)cellReader;
-            final CompoundPredicateInfo fbReader = fastBatchingCellReader.aggregationListHash.get(aggregationList);
+            
+            // final CompoundPredicateInfo fbReader = fastBatchingCellReader.aggregationListHash.get(aggregationList);
+             final CompoundPredicateInfo fbReader = fastBatchingCellReader.aggregationCache.get(key);
             if(fbReader != null) {
                 return fbReader;
             }
@@ -276,7 +279,7 @@ public abstract class RolapAggregationManager {
         //         + aggregationList.size());
         // }
         CompoundPredicateInfo predicateInfo;
-        if (aggregationList.equals(evaluator.getSlicerTuples())) {
+        if (key.equals(evaluator.getSlicerTuples())) {
             // slicer predicate is built once in the evaluator to
             // avoid unnecessary duplicate effort
             predicateInfo = evaluator.getSlicerPredicateInfo();
@@ -290,7 +293,7 @@ public abstract class RolapAggregationManager {
                 aggregationList, measure, evaluator);
         }
         if(fastBatchingCellReader != null) {
-            fastBatchingCellReader.aggregationListHash.put(aggregationList, predicateInfo);
+            fastBatchingCellReader.aggregationCache.put(key, predicateInfo);
         }
         //  if (LOGGER.isDebugEnabled()) {
         //     LOGGER.debug(
