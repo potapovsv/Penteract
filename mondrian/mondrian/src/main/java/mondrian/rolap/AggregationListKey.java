@@ -1,21 +1,7 @@
 package mondrian.rolap;
 
 import mondrian.olap.*;
-import mondrian.rolap.agg.*;
-import mondrian.rolap.aggmatcher.AggGen;
-import mondrian.rolap.aggmatcher.AggStar;
-import mondrian.rolap.cache.SegmentCacheIndex;
-import mondrian.rolap.cache.SegmentCacheIndexImpl;
-import mondrian.server.Execution;
-import mondrian.server.Locus;
-import mondrian.spi.*;
-import mondrian.util.*;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
-
 import java.util.*;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 public final class AggregationListKey {

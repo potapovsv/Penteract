@@ -24,6 +24,8 @@ import mondrian.spi.Dialect;
 import mondrian.util.*;
 
 import org.apache.logging.log4j.Logger;
+import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.*;
@@ -88,7 +90,7 @@ public class RolapEvaluator implements Evaluator {
 
   private final RolapCalculation[] calculations;
   private int calculationCount;
-
+ private static final RolapCalculation[] EMPTY_CALCULATIONS = new RolapCalculation[0];
   /**
    * List of lists of tuples or members, rarely used, but overrides the ordinary dimensional context if set when a cell
    * value comes to be evaluated.
@@ -499,7 +501,7 @@ public class RolapEvaluator implements Evaluator {
    * @param membersByHierarchy
    *          members in slicer by hierarchy
    */
-  public final void setSlicerContext( List<Member> members, Map<Hierarchy, Set<Member>> membersByHierarchy ) {
+  public final void setSlicerContext( List<Member> members, MutableMap<Hierarchy, UnifiedSet<Member>>  membersByHierarchy ) {
     for ( Member member : members ) {
       setContext( member );
     }

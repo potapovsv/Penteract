@@ -18,6 +18,8 @@ import mondrian.server.Execution;
 import mondrian.server.Locus;
 import mondrian.util.CancellationChecker;
 
+import org.eclipse.collections.impl.list.mutable.FastList;
+
 import java.util.*;
 
 import org.apache.logging.log4j.Logger;
@@ -67,61 +69,64 @@ class NonEmptyFunDef extends FunDefBase {
         }
 
         public TupleList evaluateList(Evaluator evaluator) {
-            final int savepoint = evaluator.savepoint();
-            try {
-                evaluator.setNonEmpty(false);
+                final int savepoint = evaluator.savepoint();
+                try {
+                    evaluator.setNonEmpty(false);
 
-                TupleList rightTuples = null;
-                if(this.listCalc2 != null) {
-                    rightTuples = listCalc2.evaluateList(evaluator);
-                }
+                    TupleList rightTuples = null;
+                    // Вынесли проверку за цикл
+                    boolean hasRightTuples = false;
+                    if (this.listCalc2 != null) {
+                        rightTuples = listCalc2.evaluateList(evaluator);
+                        hasRightTuples = rightTuples != null && !rightTuples.isEmpty();
+                    }
 
-                evaluator.setNonEmpty(true);
+                    evaluator.setNonEmpty(true);
 
-                TupleList leftTuples = listCalc1.evaluateList(evaluator);
-                if (leftTuples.isEmpty()) {
-                    return TupleCollections.emptyList(leftTuples.getArity());
-                }
-                TupleList result =
-                        TupleCollections.createList(leftTuples.getArity());
-                long startTime = System.nanoTime();
-                if (LOGGER.isDebugEnabled()) {
-                     LOGGER.debug("evaluateList: Start  result.size="+ result.size());
-                  }   
-                for (List<Member> leftTuple : leftTuples) {
-                    if(this.listCalc2 != null) {
-                        if (rightTuples != null && !rightTuples.isEmpty()) {
+                    TupleList leftTuples = listCalc1.evaluateList(evaluator);
+                    if (leftTuples.isEmpty()) {
+                        return TupleCollections.emptyList(leftTuples.getArity());
+                    }
+                    
+                    // ОПТИМИЗАЦИЯ: FastList вместо ArrayList
+                    TupleList result = new ListTupleList(leftTuples.getArity(), FastList.newList());
+                    
+                    long startTime = System.nanoTime();
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("evaluateList: Start  result.size=" + result.size());
+                    }   
+                    
+                    if (hasRightTuples) {
+                        for (List<Member> leftTuple : leftTuples) {
                             for (List<Member> rightTuple : rightTuples) {
                                 evaluator.setContext(leftTuple);
                                 evaluator.setContext(rightTuple);
-      
+                
                                 Object tupleResult = evaluator.evaluateCurrent();
                                 if (tupleResult != null) {
                                     result.add(leftTuple);
-                                    break;
+                                    break; // Найдено, дальше не проверяем
                                 }
                             }
                         }
-                    }
-                    else {
-                        evaluator.setContext(leftTuple);
-                        Object tupleResult = evaluator.evaluateCurrent();
-                        if (tupleResult != null)
-                        {
-                            result.add(leftTuple);
+                    } else {
+                        for (List<Member> leftTuple : leftTuples) {
+                            evaluator.setContext(leftTuple);
+                            Object tupleResult = evaluator.evaluateCurrent();
+                            if (tupleResult != null) {
+                                result.add(leftTuple);
+                            }
                         }
                     }
-                }
-                         if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug(
-                            "evaluateList:: End time= "
-                            +  (System.nanoTime() - startTime) + " ns");
+                    
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("evaluateList:: End time= " + (System.nanoTime() - startTime) + " ns");
                     } 
-                return result;
-            } finally {
-                evaluator.restore(savepoint);
+                    return result;
+                } finally {
+                    evaluator.restore(savepoint);
+                }
             }
-        }
 
         public boolean dependsOn(Hierarchy hierarchy) {
             return anyDependsButFirst(getCalcs(), hierarchy);

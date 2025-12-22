@@ -304,7 +304,13 @@ static Id[] toIdArray(List<Id> idList) {
     }
 }
 ```
-
+/*    static Id[] toIdArray(List<Id> idList) {
+        if (idList == null || idList.size() == 0) {
+            return EmptyIdArray;
+        } else {
+            return idList.toArray(new Id[idList.size()]);
+        }
+    }*/
 **Улучшенная версия с Stream API:**
 ```java
 static Id[] toIdArray(List<Id> idList) {

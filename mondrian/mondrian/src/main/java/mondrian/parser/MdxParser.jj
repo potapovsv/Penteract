@@ -85,11 +85,10 @@ public class MdxParserImpl
     }
 
     static Id[] toIdArray(List<Id> idList) {
-        if (idList == null || idList.size() == 0) {
+        if (idList == null || idList.isEmpty()) {
             return EmptyIdArray;
-        } else {
-            return idList.toArray(new Id[idList.size()]);
         }
+        return idList.toArray(new Id[idList.size()]);
     }
 
     static Exp[] toExpArray(List<Exp> expList) {
