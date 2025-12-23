@@ -28,6 +28,10 @@ import org.apache.logging.log4j.LogManager;
 import java.util.*;
 import java.util.concurrent.Future;
 
+// Добавьте в начало файла:
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 /**
  * A <code>FastBatchingCellReader</code> doesn't really Read cells: when asked
  * to look up the values of stored measures, it lies, and records the fact
@@ -84,13 +88,16 @@ public class FastBatchingCellReader implements CellReader {
      */
     private boolean dirty;
 
-    private final List<CellRequest> cellRequests = new ArrayList<CellRequest>();
+    // private final List<CellRequest> cellRequests = new ArrayList<CellRequest>();
+    private final FastList<CellRequest> cellRequests = FastList.newList();
 
     private final Execution execution;
 
-    public HashMap<List<List<Member>>, CompoundPredicateInfo> aggregationListHash = new HashMap<>();
+    // public HashMap<List<List<Member>>, CompoundPredicateInfo> aggregationListHash = new HashMap<>();
 
-    public final Map<AggregationListKey, CompoundPredicateInfo> aggregationCache = new HashMap<>();
+    // public final Map<AggregationListKey, CompoundPredicateInfo> aggregationCache = new HashMap<>();
+
+    public final UnifiedMap<AggregationListKey, CompoundPredicateInfo> aggregationCache = UnifiedMap.newMap();
     /**
      * Creates a FastBatchingCellReader.
      *
@@ -567,21 +574,29 @@ class BatchLoader {
     private final Dialect dialect;
     private final RolapCube cube;
 
-    private final Map<AggregationKey, Batch> batches =
-        new HashMap<AggregationKey, Batch>();
+    // private final Map<AggregationKey, Batch> batches =
+    //     new HashMap<AggregationKey, Batch>();
 
-    private final Set<SegmentHeader> cacheHeaders =
-        new LinkedHashSet<SegmentHeader>();
+    // private final Set<SegmentHeader> cacheHeaders =
+    //     new LinkedHashSet<SegmentHeader>();
 
-    private final Map<SegmentHeader, Future<SegmentBody>> futures =
-        new HashMap<SegmentHeader, Future<SegmentBody>>();
+    // private final Map<SegmentHeader, Future<SegmentBody>> futures =
+    //     new HashMap<SegmentHeader, Future<SegmentBody>>();
 
-    private final List<RollupInfo> rollups = new ArrayList<RollupInfo>();
+    // private final List<RollupInfo> rollups = new ArrayList<RollupInfo>();
 
-    private final Set<BitKey> rollupBitmaps = new HashSet<BitKey>();
+    // private final Set<BitKey> rollupBitmaps = new HashSet<BitKey>();
 
-    private final Map<List, SegmentBuilder.SegmentConverter> converterMap =
-        new HashMap<List, SegmentBuilder.SegmentConverter>();
+    // private final Map<List, SegmentBuilder.SegmentConverter> converterMap =
+    //     new HashMap<List, SegmentBuilder.SegmentConverter>();
+
+    // Стало:
+    private final UnifiedMap<AggregationKey, Batch> batches = UnifiedMap.newMap();
+    private final UnifiedSet<SegmentHeader> cacheHeaders = UnifiedSet.newSet();
+    private final UnifiedMap<SegmentHeader, Future<SegmentBody>> futures = UnifiedMap.newMap();
+    private final FastList<RollupInfo> rollups = FastList.newList();
+    private final UnifiedSet<BitKey> rollupBitmaps = UnifiedSet.newSet();
+    private final UnifiedMap<List, SegmentBuilder.SegmentConverter> converterMap = UnifiedMap.newMap();
 
     public BatchLoader(
         Locus locus,
@@ -1053,7 +1068,8 @@ class BatchLoader {
         final Batch detailedBatch;
 
         /** Batches whose data can be fetched using rollup on detailed batch */
-        final List<Batch> summaryBatches = new ArrayList<Batch>();
+        // final List<Batch> summaryBatches = new ArrayList<Batch>();
+        final FastList<Batch> summaryBatches = FastList.newList();
 
         CompositeBatch(Batch detailedBatch) {
             this.detailedBatch = detailedBatch;
@@ -1126,12 +1142,12 @@ class BatchLoader {
          * processing this request will wait on those futures, once all segments
          * have successfully arrived from cache.</p>
          */
-        final List<Future<Map<Segment, SegmentWithData>>> sqlSegmentMapFutures;
+        final FastList<Future<Map<Segment, SegmentWithData>>> sqlSegmentMapFutures;
 
         /**
          * List of segments we are trying to load from the cache.
          */
-        final List<SegmentHeader> cacheSegments;
+        final FastList<SegmentHeader> cacheSegments;
 
         /**
          * List of cell requests that will be satisfied by segments we are
@@ -1161,8 +1177,8 @@ class BatchLoader {
             Map<SegmentHeader, Future<SegmentBody>> futures)
         {
             this.cellRequests = cellRequests;
-            this.sqlSegmentMapFutures = sqlSegmentMapFutures;
-            this.cacheSegments = cacheSegments;
+            this.sqlSegmentMapFutures =  FastList.newList(sqlSegmentMapFutures);
+            this.cacheSegments =   FastList.newList(cacheSegments);
             this.rollups = rollups;
             this.converterMap = converterMap;
             this.futures = futures;
@@ -1182,16 +1198,18 @@ class BatchLoader {
     public class Batch {
         // the CellRequest's constrained columns
         final RolapStar.Column[] columns;
-        final List<RolapStar.Measure> measuresList =
-            new ArrayList<RolapStar.Measure>();
+        // final List<RolapStar.Measure> measuresList =
+        //     new ArrayList<RolapStar.Measure>();
+        final FastList<RolapStar.Measure> measuresList = FastList.newList();
+
         final Set<StarColumnPredicate>[] valueSets;
         final AggregationKey batchKey;
         // string representation; for debug; set lazily in toString
         private String string;
         private int cellRequestCount;
-        private List<StarColumnPredicate[]> tuples =
-            new ArrayList<StarColumnPredicate[]>();
-
+        // private List<StarColumnPredicate[]> tuples =
+        //     new ArrayList<StarColumnPredicate[]>();
+        private FastList<StarColumnPredicate[]> tuples = FastList.newList();
         public Batch(CellRequest request) {
             columns = request.getConstrainedColumns();
             valueSets = new HashSet[columns.length];

@@ -315,6 +315,7 @@ public class RolapEvaluator implements Evaluator {
 
   public final int savepoint() {
     final int commandCount1 = commandCount;
+
     if ( commands[commandCount - 1] == Command.SAVEPOINT ) {
       // Already at a save point; no need to create another.
       return commandCount1;
@@ -324,6 +325,11 @@ public class RolapEvaluator implements Evaluator {
     ensureCommandCapacity( commandCount + 3 );
     commands[commandCount++] = Command.SAVEPOINT;
     // noinspection AssertWithSideEffects
+
+    //  dur_tot+=System.nanoTime()-t1;  
+      //  if ( getLogger().isDebugEnabled() ) {
+      //     getLogger().debug( "RE: d: " + dur_tot+ " c= " + inc );
+      //  }     
     assert !Util.DEBUG || addChecksumStateCommand();
     return commandCount1;
   }

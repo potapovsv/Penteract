@@ -25,6 +25,8 @@ import org.apache.logging.log4j.LogManager;
 import java.io.PrintWriter;
 import java.util.*;
 import java.util.concurrent.*;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.eclipse.collections.impl.list.mutable.FastList;
 
 /**
  * <code>RolapAggregationManager</code> manages all {@link Aggregation}s
@@ -138,8 +140,9 @@ public class AggregationManager extends RolapAggregationManager {
                             segmentCacheManager,
                             region,
                             this));
-                final List<Future<Boolean>> futures =
-                    new ArrayList<Future<Boolean>>();
+                // final List<Future<Boolean>> futures =
+                //     new ArrayList<Future<Boolean>>();
+                final FastList<Future<Boolean>> futures = FastList.newList();
                 for (Callable<Boolean> task : result.tasks) {
                     futures.add(segmentCacheManager.cacheExecutor.submit(task));
                 }
@@ -553,8 +556,9 @@ System.out.println(buf.toString());
      * Implementation of {@link mondrian.rolap.RolapAggregationManager.PinSet}
      * using a {@link HashSet}.
      */
+// Замените класс PinSetImpl:
     public static class PinSetImpl
-        extends HashSet<Segment>
+        extends UnifiedSet<Segment>  // Было: HashSet
         implements RolapAggregationManager.PinSet
     {
     }

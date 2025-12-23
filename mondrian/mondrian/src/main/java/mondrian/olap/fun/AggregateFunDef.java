@@ -548,10 +548,17 @@ public class AggregateFunDef extends AbstractAggregateFunDef {
 
         private static TupleList crossProd(Set<Member>[] sets) {
             final List<TupleList> tupleLists = new ArrayList<TupleList>();
+            if ( LOGGER.isDebugEnabled() ) {
+              LOGGER.debug( "crossProd Sets count: " + sets.length );
+            }
             for (Set<Member> set : sets) {
+                
                 tupleLists.add(
                     new UnaryTupleList(
                         new ArrayList<Member>(set)));
+                    if ( LOGGER.isDebugEnabled() ) {
+                         LOGGER.debug( "crossProd Set Member count: " + set.size() );
+                    }
             }
             if (tupleLists.size() == 1) {
                 return tupleLists.get(0);

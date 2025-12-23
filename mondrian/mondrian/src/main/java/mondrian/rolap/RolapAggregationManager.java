@@ -23,7 +23,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
-
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.eclipse.collections.impl.list.mutable.FastList;
 /**
  * <code>RolapAggregationManager</code> manages all
  * {@link mondrian.rolap.agg.Segment}s in the system.
@@ -837,8 +838,9 @@ public abstract class RolapAggregationManager {
         final CacheControl.CellRegion region)
     {
         final List<Member> measureList = CacheControlImpl.findMeasures(region);
-        final List<RolapStar.Measure> starMeasureList =
-            new ArrayList<RolapStar.Measure>();
+        // final List<RolapStar.Measure> starMeasureList =
+        //     new ArrayList<RolapStar.Measure>();
+        final FastList<RolapStar.Measure> starMeasureList = FastList.newList();
         RolapCube baseCube = null;
         for (Member measure : measureList) {
             if (!(measure instanceof RolapStoredMeasure)) {

@@ -90,58 +90,88 @@ class NonEmptyFunDef extends FunDefBase {
                     
                     // ОПТИМИЗАЦИЯ: FastList вместо ArrayList
                     TupleList result = new ListTupleList(leftTuples.getArity(), FastList.newList());
-                    
+                     // ОПТИМИЗАЦИЯ 1: Предварительный размер для result
+                    int expectedSize = Math.min(leftTuples.size(), 1000);
+                    FastList<List<Member>> resultList = FastList.newList(expectedSize);
+
                     long startTime = System.nanoTime();
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("evaluateList: Start  leftTuples.size=" + leftTuples.size() );
                         LOGGER.debug("evaluateList: Start  rightTuples.size=" + rightTuples.size() );
                     }   
-                    int i=0;long t1;long t2;long t3;long t4;long t5;long t6;
-                    long tot1=0;long tot2=0;;long tot3=0;;long tot4=0;;long tot21=0;;long tot31=0;;
-                     t1 = System.nanoTime();
+                     // ОПТИМИЗАЦИЯ 2: Кэшировать right contexts как массивы (быстрее List)
+                    Member[][] rightContexts = null;
                     if (hasRightTuples) {
-                        for (List<Member> leftTuple : leftTuples) {
-                            t1 = System.nanoTime();
-                            evaluator.setContext(leftTuple);
-                            t2 = System.nanoTime();
-                            for (List<Member> rightTuple : rightTuples) {
-                                t3 = System.nanoTime();
-                                evaluator.setContext(rightTuple);
-                                t4 = System.nanoTime();
-                                i++;
-                                Object tupleResult = evaluator.evaluateCurrent();
-                                t5 = System.nanoTime();
-                                if (tupleResult != null) {
-                                    result.add(leftTuple);
-                                    break; // Найдено, дальше не проверяем
-                                }
-                                tot3 = tot3 + (t4 - t3);
-                                tot4 = tot4 + (t5 - t4);
-                            }
-                            t6 = System.nanoTime();
-                            tot1 = tot1 + (t2 - t1);
-                            tot2 = tot2 + (t6 - t2);
-                        }
-                    } else {
-                        for (List<Member> leftTuple : leftTuples) {
-                            evaluator.setContext(leftTuple);
-                            Object tupleResult = evaluator.evaluateCurrent();
-                            i++;
-                            if (tupleResult != null) {
-                                result.add(leftTuple);
-                            }
+                        rightContexts = new Member[rightTuples.size()][];
+                        int idx = 0;
+                        for (List<Member> rightTuple : rightTuples) {
+                            rightContexts[idx++] = rightTuple.toArray(new Member[0]);
                         }
                     }
+
+                    final int leftSize = leftTuples.size();
+                    Member[] leftContext = new Member[leftTuples.getArity()];
+                    int ii=0;
+                    if (hasRightTuples) {
+                    for (int i = 0; i < leftSize; i++) {
+                        List<Member> leftTuple = leftTuples.get(i);
+                        leftTuple.toArray(leftContext);
+                        evaluator.setContext(leftContext);
+                        
+                        // Внутренний цикл по массиву (быстрее Iterator)
+                        for (Member[] rightContext : rightContexts) {
+                            evaluator.setContext(rightContext);
+                            Object tupleResult = evaluator.evaluateCurrent();
+                            ii++;
+                            if (tupleResult != null) {
+                                resultList.add(leftTuple);
+                                break;
+                            }
+                        }
+                        // Восстанавливаем контекст (опционально, если evaluator переиспользуется)
+                        // evaluator.setContext(leftContext);
+                    }
+                    } else {
+                        for (int i = 0; i < leftSize; i++) {
+                            List<Member> leftTuple = leftTuples.get(i);
+                            leftTuple.toArray(leftContext);
+                            evaluator.setContext(leftContext);
+                            Object tupleResult = evaluator.evaluateCurrent();
+                            if (tupleResult != null) {
+                                resultList.add(leftTuple);
+                            }
+                        }
+                    }                                                                                                                                                       
+                    // if (hasRightTuples) {
+                    //     for (List<Member> leftTuple : leftTuples) {
+                    //         for (List<Member> rightTuple : rightTuples) {
+                    //             evaluator.setContext(leftTuple);
+                    //             evaluator.setContext(rightTuple);
+                    //             i++;
+                    //             Object tupleResult = evaluator.evaluateCurrent();
+                    //             if (tupleResult != null) {
+                    //                 result.add(leftTuple);
+                    //                 break; // Найдено, дальше не проверяем
+                    //             }
+                    //         }
+                    //     }
+                    // } else {
+                    //     for (List<Member> leftTuple : leftTuples) {
+                    //         evaluator.setContext(leftTuple);
+                    //         Object tupleResult = evaluator.evaluateCurrent();
+                    //         i++;
+                    //         if (tupleResult != null) {
+                    //             result.add(leftTuple);
+                    //         }
+                    //     }
+                    // }
                     
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("evaluateList:: End time= " + (System.nanoTime() - startTime)/1000000 + " ms");
-                        LOGGER.debug("evaluateList: Start  Iteration=" + rightTuples.size() );
-                        LOGGER.debug("evaluateList: Timing tot1:" + tot1/1000000 + " ms" );
-                        LOGGER.debug("evaluateList: Timing tot1:" + tot2/1000000 + " ms" );
-                        LOGGER.debug("evaluateList: Timing tot1:" + tot3/1000000 + " ms" );
-                        LOGGER.debug("evaluateList: Timing tot1:" + tot4/1000000 + " ms" );
+                        LOGGER.debug("evaluateList: Start  Iteration.Count=" + ii );
                     } 
-                    return result;
+                    // return result;
+                    return new ListTupleList(leftTuples.getArity(), resultList);
                 } finally {
                     evaluator.restore(savepoint);
                 }

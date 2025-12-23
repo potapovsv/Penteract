@@ -60,6 +60,12 @@ public class ClickHouseDialect extends JdbcDialectImpl {
     public String getDefaultUnion() {
         return "union distinct";
     }
+
+    @Override
+    public boolean supportsUnlimitedValueList() {
+        return true;
+    }
+    @Override
     public boolean supportsGroupingSets() {
         return true;
     }    
