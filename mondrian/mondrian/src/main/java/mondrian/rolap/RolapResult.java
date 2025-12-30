@@ -662,7 +662,7 @@ public class RolapResult extends ResultBase {
       // the ObjectPool's internal storage by half (but, of course,
       // it will not reduce the size of the stored objects themselves).
       // Only call this if there are lots of CellInfo.
-      if ( this.cellInfos.size() > 10000 ) {
+      if ( this.cellInfos.size() > 100000 ) {
         this.cellInfos.trimToSize();
       }
       // revert the slicer axis so that the original slicer

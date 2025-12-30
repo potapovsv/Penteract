@@ -611,10 +611,10 @@ class BatchLoader {
     }
 
     final boolean shouldUseGroupingFunction() {
-            // if (LOGGER.isDebugEnabled()) {
-            //    LOGGER.debug("shouldUseGroupingFunction:" + MondrianProperties.instance().EnableGroupingSets.get() 
-            //                 + " dialect.supportsGroupingSets()" + dialect.supportsGroupingSets());
-            // }
+            if (LOGGER.isDebugEnabled()) {
+               LOGGER.debug("shouldUseGroupingFunction:" + MondrianProperties.instance().EnableGroupingSets.get() 
+                            + " dialect.supportsGroupingSets()" + dialect.supportsGroupingSets());
+            }
         return MondrianProperties.instance().EnableGroupingSets.get()
             && dialect.supportsGroupingSets();
         
@@ -911,7 +911,7 @@ class BatchLoader {
         for (CellRequest cellRequest : cellRequests) {
             recordCellRequest2(cellRequest);
         }
-
+        int i=0, j =0;
         // Sort the batches into deterministic order.
         List<Batch> batchList =
             new ArrayList<Batch>(batches.values());
@@ -925,17 +925,19 @@ class BatchLoader {
             List<CompositeBatch> groupedBatches = groupBatches(batchList);
             for (CompositeBatch batch : groupedBatches) {
                 batch.load(segmentMapFutures);
+                i++;
             }
         } else {
             // Load batches in turn.
             for (Batch batch : batchList) {
                 batch.loadAggregation(segmentMapFutures);
+                j++;
             }
         }
 
         if (LOGGER.isDebugEnabled()) {
             final long t2 = System.currentTimeMillis();
-            LOGGER.debug("load (millis): " + (t2 - t1));
+            LOGGER.debug("load (millis): " + (t2 - t1) + " shouldUseGroupingFunction(): " + shouldUseGroupingFunction() +" i: " + i + " j: " + j);;
         }
 
         // Create a response and return it to the client. The response is a

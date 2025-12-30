@@ -145,7 +145,7 @@ public class RolapEvaluator implements Evaluator {
   protected RolapEvaluator( RolapEvaluatorRoot root, RolapEvaluator parent, List<List<Member>> aggregationList ) {
     this.iterationLength = 1;
     this.root = root;
-    assert parent != null;
+    // assert parent != null;
     this.parent = parent;
 
     ancestorCommandCount = parent.ancestorCommandCount + parent.commandCount;
@@ -164,7 +164,7 @@ public class RolapEvaluator implements Evaluator {
     multiLevelSlicerTuple = parent.multiLevelSlicerTuple;
     expandingMember = parent.expandingMember;
 
-    commands = new Object[10];
+    commands = new Object[50];
     commands[0] = Command.SAVEPOINT; // sentinel
     commandCount = 1;
 
@@ -219,7 +219,7 @@ public class RolapEvaluator implements Evaluator {
     slicerMembersByHierarchy = new HashMap<Hierarchy, Set<Member>>();
     aggregationLists = null;
 
-    commands = new Object[10];
+    commands = new Object[50];
     commands[0] = Command.SAVEPOINT; // sentinel
     commandCount = 1;
 
@@ -257,7 +257,7 @@ public class RolapEvaluator implements Evaluator {
   }
 
   public boolean needToReturnNullForUnrelatedDimension( Member[] members ) {
-    assert mightReturnNullForUnrelatedDimension() : "Should not even call this method if nulls are impossible";
+    // assert mightReturnNullForUnrelatedDimension() : "Should not even call this method if nulls are impossible";
     RolapCube baseCube = getMeasureCube();
     if ( baseCube == null ) {
       return false;
@@ -330,7 +330,7 @@ public class RolapEvaluator implements Evaluator {
       //  if ( getLogger().isDebugEnabled() ) {
       //     getLogger().debug( "RE: d: " + dur_tot+ " c= " + inc );
       //  }     
-    assert !Util.DEBUG || addChecksumStateCommand();
+    // assert !Util.DEBUG || addChecksumStateCommand();
     return commandCount1;
   }
 
@@ -437,13 +437,22 @@ public class RolapEvaluator implements Evaluator {
   }
 
   private void ensureCommandCapacity( int minCapacity ) {
-    if ( minCapacity > commands.length ) {
-      int newCapacity = commands.length * 2;
-      if ( newCapacity < minCapacity ) {
-        newCapacity = minCapacity;
-      }
-      commands = Util.copyOf( commands, newCapacity );
-    }
+            int capacity = commands.length;
+            if (minCapacity > capacity) {
+            capacity = Math.max(capacity + (capacity >> 1), minCapacity);
+            long t1 = System.nanoTime();
+            commands = Arrays.copyOf(commands, capacity);
+            if ( getLogger().isDebugEnabled() ) {
+                getLogger().debug( "ensureCommandCapacity: capacity: " + capacity+ " time copy Of= " +  (System.nanoTime() - t1)/1000000 + " ns" );
+            }    
+        }
+    // if ( minCapacity > commands.length ) {
+    //   int newCapacity = commands.length * 2;
+    //   if ( newCapacity < minCapacity ) {
+    //     newCapacity = minCapacity;
+    //   }
+    //   commands = Util.copyOf( commands, newCapacity );
+    // }
   }
 
   /**
@@ -737,7 +746,7 @@ public class RolapEvaluator implements Evaluator {
   public final void setContext( List<Member> memberList ) {
     for ( int i = 0, n = memberList.size(); i < n; i++ ) {
       Member member = memberList.get( i );
-      assert member != null : "null member in " + memberList;
+      // assert member != null : "null member in " + memberList;
       setContext( member );
     }
   }
@@ -745,7 +754,7 @@ public class RolapEvaluator implements Evaluator {
   public final void setContext( List<Member> memberList, boolean safe ) {
     for ( int i = 0, n = memberList.size(); i < n; i++ ) {
       Member member = memberList.get( i );
-      assert member != null : "null member in " + memberList;
+      // assert member != null : "null member in " + memberList;
       setContext( member, safe );
     }
   }
@@ -753,7 +762,7 @@ public class RolapEvaluator implements Evaluator {
   public final void setContext( Member[] members ) {
     for ( int i = 0, length = members.length; i < length; i++ ) {
       Member member = members[i];
-      assert member != null : "null member in " + Arrays.toString( members );
+      // assert member != null : "null member in " + Arrays.toString( members );
       setContext( member );
     }
   }
@@ -761,7 +770,7 @@ public class RolapEvaluator implements Evaluator {
   public final void setContext( Member[] members, boolean safe ) {
     for ( int i = 0, length = members.length; i < length; i++ ) {
       Member member = members[i];
-      assert member != null : Arrays.asList( members );
+      // assert member != null : Arrays.asList( members );
       setContext( member, safe );
     }
   }
@@ -826,7 +835,7 @@ public class RolapEvaluator implements Evaluator {
   }
 
   void setExpanding( Member member ) {
-    assert member != null;
+    // assert member != null;
     ensureCommandCapacity( commandCount + 3 );
     commands[commandCount++] = this.expandingMember;
     commands[commandCount++] = this.firstExpanding;
@@ -1062,7 +1071,7 @@ public class RolapEvaluator implements Evaluator {
       key.add( descriptor.getExp() );
       for ( final int hierarchyOrdinal : hierarchyOrdinals ) {
         final Member member = currentMembers[hierarchyOrdinal];
-        assert member != null;
+        // assert member != null;
         key.add( member );
       }
     }
@@ -1143,7 +1152,7 @@ public class RolapEvaluator implements Evaluator {
   }
 
   final void addCalculation( RolapCalculation calculation, boolean reversible ) {
-    assert calculation != null;
+    // assert calculation != null;
     calculations[calculationCount++] = calculation;
 
     if ( reversible && !( calculation instanceof RolapMember ) ) {
@@ -1278,7 +1287,7 @@ public class RolapEvaluator implements Evaluator {
         // overwrite this member with the end member
         --calculationCount;
         calculations[i] = calculations[calculationCount];
-        assert calculations[i] != null;
+        // assert calculations[i] != null;
         calculations[calculationCount] = null; // to allow gc
 
         if ( reversible && !( calculation instanceof RolapMember ) ) {
@@ -1290,7 +1299,7 @@ public class RolapEvaluator implements Evaluator {
         return;
       }
     }
-    throw new AssertionError( "calculation " + calculation + " not on stack" );
+    // throw new AssertionError( "calculation " + calculation + " not on stack" );
   }
 
   public final int getIterationLength() {
@@ -1398,7 +1407,7 @@ public class RolapEvaluator implements Evaluator {
       void execute( RolapEvaluator evaluator ) {
         final int value = (Integer) evaluator.commands[--evaluator.commandCount];
         final int currentState = evaluator.checksumState();
-        assert value == currentState : "Current checksum " + currentState + " != previous checksum " + value;
+        // assert value == currentState : "Current checksum " + currentState + " != previous checksum " + value;
       }
     },
     ADD_CALCULATION( 1 ) {

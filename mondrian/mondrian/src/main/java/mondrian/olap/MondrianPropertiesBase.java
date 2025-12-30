@@ -62,7 +62,7 @@ public abstract class MondrianPropertiesBase extends TriggerableProperties {
 
     protected static final String mondrianDotProperties = "mondrian.properties";
 
-    public static final String buildNums = "v:1.0.0.4096-LMX";
+    public static final String buildNums = "v:1.0.0.4096_2-LMX ";
 
     protected MondrianPropertiesBase(PropertySource propertySource) {
         this.propertySource = propertySource;

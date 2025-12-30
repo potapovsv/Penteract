@@ -72,7 +72,7 @@ class NonEmptyFunDef extends FunDefBase {
                 final int savepoint = evaluator.savepoint();
                 try {
                     evaluator.setNonEmpty(false);
-
+                    //   evaluator.setNonEmpty(true);
                     TupleList rightTuples = null;
                     // Вынесли проверку за цикл
                     boolean hasRightTuples = false;
@@ -105,6 +105,10 @@ class NonEmptyFunDef extends FunDefBase {
                             evaluator.setContext(leftTuple);
                             t2 = System.nanoTime();
                             for (List<Member> rightTuple : rightTuples) {
+                            // if (LOGGER.isDebugEnabled()) {
+                            //         LOGGER.debug("evaluateList: Start  leftTuples.size=" + leftTuple.getFirst().toString() );
+                            //         LOGGER.debug("evaluateList: Start  rightTuples.size=" + rightTuple.getFirst().toString());
+                            //     }                                  
                                 t3 = System.nanoTime();
                                 evaluator.setContext(rightTuple);
                                 t4 = System.nanoTime();
@@ -137,9 +141,9 @@ class NonEmptyFunDef extends FunDefBase {
                         LOGGER.debug("evaluateList:: End time= " + (System.nanoTime() - startTime)/1000000 + " ms");
                         LOGGER.debug("evaluateList: Start  Iteration=" + rightTuples.size() );
                         LOGGER.debug("evaluateList: Timing tot1:" + tot1/1000000 + " ms" );
-                        LOGGER.debug("evaluateList: Timing tot1:" + tot2/1000000 + " ms" );
-                        LOGGER.debug("evaluateList: Timing tot1:" + tot3/1000000 + " ms" );
-                        LOGGER.debug("evaluateList: Timing tot1:" + tot4/1000000 + " ms" );
+                        LOGGER.debug("evaluateList: Timing tot2:" + tot2/1000000 + " ms" );
+                        LOGGER.debug("evaluateList: Timing tot3:" + tot3/1000000 + " ms" );
+                        LOGGER.debug("evaluateList: Timing tot4:" + tot4/1000000 + " ms" );
                     } 
                     return result;
                 } finally {
